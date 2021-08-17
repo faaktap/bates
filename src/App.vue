@@ -2,13 +2,26 @@
   <v-app id="app">
    <AppLayout> 
     <v-container fluid>
-      {{ getZml.login}}
+      <v-img src="img/CleanDKHS.png" max-width="80" class="float-right" contain />
+      <!-- {{ getZml.login}}
       <v-text-field v-model="getZml.login.isAuthenticated" > nuts?: </v-text-field>
+      -->
       <!--transition name="fade" mode="out-in"-->
-      RV=
+      <v-btn to="/"> viewlog </v-btn>
+      <v-btn to="/ff"> ff </v-btn>
+      <v-btn to="/choosesubjects"> ques </v-btn>
+      <v-btn to="/bates"> bates </v-btn>
+      <v-btn to="/viewfunctions"> functions </v-btn>
+      <v-btn to="/login"> login </v-btn>
+      <v-btn to="/bland"> bland </v-btn>
+      <v-btn to="/flex"> flex </v-btn>
+      <v-btn to="/basetabandedit"> basetabandedit </v-btn>
+      <v-btn to="/streamline"> streamline </v-btn>
+      <v-btn to="/emailcheck"> emailcheck </v-btn>
+      <v-btn to="/color"> color </v-btn>
         <router-view/> 
       <!--/transition-->
-      =RV
+
     <v-snackbar
       top centered
       :color="snackbarColor"
@@ -36,7 +49,7 @@ import confirm from "@/api/DialogConfirm";
 import EventBus, { ACTIONS } from '@/api/event-bus';
 export default {
   name: 'ZmlApp',
-  components: {confirm},
+  components:{confirm},    
   data: () => ({
     getZml: getters.getState({ object: "gZml" }),
     snackbarMessage: "",

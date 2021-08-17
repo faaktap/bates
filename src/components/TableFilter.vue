@@ -1,5 +1,7 @@
 <template>
  <v-container fluid> 
+   <slot>
+   </slot>
      <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
       <v-btn class="ma-2" @click="addNewBate"> Add Order</v-btn>
@@ -34,16 +36,17 @@
        </v-col>
      </v-row>
 
-  <v-dialog v-model="showAddTable"  :fullscreen="$vuetify.breakpoint.mobile" width="auto">
+  <v-dialog v-model="showAddTable" :fullscreen="$vuetify.breakpoint.mobile" width="auto">
    <v-card>
-    <v-card-text class="ma-2 pa-2">
+    <v-card-title class="ma-2 pa-2 justify-center">
        <template v-if="updateMessage == 'Create' && Table.qty > 1">
-           werwerwewer
+           {{ updateMessage }} new entry
        </template>
        <template v-else>
-           ewr else rewert
-        />                      
+           {{ updateMessage }} {{ Table.name }}
        </template>
+    </v-card-title>
+    <v-card-text>
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
        <v-col cols="12"  md="6">
         <v-text-field dense v-model="Table.item" 
@@ -55,36 +58,39 @@
        </v-col>
        <v-col cols="6" md="4">
         <v-select dense
-          v-model="Table.id"
-          :items="getZml.Tablestatus"
-          item-text="description"
-          item-value="id"
-          label="Status"
-          required
-        />                              
+                  v-model="Table.type"
+                  items="[{text: 'open', value: 'open',  disabled: false,  divider: false,header: 'hopen'},
+                          {text: 'close', value: 'close',  disabled: false,  divider: false,header: 'hclose'}]"
+                  item-text="text"
+                  item-value="value"
+                  label="Status"
+                  required
+        />        
+  
        </v-col>       
-
-       <!--v-col cols="12" md="4">
-        <v-text-field dense v-model="Table.salesorderno" 
-                      label="Sales Order No" 
-                      :rules="rules.required" required />
-       </v-col-->       
        <v-col cols="12" md="4">
-           <base-date v-model="Table.name" 
+           <base-date v-model="Table.bdate" 
                       instructions="FA" 
-                      label="Initial Deliver Date" />
+                      label="Some Date" />
        </v-col>
        <v-col cols="12">
-        <v-textarea dense v-model="Table.description" 
-                      label="Note" />
+        <v-textarea dense 
+                    v-model="Table.description" 
+                    label="Note" />
        </v-col>
-      <v-col cols="12">
+       <v-col cols="12">
+       <v-card color="gray">
+         <v-card-actions>
+           <v-spacer />
        <template v-if="updateMessage == 'Create' && Table.qty > 1">
-           bdialog
+          <v-btn> {{ updateMessage }} </v-btn>
        </template>
        <template v-else>
-           bdialog mowsefrwer
+          <v-btn> Save </v-btn>
        </template>
+          <v-btn> Cancel </v-btn>
+         </v-card-actions>
+       </v-card>
       </v-col>
       </v-layout>
      </v-card-text>
@@ -110,7 +116,8 @@ import { zmlFetch } from '@/api/zmlFetch';
 import { getters } from "@/api/store"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 //import { notLoggedInSnackbar } from "@/api/GlobalActions"
-import BaseSearch from '@/components/base/BaseSearch.vue';
+import BaseSearch from '@/components/base/BaseSearch.vue'
+import BaseDate from '@/components/base/BaseDate.vue'
 import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
 
 export default {
@@ -118,6 +125,7 @@ export default {
 
   components: {FrontJsonToCsv
             , BaseSearch
+            , BaseDate
             },
 
   data: () => ({
@@ -129,16 +137,17 @@ export default {
       showTablePrint:false,
       search:'',
       showPassword:false,
-      orTable:[{id:1,type:'type' , name:'name1',description:'descriptionAA'}
-                   ,{id:2,type:'type1', name:'name2',description:'descriptionBB'}
-                   ,{id:3,type:'type2', name:'name3',description:'descriptionCC'}
-                   ,{id:4,type:'type3', name:'name4',description:'descriDD'}],
+      orTable:[{id:1,type:'type' , name:'name1',description:'descriptionAA', bdate:null}
+                   ,{id:2,type:'type1', name:'name2',description:'descriptionBB', bdate:null}
+                   ,{id:3,type:'type2', name:'name3',description:'descriptionCC', bdate:null}
+                   ,{id:4,type:'type3', name:'name4',description:'descriDD', bdate:null}],
       updateMessage:'Create',
       orTableHeader:[
            { text: 'id', value: 'id' , align: 'start',   sortable: true}
           ,{ text: 'Type', value: 'type' }
           ,{ text: 'Name', value: 'name' }
           ,{ text: 'Description', value: 'description'}
+          ,{ text: 'Date', value: 'bdate'}
       ],
       Table:{id:'',type:'',name:'', description:''},
       bateType:[{switch:true,type:'type'}
@@ -205,6 +214,7 @@ export default {
                     ,type:''
                     ,name:''
                     ,description:''
+                    ,bdate:''
                     }
         this.showAddTable = true    
     },

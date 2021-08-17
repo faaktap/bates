@@ -9,7 +9,6 @@
       <v-card-title>
        <h2> Kuilies Session Status  </h2>
       </v-card-title>  
-      
       <v-card-text class="ma-2">
         <v-card color="gray" class="ma-2 pa-4">
        You are logged in as {{ getZml.login.username }} since {{ getZml.login.lastdate }}.
@@ -37,19 +36,23 @@
     </v-col>
 <!-- ------------------------------------ -->    
      <v-col v-else 
-             class="mx-auto my-12 justify-center"> 
+             class="mx-auto my-8 justify-center"> 
      <v-hover v-slot:default="{ hover }">
-      <v-card  xmax-width="500"
+      <v-card  
            color=#F5F5F5
            style="xoverflow: auto;"
           :elevation="hover ? 12 : 2"
           :class="{'on-hover': hover,'overwrite-hover': $vuetify.breakpoint.xsOnly}"
       >
        <v-card-title>
-        <h2> Kuilies Login</h2>
+         <v-spacer />
+         <h2 class="justify-center"> Kuilies Login </h2>
+         <v-spacer />         
+         <v-img src="img/CleanDKHS.png" max-width="80" class="float-left" contain elevation="6"/>
+
        </v-card-title>
        <v-card-text>
-        <v-form class="px-3" ref="loginForm" width="400" v-on:submit.prevent="onSubmit">
+        <v-form class="px-3" ref="loginForm" max-width="400" v-on:submit.prevent="onSubmit">
          <v-text-field  label="User" 
             v-model="loginObj.username" 
             autocomplete="username"
@@ -69,11 +72,11 @@
          />
         </v-form>
        </v-card-text>
-       <v-card-actions>
-        <v-btn @click="registrationMessage()" class="mx-0 mt-3" color="info"> Register </v-btn>
+       <v-card-actions class="px-3">
+        <v-btn @click="registrationMessage()" class="mx-8 my-3" color="info"> Register </v-btn>
         <v-spacer />
         <v-btn 
-            class="mx-0 mt-3"
+            class="mx-0 my-3"
             :loading="submitting"
             @click.prevent="submit"
             color="info"

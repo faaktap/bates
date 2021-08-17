@@ -1,5 +1,9 @@
 <template>
-    <table-filter />
+    <table-filter>
+      <v-card color="green">
+       <h1 class="text-center"> Some stuff </h1>
+      </v-card>
+    </table-filter>
 </template>
 
 <script>

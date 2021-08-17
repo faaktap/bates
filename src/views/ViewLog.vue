@@ -1,9 +1,7 @@
 <template>
   <v-container v-if="logList">
-   
    <v-row>
      <v-col cols="12">
-       <toolbar-buttons menuDisplay="vertical" :buttonGroup="toolbars" />
      <h1> Registered Users  {{ logList.length}} </h1>
         
     <v-card class="mx-auto">
@@ -105,14 +103,12 @@ import { zmlFetch } from "@/api/zmlFetch"
 import { zmlConfig } from '@/api/constants'
 import { getters } from "@/api/store"
 import { errorSnackbar, infoSnackbar } from '@/api/GlobalActions'
-import ToolbarButtons from '@/components/ToolbarButtons'
+
 export default {
     name:"ViewLog",
-    components:{ ToolbarButtons },    
     props: [],
     data: () => ({
         getZml: getters.getState({ object: "gZml" }),
-        toolbars:['tool','test','login'],
         showPasswordChange:false,
         curItem:{},
         search:null,
@@ -153,17 +149,16 @@ group by u.userid,u.user_name, l.user, u.user_fullname, user_type, user_grade, u
         zmlFetch(sl, this.processAfterFetch, this.processError);
       },
       processAfterFetch(response) {
-          errorSnackbar(response)
           if (!response.error) {
              this.logList = response
           } else {
-            alert('we have an error:' + response.errorcode + ' on fetching users')
+            errorSnackbar('we have an error:' + response.errorcode + ' on fetching users')
           }
           this.tableLoading = false
       },
       processError(response) {
         zmlConfig.cl('ERROR on USER RESET FORM : ' , response)
-        errorSnackbar(response)
+        errorSnackbar('ERROR on USER RESET FORM : ' + response.error)
       },
       passwordReset() {
         let sl = { task: 'plainSql'

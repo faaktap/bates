@@ -1,0 +1,214 @@
+{
+  "top": {
+    "type": "wrap",
+    "col": {
+      "xs": 12
+    },
+    "ripple": false,
+    "color": "white",
+    "class": "title pa-2 rounded elevation-4 col-md-6",
+    "schema": {
+      "email": {
+        "type": "email",
+        "label": "Email",
+        "rules": [
+          "rules.requiredEmail",
+          "rules.validEmail"
+        ],
+        "prependInnerIcon": "mdi-email",
+        "solo": true,
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "pa-2 rounded col-md-6",
+        "ripple": {
+          "center": true,
+          "class": "item blue--text"
+        },
+        "tooltip": "Please enter your email address"
+      },
+      "schoolno": {
+        "type": "number",
+        "label": "Admission number // Toelatingsnommer *",
+        "prependInnerIcon": "mdi-alpha-n-circle",
+        "solo": true,
+        "rules": [
+          "required('Please enter student admission number')"
+        ],
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "pa-2 rounded col-md-6",
+        "tooltip": "Admission number // Toelatingsnommer"
+      },
+      "surname": {
+        "type": "text",
+        "label": "Surname / Van *",
+        "prependInnerIcon": "mdi-account-question",
+        "solo": true,
+        "rules": [
+          "required('Please enter student surname')"
+        ],
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "pa-2 rounded col-md-6",
+        "tooltip": "Surname / Van"
+      },
+      "name": {
+        "type": "text",
+        "label": "Name / Naam *",
+        "prependInnerIcon": "mdi-account-question-outline",
+        "solo": true,
+        "rules": [
+          "required('Please enter student name')"
+        ],
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "title pa-2 rounded col-md-6",
+        "tooltip": "Name / Naam"
+      },
+      "grade": {
+        "type": "select",
+        "label": "Grade / Graad *",
+        "items": [
+          "9A1",
+          "9A2",
+          "9A3",
+          "9E1",
+          "9E2",
+          "9E3",
+          "9E4",
+          "9E5"
+        ],
+        "prependInnerIcon": "mdi-alpha-g-box",
+        "solo": true,
+        "rules": [
+          "required('Please enter student/'s current grade.')"
+        ],
+        "col": {
+          "xs": 12
+        },
+        "tooltip": "Grade / Graad"
+      }
+    }
+  },
+  "set1": {
+    "type": "wrap",
+    "label": "ddddddd",
+    "col": {
+      "xs": 12
+    },
+    "ripple": false,
+    "class": "title pa-2 rounded elevation-4 col-md-6",
+    "schema": {
+      "subject1": {
+        "type": "radio",
+        "label": "Subject Group 1 / Vak Groep 1",
+        "options": "subject1",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3",
+        "row": false,
+        "rules": [
+          "required(Please select one subject from each group!')"
+        ],
+        "tooltip": "A learner MUST choose one subject per group."
+      },
+      "subject2": {
+        "type": "radio",
+        "label": "Subject Group 2 / Vak Groep 2",
+        "options": "subject2",
+        "color": "green",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3",
+        "row": false,
+        "rules": [
+          "required('Kies asseblief een vak van elke groep')"
+        ],
+        "tooltip": "‘n Leerder MOET een vak per groep kies."
+      }
+    }
+  },
+  "set2": {
+    "type": "wrap",
+    "label": "dxxdddddd",
+    "col": {
+      "xs": 12
+    },
+    "ripple": false,
+    "class": "title pa-2 rounded elevation-4 col-md-6 ma-1",
+    "schema": {
+      "subject3": {
+        "type": "radio",
+        "label": "Subject Group 3 / Vak Groep 3",
+        "options": "subject3",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "row": false,
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3",
+        "rules": [
+          "rules.requiredSel"
+        ],
+        "tooltip": "Leerders wat Fisiese Wetenskap kies, MOET ook Wiskunde kies"
+      },
+      "subject4": {
+        "type": "radio",
+        "label": "Subject Group 4 / Vak Groep 4",
+        "options": "subject4",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "row": false,
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3",
+        "rules": [
+          "required('Kies asseblief een vak van elke groep')"
+        ],
+        "tooltip": "Onthou: Jy kan nie dieselfde vak twee keer kies nie."
+      },
+      "subject5": {
+        "type": "radio",
+        "label": "Subject Group 5 / Vak Groep 5",
+        "options": "subject5",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "row": false,
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3 grey--text text--darken-2",
+        "rules": [
+          "required('Please select one subject from each group')"
+        ],
+        "tooltip": "EGD, IT and ART requires an aptitude test."
+      },
+      "subject6": {
+        "type": "radio",
+        "label": "Subject Group 6 / Vak Groep 6",
+        "options": "subject6",
+        "col": {
+          "xs": 12,
+          "sm": 6
+        },
+        "row": false,
+        "class": "gray lighten-3 rounded elevation-4 ma-1 pa-3",
+        "rules": [
+          "required('Kies asseblief een vak van elke groep')"
+        ],
+        "tooltip": "Important: You can not choose the same subject twice."
+      }
+    }
+  }
+}

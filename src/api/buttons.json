@@ -1,0 +1,47 @@
+{
+ "buttongroups": ["tool","login","test"],
+ "wait": [{ "btn":"about"    ,"tip":"2"                  ,"func":"/about"      ,"icon":"mdi-coffee","optional":3,"acc":"none"}],
+ "tool": [{ "btn":"home"     ,"tip":"1"                  ,"func":"/"           ,"icon":"mdi-home","optional":0,"acc":"all"}
+         
+         ,{ "btn":"teacher"  ,"tip":"4 teachers"         ,"func":"/sh"     ,"icon":"mdi-teach","optional":0,"acc":"teacher"}
+         ,{ "btn":"studentfiles" ,"tip":"Student Files and Folders"       ,"func":"/sh"   ,"icon":"mdi-school","optional":0,"acc":"all"}
+         ,{ "btn":"tHover"   ,"tip":"3"                  ,"func":"/hover"      ,"icon":"mdi-shovel","optional":1,"acc":"all"}
+         ,{ "btn":"translate","tip":"translation testers","func":"/translate"  ,"icon":"mdi-test-tube","optional":1,"acc":"all"}
+         ,{ "btn":"help"     ,"tip":"4"                  ,"func":"/help"       ,"icon":"mdi-help","optional":1,"acc":"all"}
+         ,{ "btn":"changeTo" ,"tip":"5"                  ,"func":"switchLocale","icon":"mdi-translate","optional":1,"acc":"all"}
+       ] ,
+ "right": [{ "btn":"rightmenubutton"    ,"tip":"Click here to see menu","func":"drop","icon":"mdi-hamburger","optional":0,"acc":"all"}
+        ],
+ "login": [{ "btn": "Profile" ,"tip":"7" ,"func":"/profile" ,"icon":"mdi-face-outline" ,"optional":1,"acc":"all"},
+           { "btn": "Logout" ,"tip":"8" ,"func":"/login"   ,"icon":"mdi-logout" ,"optional":1,"acc":"all"}
+        ],
+ "test": [{ "btn": "modal"  ,"tip":"modal" ,"func":"/nested/dialog"  ,"icon":"mdi-test-tube-off" ,"optional":1,"acc":"all"},
+          { "btn": "testsConfirm"  ,"tip":"another modal" ,"func":"testConfirm"  ,"icon":"mdi-test-tube-off" ,"optional":1,"acc":"all"}
+         ],
+ "heroes": [{"name": "Hero1", "title" :"Students"
+                     , "bgpicture": "https://www.dekuilen.com/img/dekuilen/home-image01.jpg"
+                     , "text": "Click on `student login` to log in on this site."
+                     , "more": "You will need your school number to log on."
+                     , "color": "#2E7D32"
+                     , "btn": "log in" ,"tip":"More information"
+                                       ,"func":"/login","icon":"mdi-nature-people"},
+            {"name": "Hero2", "title" :"Teachers"
+                     , "bgpicture": "img/teachers.jpg"
+                     , "text": "Click on `educator login` above to log in on this site."
+                     , "more": "Information for educators will be availible here."
+                     , "color": "blue"
+                     , "xxbtn": "log in" ,"tip":"More information"
+                                       ,"func":"/login","icon":"mdi-nature-people"},
+            {"name": "Hero3", "title" :"Parents"
+                     , "bgpicture": "https://www.dekuilen.com/img/dekuilen/dk-slide-2.jpg"
+                     , "text": "All communication is via social media and other channels."
+                     , "more": "However, we do sometimes host events here.<br> Links will be shared via email for browsing our online content."
+                     , "color": "#45516b"},
+            {"name": "Hero4", "title" :"Public"
+                     , "bgpicture": "img/public.jpg"
+                     , "text": "This site is not for the public. See options below."
+                     , "more": "Feel free to visit our social media platform and find more information on our website at www.dekuilen.com"
+                     , "color": "red"
+                     }  
+           ]
+}
