@@ -2,11 +2,14 @@
   <v-app id="app">
    <AppLayout> 
     <v-container fluid>
-      <v-img src="img/CleanDKHS.png" max-width="80" class="float-right" contain />
+      
       <!-- {{ getZml.login}}
       <v-text-field v-model="getZml.login.isAuthenticated" > nuts?: </v-text-field>
       -->
       <!--transition name="fade" mode="out-in"-->
+
+      
+       <v-img src="img/CleanDKHS.png" max-width="80" class="float-right" contain />
       <v-btn to="/"> viewlog </v-btn>
       <v-btn to="/ff"> ff </v-btn>
       <v-btn to="/choosesubjects"> ques </v-btn>
@@ -19,8 +22,11 @@
       <v-btn to="/streamline"> streamline </v-btn>
       <v-btn to="/emailcheck"> emailcheck </v-btn>
       <v-btn to="/color"> color </v-btn>
+
         <router-view/> 
       <!--/transition-->
+    </v-container>
+   </AppLayout>   
 
     <v-snackbar
       top centered
@@ -36,8 +42,6 @@
       </template>
     </v-snackbar>
     
-    </v-container>
-   </AppLayout>   
     <confirm ref="confirm"></confirm>   
   </v-app>
 </template>
@@ -45,6 +49,7 @@
 
 <script>
 import { getters } from "@/api/store";
+import { zData } from "@/api/zGetBackgroundData.js"
 import confirm from "@/api/DialogConfirm";
 import EventBus, { ACTIONS } from '@/api/event-bus';
 export default {
@@ -60,6 +65,8 @@ export default {
   },
   mounted: function () {
     console.log("Start:",this.$options.name)
+    zData.initialData('Load Subject Data')
+
 /* START External Programs that uses app.vue to make use of global stuff.    */
     this.$root.$confirm = this.$refs.confirm.open
     EventBus.$on(ACTIONS.SNACKBAR, (message, color) => {
@@ -74,3 +81,4 @@ export default {
   }
 };
 </script>
+

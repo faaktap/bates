@@ -6,9 +6,15 @@ const la = ["AppLayoutDefault","AppLayoutBasic","AppLayoutBlue","AppLayoutGray"]
 
 const routes = [
   {
-    path: '/',
+    component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
+    path: '/bates',
+    name: 'Outline',
+    meta: {layout: la[4], authentication: "public" }
+  }, 
+  {
+    path: '/VL',
     name: 'ViewLog',
-    component: () => import(/* webpackChunkName: "bates" */ '../views/ViewLog.vue'),
+    component: () => import(/* webpackChunkName: "log" */ '../views/ViewLog.vue'),
     meta: {layout: la[1], authentication: "public" }
   },
   {
@@ -21,12 +27,6 @@ const routes = [
     path: '/choosesubjects',
     name: 'skool',
     component: () => import(/* webpackChunkName: "vfbasetest" */ '../components/vfbase/skool'),
-    meta: {layout: la[3], authentication: "public" }
-  },
-  {
-    component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
-    path: '/bates',
-    name: 'Bates',
     meta: {layout: la[3], authentication: "public" }
   },
   {
@@ -90,10 +90,10 @@ const routes = [
   },
 ]
 
-
+import { publicPath } from '../../vue.config'
 const router = new VueRouter({
   mode: 'history',
-  base: "",    //This works : /zmltest/  but ./ does not work for layouts
+  base: publicPath,    //This works from vue.config.js
   werner: 'werner',      //see if I can add my own stuff.
   routes
 })

@@ -1,16 +1,20 @@
 <template>
-    <table-filter>
-      <v-card color="green">
-       <h1 class="text-center"> Some stuff </h1>
-      </v-card>
-    </table-filter>
+ <div>
+
+    <table-filter entity="Bate" />
+
+    <table-judge entity="Judges" />
+
+ </div>
 </template>
 
 <script>
-import TableFilter from '@/components/TableFilter';
+import TableFilter from '@/components/crud/TableFilter.vue';
+import TableJudge from '@/components/crud/TableJudge.vue';
 export default {
   name: "Outline",
-  components: {TableFilter
+  components: { TableFilter
+              , TableJudge
               },
 
   data: () => ({

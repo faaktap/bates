@@ -117,7 +117,7 @@ export default {
          let cnt=0
          Object.keys(this.jsonData[0]).forEach(ele => {
               if (cnt == 0 || ele.includes('id') || ele.includes('sortorder')) {
-                this.labels.push( {id:cnt, desc:ele, clicked: false} )
+                this.labels.push( {id:cnt, desc:ele, clicked: false} ) //UNTICK or HIDE FIELD with ID in it
               } else {
                 this.labels.push( {id:cnt, desc:ele, clicked: true} )
               }

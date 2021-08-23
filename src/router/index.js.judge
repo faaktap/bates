@@ -1,0 +1,37 @@
+import Vue from 'vue'
+import VueRouter from 'vue-router'
+//import login from '@/components/Login'
+Vue.use(VueRouter)
+const la = ["AppLayoutDefault","AppLayoutBasic","AppLayoutBlue","AppLayoutGray"]
+
+const routes = [
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
+    path: '/score',
+    alias: '/',
+    name: 'Score',
+    meta: {layout: la[4], authentication: "public" }
+  }, 
+  {
+    component: () => import(/* webpackChunkName: "test" */ '@/components/TextColorPicker.vue')
+    ,name: 'color' 
+    ,path: '/color'
+    ,meta: {layout: la[4], authentication: "public"}
+  },      
+    {
+    component: () => import(/* webpackChunkName: "test" */ '@/views/ErrorPage.vue')
+    ,name: 'ErrorPage'
+    ,path: '*'
+    ,meta: {layout: la[4], authentication: "public"}
+  },
+]
+
+import { publicPath } from '../../vue.config'
+const router = new VueRouter({
+  mode: 'history',
+  base: publicPath,    //This works from vue.config.js
+  werner: 'werner',      //see if I can add my own stuff.
+  routes
+})
+
+export default router

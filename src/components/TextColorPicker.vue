@@ -1,5 +1,23 @@
 <template>
  <div>
+  <v-card class="ma-1 text-center" color="primary"> primary </v-card>
+  <v-card class="ma-1 text-center" color="secondary"> secondary </v-card>
+  <v-card class="ma-1 text-center" color="accent"> accent </v-card>
+  <v-card class="ma-1 text-center" color="error"> error </v-card>
+  <v-card class="ma-1 text-center" color="info"> info </v-card>
+  <v-card class="ma-1 text-center" color="success"> success </v-card>
+  <v-card class="ma-1 text-center" color="warning"> warning </v-card>
+  <v-card class="ma-1 text-center" color="lightblue"> lightblue </v-card>
+  <v-card class="ma-1 text-center" color="orange"> orange </v-card>
+  <v-card class="ma-1 text-center" color="magenta"> magenta </v-card>
+  <v-card class="ma-1 text-center" color="gray"> gray </v-card>
+  <v-card class="ma-1 text-center" color="neutralgray"> neutralgray </v-card>
+  <v-card class="ma-1 text-center" color="green"> green </v-card>
+  <v-card class="ma-1 text-center" color="red"> red </v-card>
+  <v-card class="ma-1 text-center" color="darkblueshade"> darkblueshade </v-card>
+  <v-card class="ma-1 text-center" color="lightgray"> lightgray </v-card>
+  <v-card class="ma-1 text-center" color="lightpink"> lightpink </v-card>
+  
 
    <v-container class="grey lighten-5" fluid>
      <v-row xno-gutters> 

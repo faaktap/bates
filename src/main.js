@@ -3,16 +3,20 @@ import App from './App.vue'
 import vuetify from './plugins/vuetify';
 import router from './router'
 
-//import VueFriendlyIframe from 'vue-friendly-iframe';
-//Vue.component('vue-friendly-iframe', VueFriendlyIframe);
-
 import AppLayout from '@/layouts/AppLayout'
 Vue.component('AppLayout', AppLayout)
 
-Vue.config.productionTip = false
+Vue.config.productionTip = true
 
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
+
+Vue.prototype.$playSound = (path = 'img/SodaCanOpen.mp3', volume = .5) => {
+  var audio = new Audio(path);
+  audio.volume = volume
+  audio.play();
+  console.log(path)
+}
 
 
 window.onerror = function(message, url, lineNumber) {  
@@ -20,11 +24,6 @@ window.onerror = function(message, url, lineNumber) {
   return true;
 }; 
 
-Vue.prototype.$playSound = (path, volume = .5) => {
-  var audio = new Audio(path);
-  audio.volume = volume
-  audio.play();
-}
 
 // eslint-disable-next-line
 export const cs = {

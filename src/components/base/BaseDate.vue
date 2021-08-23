@@ -4,6 +4,9 @@
           :label="label"         
           :value="value"
            append-icon="mdi-calendar"
+           outlined
+           rounded
+           shaped
           @focus="showDate = !showDate"
           @click:append="showDate = !showDate"
           v-on:input="updateValue($event)"
@@ -70,3 +73,8 @@ export default {
   }
 };
 </script>          
+<style scoped>
+.v-text-field--outlined >>> fieldset {
+  border-color: rgba(192, 0, 250, 0.986);
+}
+</style>

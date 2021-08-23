@@ -36,51 +36,133 @@
        </v-col>
      </v-row>
 
-  <v-dialog v-model="showAddTable" :fullscreen="$vuetify.breakpoint.mobile" width="auto">
-   <v-card>
-    <v-card-title class="ma-2 pa-2 justify-center">
-       <template v-if="updateMessage == 'Create' && Table.qty > 1">
-           {{ updateMessage }} new entry
+  <v-dialog v-model="showAddTable"  
+           :fullscreen="$vuetify.breakpoint.mobile" 
+            content-class="elevation-2"
+            style="overflow:hidden"
+            xwidth="auto">
+   <!--v-card class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
+    <v-checkbox v-model="outlined" label="outlined" /> {{ outlined }}
+    <v-checkbox v-model="filled" label="filled" />
+    <v-checkbox v-model="flat" label="flat" />
+    <v-checkbox v-model="rounded" label="rouded" />
+    <v-checkbox v-model="shaped" label="shaped" />
+    <v-checkbox v-model="solo" label="sole" />
+    <v-checkbox v-model="soloinverted" label="sole inv" />
+   </v-card-->
+   
+   <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
+     <template v-if="updateMessage == 'Create' && Table.qty > 1">
+       <v-card-title class="ma-7 pt-2 justify-center accent">
+              1    {{ updateMessage }} new entry
+       </v-card-title>                  
        </template>
-       <template v-else>
-           {{ updateMessage }} {{ Table.name }}
+       <template v-else class="ma-2">
+       <v-card-title class="ma-7 pt-2 justify-center accent">
+              2  {{ updateMessage }} {{ Table.name }}
+       </v-card-title>
        </template>
-    </v-card-title>
-    <v-card-text>
+    
+
+    <v-card-text class="ma-2 pa-2 justify-center">
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
-       <v-col cols="12"  md="6">
-        <v-text-field dense v-model="Table.item" 
-                      label="Item" :rules="rules.required" required />
+       <v-col cols="12" sm="6"  md="4">
+        <v-text-field v-model="Table.item" 
+                      dense
+                      outlined rounded shaped
+                      label="Item" 
+                     :rules="rules.required" 
+                      required 
+                      type="text"/>
        </v-col>
-       <v-col cols="12"  md="6">
+       <v-col cols="12" sm="6" md="4">
         <v-text-field dense v-model="Table.qty" 
-                      label="Qty" :rules="rules.required" required />
+                      label="Qty" 
+                     :rules="rules.required" 
+                     required 
+                     outlined rounded shaped
+                      />
        </v-col>
-       <v-col cols="6" md="4">
+       <v-col cols="6"  md="4">
         <v-select dense
                   v-model="Table.type"
-                  items="[{text: 'open', value: 'open',  disabled: false,  divider: false,header: 'hopen'},
-                          {text: 'close', value: 'close',  disabled: false,  divider: false,header: 'hclose'}]"
+                  :items="types"
                   item-text="text"
                   item-value="value"
                   label="Status"
+                  outlined rounded shaped                  
                   required
         />        
+       </v-col>
+       <v-col cols="6" md="4">
+        <v-select dense
+                  v-model="Table.Description"
+                  :items="getZml.persMenemonic"
+                  item-text="user_fullname"
+                  item-value="user_id"
+                  label="Personel"
+                  required
+                  outlined rounded shaped />        
+       </v-col>
+       <v-col cols="12" sm="6" md="4">
+        <v-autocomplete
+                label="Select"
+               :items="searchPersonel"
+                v-model="Table.description"
+                item-value="userid"
+                item-text="user_fullname"
+               :search-input.sync="searchInput"
+                dense
+                      outlined="outlined"
+                      rounded="rounded"
+                      shaped="shaped"
+              >
+              <template slot="selection" slot-scope="data">
+                  {{ data.item.user_fullname }}
+              </template>
+              <template slot="item" slot-scope="data">
+                    {{ data.item.user_name }} {{ data.item.user_fullname }}  ({{ data.item.userid }} )
+              </template>
+        </v-autocomplete> <!--{{ searchInput}}-->
+       </v-col>
   
-       </v-col>       
+   
        <v-col cols="12" md="4">
            <base-date v-model="Table.bdate" 
                       instructions="FA" 
+                      dense
+                      outlined="outlined"
+                      rounded="rounded"
+                      shaped="shaped"
                       label="Some Date" />
        </v-col>
-       <v-col cols="12">
+       <v-col cols="12" md="6">
         <v-textarea dense 
-                    v-model="Table.description" 
-                    label="Note" />
+                    v-model="Table.description"
+                      outlined="outlined"
+                      rounded="rounded"
+                      shaped="shaped"
+                      label="Note" />
        </v-col>
-       <v-col cols="12">
-       <v-card color="gray">
-         <v-card-actions>
+       <v-col cols="12" md="4">
+           <v-radio-group v-model="Table.description"
+                          label="Status"  
+                          dense
+                          column
+                          prepend-icon="mdi-radio"
+                          class="mt-1"
+                          @change="$emit($event, Table.description)">
+              <v-radio v-for="rb in ['open','close']"
+                      :key="rb"
+                      :label="rb"
+                      :value="rb">
+              </v-radio>
+       </v-radio-group>
+       </v-col>
+
+      </v-layout>
+     </v-card-text>       
+         <v-card-actions class="ma-6 pa-2 accent green--text">
            <v-spacer />
        <template v-if="updateMessage == 'Create' && Table.qty > 1">
           <v-btn> {{ updateMessage }} </v-btn>
@@ -90,10 +172,7 @@
        </template>
           <v-btn> Cancel </v-btn>
          </v-card-actions>
-       </v-card>
-      </v-col>
-      </v-layout>
-     </v-card-text>
+
    </v-card>
   </v-dialog> 
 
@@ -114,6 +193,7 @@
 <script>
 import { zmlFetch } from '@/api/zmlFetch';
 import { getters } from "@/api/store"
+
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 //import { notLoggedInSnackbar } from "@/api/GlobalActions"
 import BaseSearch from '@/components/base/BaseSearch.vue'
@@ -130,14 +210,18 @@ export default {
 
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
-      rules: {
-       required: [value => !!value || "Required."]
-      },
+      rules: { required: [value => !!value || "Required."] },
+      types:[{disabled: false,  divider: false,header: 'hopen'},
+             {divider: true},
+             {text: 'Open', value: 'Open'  },
+             {header: 'hclose'},
+             {divider: true},
+             {text: 'Close', value: 'Close' }],
       showAddTable: false,
       showTablePrint:false,
       search:'',
       showPassword:false,
-      orTable:[{id:1,type:'type' , name:'name1',description:'descriptionAA', bdate:null}
+      orTable:[{id:1,type:'type' , name:'name1',description:'descriptionAA', bdate:'2021-01-22'}
                    ,{id:2,type:'type1', name:'name2',description:'descriptionBB', bdate:null}
                    ,{id:3,type:'type2', name:'name3',description:'descriptionCC', bdate:null}
                    ,{id:4,type:'type3', name:'name4',description:'descriDD', bdate:null}],
@@ -154,6 +238,19 @@ export default {
                ,{switch:true,type:'type1'}
                ,{switch:true,type:'type2'}
                ,{switch:true,type:'type3'}],
+      searchInput: null,
+      personelTable: [],
+                      outlined:false,
+                      rounded:false,
+                      shaped:false,
+                      filled:false,
+                      flat:false,
+                      solo:false,
+                      soloinverted:false,
+
+
+// see https://codepen.io/anon/pen/PEpaMM?editors=1011
+// also https://stackoverflow.com/questions/56920390/setting-up-v-autocomplete-with-search-function#56920992
   }),
   computed: {
       formIsValid () {
@@ -175,9 +272,19 @@ export default {
             onlyThese = this.bateType
         }
         return this.orTable.filter(ele => onlyThese.some(e => e.type == ele.type) ) 
-      } 
+      },
+      searchPersonel() {
+        if (!this.searchInput) {
+           return this.personelTable
+        }
+        let x = this.personelTable.filter(
+          str => str.user_fullname.toUpperCase().includes(this.searchInput.toUpperCase())
+        )
+        console.log(x.length, x)
+        return x
+      }
   },
-  methods:{
+  methods: {
     clickOnTableRow(p1,p2) {
           console.log('click = ', p1, p2)
           let index = this.orTable.findIndex(ele => ele.id == p1.id)
@@ -252,8 +359,16 @@ export default {
       this.getData()
     }    
   },
+  watch: {
+    searchInput(val){
+      console.log('should be searching on..', val)
+        //this.entries = await this.searchTerms(val)
+    } 
+  },  
   mounted() {
-     // console.log('Start Table')
+     this.personelTable = this.getZml.persMenemonic
+     if (this.personelTable.length < 2) alert('PERSMM not loaded yet')
+     console.log('Start FilterTable')
      /*
       if (this.getZml.login.userid == 0) {
          notLoggedInSnackbar(this.$router)
@@ -267,6 +382,6 @@ export default {
 
 <style scoped>
 .v-text-field--outlined >>> fieldset {
-  border-color: rgba(192, 0, 250, 0.986);
+  border-color: rgba(192, 0, 250, 0.98);
 }
 </style>
