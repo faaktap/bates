@@ -13,7 +13,8 @@
       <v-btn to="/"> viewlog </v-btn>
       <v-btn to="/ff"> ff </v-btn>
       <v-btn to="/choosesubjects"> ques </v-btn>
-      <v-btn to="/bates"> bates </v-btn>
+      <v-btn to="/outline"> bates </v-btn>
+      <v-btn to="/scoring"> Scoring </v-btn>
       <v-btn to="/viewfunctions"> functions </v-btn>
       <v-btn to="/login"> login </v-btn>
       <v-btn to="/bland"> bland </v-btn>

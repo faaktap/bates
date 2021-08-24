@@ -77,16 +77,16 @@
 <v-card color=light-green> Vuetify also provides us with flex align classes to align content. </v-card>
 <v-container>
     <v-row class="text-center">
-      <v-col cols="12">
-          
+      <v-col cols="12" mb="4" >
         <v-card
           v-for="a in align"
           :key="a"
-          :class="`d-flex align-${a} mb-6`"
+          :class="`d-flex align-${a} justify-space-between mb-3 `"
           flat
           height="100"
           tile
-        >
+          color="pink"
+        >{{ a }} hoe hy in sy eie area vertoon
           <v-card v-for="n in 3" :key="n" class="pa-2" outlined tile>item {{a}}</v-card>
         </v-card>
       </v-col>
@@ -175,7 +175,7 @@
             <v-icon large left>mdi-twitter</v-icon>
             <span class="title font-weight-light">Twitter</span>
           </v-card-title>
-<v-card-text class="headline font-weight-bold">"hello world."</v-card-text>
+          <v-card-text class="headline font-weight-bold">"hello world."</v-card-text>
           <v-card-actions>
             <v-list-item class="grow">
               <v-list-item-avatar color="grey darken-3">
@@ -205,11 +205,11 @@
 <v-container>
     <v-row>
       <v-col col="12">
-        <v-card max-width="400" class="mx-auto">
+        <v-card xmax-width="400" class="mx-auto">
           <v-container>
             <v-row dense>
-              <v-col v-for="(item, i) in items" :key="i" cols="12">
-                <v-card :color="item.color" dark>
+              <v-col v-for="(item, i) in items" :key="i" cols="12" md="4">
+                <v-card :color="item.color" dark class="d-flex justify-space-between mb-2">
                   <div class="d-flex flex-no-wrap justify-space-between">
                     <div>
                       <v-card-title class="headline" v-text="item.title"></v-card-title>
@@ -219,9 +219,27 @@
                       <v-img :src="item.src"></v-img>
                     </v-avatar>
                   </div>
+
                 </v-card>
               </v-col>
             </v-row>
+            <v-row dense>
+              <v-col v-for="(item, i) in items" :key="i" cols="12" md="4">
+                <v-card :color="item.color" dark class="d-flex justify-space-center mb-2">
+                  <div class="d-flex flex-no-wrap justify-space-center">
+                    <div>
+                      <v-card-title class="headline" v-text="item.title"></v-card-title>
+                      <v-card-subtitle v-text="item.artist"></v-card-subtitle>
+                    </div>
+                    <v-avatar class="ma-3" size="125" tile>
+                      <v-img :src="item.src"></v-img>
+                    </v-avatar>
+                  </div>
+
+                </v-card>
+              </v-col>
+            </v-row>
+
           </v-container>
         </v-card>
       </v-col>
@@ -240,6 +258,14 @@ export default {
   classtest:'col-4 col-sm-6 col-md-8',
   justify: ["start", "end", "center", "space-between", "space-around"],
   align: ["start", "end", "center", "baseline", "stretch"],
+  items:[{artist:'Neo Willemse' ,title:'Some Title',color:'pink' , src:'https://kuiliesonline.co.za/Test/img/face1.jpg'}
+        ,{artist:'Maco Wagger',title:'This is a bit longer', color:'blue' , src:'https://kuiliesonline.co.za/Test/img/face10.jpg'}
+        ,{artist:'Gooleheim Smit',title:'This is again quite a bit longer', color:'green' , src:'https://kuiliesonline.co.za/Test/img/face11.jpg'}
+        ,{artist:'Cuntebara Madish',title:'Famous for his lkeness', color:'purple' , src:'https://kuiliesonline.co.za/Test/img/face3.jpg'}
+        ,{artist:'Cuntebara Madish',title:'Famous for his lkeness', color:'purple' , src:'https://kuiliesonline.co.za/Test/img/face2.jpg'}
+        ,{artist:'Cuntebara Madish',title:'Famous for his lkeness', color:'purple' , src:'https://kuiliesonline.co.za/Test/img/face4.jpg'}
+        ,{artist:'XY',title:'Title', color:'indigo' , src:'https://kuiliesonline.co.za/Test/img/face8.jpg'}
+        ]
  }),
 }
 </script>

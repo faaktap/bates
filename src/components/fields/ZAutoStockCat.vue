@@ -4,17 +4,17 @@
                @input="updateValue"
                 :value="value"
                 :label="label"                        
-               :items="searchPersonel"
-                item-value="persid"
-                item-text="fullname"
+               :items="searchStockCategory"
+                item-value="catid"
+                item-text="name"
                :search-input.sync="searchInput"
                 dense outlined rounded shaped
               >
               <template slot="selection" slot-scope="data">
-                  {{ data.item.fullname }}
+                  {{ data.item.name }}
               </template>
               <template slot="item" slot-scope="data">
-                    {{ data.item.fullname }} {{ data.item.menemonic}}  ({{ data.item.persid }} )
+                    {{ data.item.name }}  ({{ data.item.catid }} )
               </template>
         </v-autocomplete> <!--{{ searchInput}}-->
 
@@ -23,23 +23,28 @@
 <script>
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
+//import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
+//import { getters } from "@/api/store"
 export default {
-   name:"ZAutoPers",
+   name:"ZStockCat",
    props:{ 
            value:{}
-         , label: {type:String,default:"Personel/Staff"}
+         , label: {type:String,default:"Stock Category"}
    },
    data: () => ({
      searchInput: null,
-     personelTable: [],
+     stockCategoryTable: [],
   }),
   computed: {
-      searchPersonel() {
+      searchStockCategory() {
         if (!this.searchInput) {
-           return this.personelTable
+           return this.stockCategoryTable
         }
-        let x = this.personelTable.filter(
-          str => str.fullname.toUpperCase().includes(this.searchInput.toUpperCase())
+        let x = this.stockCategoryTable.filter(
+          str => ( str.name.toUpperCase().includes(this.searchInput.toUpperCase()) 
+                   || 
+                   str.description.toUpperCase().includes(this.searchInput.toUpperCase()) 
+          )
         )
         console.log(x.length, x)
         return x
@@ -52,18 +57,18 @@ export default {
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT persid, concat(surname,', ',name) fullname, public_preferredname ,menemonic"
-               + "  FROM dkhs_personel "
-               + " ORDER BY surname"
+        ts.sql = "SELECT *"
+               + "  FROM s_category c"
+               + " ORDER BY name"
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, this.loadData)
     },
     loadData(response) {
-        this.personelTable = response
+        this.stockCategoryTable = response
     }
   },  
   mounted() {
-    if (this.personelTable.length < 2) this.getData()
+     if (this.stockCategoryTable.length < 2) this.getData()
      console.log('Start' , this.$options.name)
   }
 }

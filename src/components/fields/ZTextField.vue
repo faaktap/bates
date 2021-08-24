@@ -4,7 +4,7 @@
                   :label="label"         
                   :rules="reqrule ? rules.required : []" 
                   :type="type"
-                  
+                  :disabled="disabled"
                   :prepend-inner-icon="prependIcon"
                    dense outlined rounded shaped
                  >
@@ -20,6 +20,7 @@ export default {
          , label: {type:String,default:"Entry"}
          , type:  {type:String, default:"text"}
          , reqrule:  {type:Boolean, default: true}
+         , disabled:  {type:Boolean, default: false}
          , prependIcon: {}
    },
    data: () => ({

@@ -18,6 +18,14 @@ export const tableWork = {
            table.splice(index,1);    
         }
     },
+    getData: (key, pCallback) => {
+        console.log(key)
+        let ts = {}
+        ts.task = 'PlainSql'
+        ts.sql = "SELECT * FROM s_category ORDER BY name DESC"
+        ts.api = zmlConfig.apiPath
+        zmlFetch(ts, pCallback, errorFetch)
+    },
     saveData: (id,key,modeldata,pcallback=doneFetch,pErrorcallback=errorFetch) => {  
         let ts = {}
         ts.task = 'saveQuiz'
@@ -28,13 +36,6 @@ export const tableWork = {
         ts.api = zmlConfig.apiDKHS
         zmlFetch(ts, pcallback, pErrorcallback)
         return "done"
-    },
-    getData: (key, pCallback) => {
-        let ts = {}
-        ts.task = 'getQuiz'
-        ts.data = {quizkey : key}
-        ts.api = zmlConfig.apiDKHS
-        zmlFetch(ts, pCallback)
     },
     lookupName: (key, pCallback) => {
         let ts = {}

@@ -7,8 +7,14 @@ const la = ["AppLayoutDefault","AppLayoutBasic","AppLayoutBlue","AppLayoutGray"]
 const routes = [
   {
     component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
-    path: '/bates',
+    path: '/outline',
     name: 'Outline',
+    meta: {layout: la[4], authentication: "public" }
+  }, 
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Scoring.vue'),
+    path: '/scoring',
+    name: 'Scoring',
     meta: {layout: la[4], authentication: "public" }
   }, 
   {
