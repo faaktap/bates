@@ -12,6 +12,7 @@
     </v-card-text>    
 
     <v-card-text class="ma-2 pa-2 justify-center">
+
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
        <v-col cols="12" sm="6">
          <z-text-field v-model="dataTable.name" 
@@ -20,20 +21,34 @@
                        :reqrule="true" />
        </v-col>
        <v-col cols="12" sm="2">
-         <z-text-field v-model="dataTable.catid" 
+         <z-text-field v-model="dataTable.placeid" 
                        label="ID" 
                        type="number"
                        disabled />
-       </v-col>
-       <v-col cols="12" md="12">
-        <z-textarea v-model="dataTable.description"
-                    label="Note" />
-       </v-col>
+       </v-col>       
+       <v-col cols="12" sm="6" md="4">
+         <z-auto-work-area v-model="dataTable.workareaid"
+                       label="Workarea" />
+       </v-col>             
+       <v-col cols="12" sm="6" md="4">
+         <z-auto-pers v-model="dataTable.ownerid"
+                       label="Owner" />
+       </v-col>             
+
+       <v-col cols="12" sm="6">
+      <!--   <z-auto-stock-cat v-model="dataTable.catid"
+                           label="Category"
+         -->
+       </v-col>         
+       <v-col cols="12" sm="2">
+         <z-textarea v-model="dataTable.description" 
+                       label="Description" />
+       </v-col>       
 
       </v-layout>
-     </v-card-text>       
+     </v-card-text>     
 
-   <v-card-text>
+<v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
                              ,{name: "Cancel", icon:"mdi-location-exit"}]' 
             color="accent"
@@ -41,7 +56,7 @@
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text>    
+</v-card-text>
 
    </v-card>
       
@@ -52,17 +67,22 @@
 import { getters } from "@/api/store"
 import ZTextField from '@/components/fields/ZTextField.vue'
 import ZTextarea from '@/components/fields/ZTextarea.vue'
+import ZAutoPers from '@/components/fields/ZAutoPers.vue'
+import ZAutoWorkArea from '@/components/fields/ZAutoWorkArea.vue'
 import ZBaseTool from '@/components/base/ZBaseTool.vue'
+
 export default {
   name: "TableFilterForm",
   props:{ updateMessage:{}
-         ,dataTable:{}
+         ,dataTable:{require:true}
          ,entity:{} 
          ,editFieldDisplay:{default: "xxx"} 
   },
   components: { ZTextField
-              , ZTextarea
               , ZBaseTool
+              , ZAutoPers
+              , ZTextarea
+              , ZAutoWorkArea
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),

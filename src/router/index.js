@@ -18,6 +18,12 @@ const routes = [
     meta: {layout: la[4], authentication: "public" }
   }, 
   {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/ToolBars.vue'),
+    path: '/toolbars',
+    name: 'Toolbars',
+    meta: {layout: la[4], authentication: "public" }
+  }, 
+  {
     path: '/VL',
     name: 'ViewLog',
     component: () => import(/* webpackChunkName: "log" */ '../views/ViewLog.vue'),

@@ -7,7 +7,7 @@
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
-      <v-btn class="ma-2" @click="addNew"> Add {{ entity }}</v-btn>
+      <v-btn class="ma-2" @click="addNew"> Acquire Stock</v-btn>
       <v-btn class="ma-2" @click="refresh"> Refresh </v-btn>
       <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn>
     </v-card>
@@ -23,7 +23,7 @@
                     :label="s.type" >
            </v-switch>
          </v-card>
-    </v-card>    
+    </v-card>        
 <!-------------------TABLE------------------------------------------>
     <v-row>
        <v-col cols="12">
@@ -34,11 +34,11 @@
                  :search="search"
                  :items-per-page="30"
                  :footer-props="{
-                    'items-per-page-options': [10, 20, 30, 40, 50]
+                    'items-per-page-options': [10, 20,  50]
                   }"
            >
-             <template v-slot:[`item.typeid`]="{ item }">
-              <!--{{ item.typeid }}-->
+             <template v-slot:[`item.stockid`]="{ item }">
+              {{ item.stockid }}
                <div class="float-right"> 
                 <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
@@ -48,6 +48,20 @@
                     <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
                 </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForChecking(item)">
+                    <v-icon small color="green" class="my-1">mdi-check-circle-outline</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Check </template>
+                </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
+                    <v-icon small color="green" class="my-1">mdi-recycle-variant</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Write Off </template>
+                </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
+                    <v-icon small color="green" class="my-1">mdi-phone-missed-outline</v-icon>
+                    <v-icon small color="green" class="my-1">crosshairs-question</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Lost </template>
+                </v-btn>
+                
                 </div>
 
              </template>
@@ -66,7 +80,7 @@
             content-class="elevation-2"
             style="overflow:hidden"
             xwidth="auto">
-   <table-item-form :updateMessage="updateMessage" 
+   <table-stock-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
                       :editFieldDisplay="editTable.name"
@@ -79,7 +93,7 @@
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
                    :json-data="entityTableFilter"
-                   :csv-title="'Bate Item Kategorie Lys/Stock Item Category Table'"
+                   :csv-title="'Bate  Lys/Stock Table'"
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
@@ -92,19 +106,19 @@
 
 <script>
 import { getters } from "@/api/store"
-import { tableWork } from "@/components/crud/TableItem.js"
-import TableItemForm from "@/components/crud/TableItemForm"
+import { tableWork } from "@/components/crud/TableStock.js"
+import TableStockForm from "@/components/crud/TableStockForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
 import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
 
 export default {
-  name: "TableItem",
+  name: "TableStock",
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
-            , TableItemForm
+            , TableStockForm
             },
 
   data: () => ({
@@ -114,25 +128,41 @@ export default {
       search:'',
       updateMessage:'Create',      
       entityTable:[],
+      /*
+SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.datereceived
+     , s.description, s.serialno
+     , p1.public_preferredname originalownername, p2.public_preferredname user
+     , p.name place, d.rulename
+*/               
       entityTableHeader:[
-           { text: 'Name', value: 'name' }
-          //,{ text: 'StockType', value: 'stocktype'}
-          ,{ text: 'Category', value: 'shortdesc'}
-          ,{ text: 'typeid', value: 'typeid' , align: 'start'}          
-
+           { text: 'Name', value: 'name'}
+          ,{ text: 'Place', value: 'place'}
+          ,{ text: 'Category', value: 'category'}
+          ,{ text: 'Date', value: 'datereceived'}
+          ,{ text: 'Quantity', value: 'quantity'}
+          ,{ text: 'OOwner', value: 'originalownername'}
+          ,{ text: 'stockid', value: 'stockid'}
+          //,{ text: 'userid', value: 'userid'}
+          //,{ text: 'ownerid', value: 'originalownerid'}
+          //,{ text: 'User', value: 'user'}
+          //,{ text: 'placeid', value: 'placeid'}
       ],
-      editTable:{typeid:'', catid:'' ,name:'', stocktype:''},
+      editTable:{stockid:''
+                  ,typeid:''
+                  ,userid:''
+                  ,originalownerid:''
+                  ,devalid:''
+                  ,placeid:''
+                  ,name:''
+                  ,description:''
+                  ,quantity:1
+                  ,serialno:''
+                  ,datereceived:''
+                  ,price:0},
       switchType:[],
 
   }),
   computed: {
-      formIsValid () {
-        return (
-          this.editTable.catid &&
-          this.editTable.stocktype &&
-          this.editTable.name
-        )
-      },
       entityTableFilter() {
         //If the table is empty - return blank
         if (!this.entityTable.length) return [];
@@ -143,7 +173,7 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) ) 
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.category) ) 
       } 
   },
   methods: {
@@ -159,16 +189,16 @@ export default {
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {typeid:''
-                    ,name:'A new One'
-                    ,catid:''
-                    ,stocktype:''
-                    }
+        this.editTable = {stockid:''  ,typeid:''         ,userid:190
+                  ,originalownerid:190 ,devalid:3         ,placeid:''
+                  ,name:''            ,description:''   ,quantity:1
+                  ,serialno:''        ,datereceived:''  ,price:0
+                  }
         this.showAddTable = true    
     },    
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
-      let index = tableWork.getIndex(item.typeid,this.entityTable)
+      let index = tableWork.getIndex(item.stockid,this.entityTable)
       if (index !== -1) {
         this.updateMessage = 'Edit'
         this.editTable = this.entityTable[index]
@@ -206,14 +236,13 @@ export default {
           return
       }
       this.entityTable = response
-      infoSnackbar("RECORDS : " +  response.length);  
+      //infoSnackbar("RECORDS : " +  response.length);  
       //load switches...
       this.switchType = []
       this.entityTable.forEach(e => {
         console.log(e.shortdesc)
-        if (this.switchType.findIndex(element => element.type === e.shortdesc) == -1 ) {
-          this.switchType.push({switch:true, type: e.shortdesc})
-          console.log(this.switchType.length)
+        if (this.switchType.findIndex(element => element.type === e.category) == -1 ) {
+          this.switchType.push({switch:true, type: e.category})
         }
       })      
     },
@@ -223,7 +252,7 @@ export default {
           errorSnackbar("ERROR : " +  response.error);  
           return
       }
-      tableWork.getData('loadStockTypes', this.tableDone)
+      tableWork.getData('loadStock', this.tableDone)
     },
     checkSaveError(response) {
       //First check for an error, and then call getData

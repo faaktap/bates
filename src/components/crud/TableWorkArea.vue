@@ -56,9 +56,10 @@
    <table-work-area-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
-                      :editFieldDisplay="entity.name"
+                      :editFieldDisplay="editTable.name"
                       @save="clickOnForm"
-                      @cancel="clickOnForm"/>
+                      @cancel="clickOnForm"
+                      @create="clickOnForm"/>
                      
   </v-dialog> 
 <!------------------EXPORT------------------------------------------->
@@ -128,7 +129,7 @@ export default {
   },
   methods: {
     retrieveForDeleting(item) {
-      this.$root.$confirm("Are you sure about deleting?", "If you press YES,byebye", { color: 'red' })
+      this.$root.$confirm("Are you sure about deleting?", "If you press YES, info will be gone", { color: 'red' })
        .then((confirm) => {
          if (confirm) { 
            tableWork.deleteData(item,this.refresh)
@@ -181,9 +182,9 @@ export default {
     },
     tableDone(response) {
       console.log('we got here (tableDone) - ', response)
-      if (!response.constructor === Array) {
+      if (response !== undefined && response.errorcode && response.errorcode != 0) {
           console.log('DbErr:',response)
-          this.entityTable = []
+          errorSnackbar("ERROR : " +  response.error);  
           return
       }
       this.entityTable = response
@@ -191,8 +192,13 @@ export default {
       infoSnackbar("RECORDS : " +  response.length);        
       console.log('after snack')
     },
-    refresh() {
-        tableWork.getData('loadWorkArea', this.tableDone)
+    refresh(response) {  
+      if (response !== undefined && response.errorcode && response.errorcode != 0) {
+          console.log('DbErr:',response)
+          errorSnackbar("ERROR : " +  response.error);  
+          return
+      }      
+      tableWork.getData('loadWorkArea', this.tableDone)
     },
     checkSaveError(response) {
       //First check for an error, and then call getData

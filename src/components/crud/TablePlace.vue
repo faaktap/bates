@@ -37,8 +37,8 @@
                     'items-per-page-options': [10, 20, 30, 40, 50]
                   }"
            >
-             <template v-slot:[`item.typeid`]="{ item }">
-              <!--{{ item.typeid }}-->
+             <template v-slot:[`item.placeid`]="{ item }">
+              <!--{{ item.placeid }}-->
                <div class="float-right"> 
                 <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
@@ -66,7 +66,7 @@
             content-class="elevation-2"
             style="overflow:hidden"
             xwidth="auto">
-   <table-item-form :updateMessage="updateMessage" 
+   <table-place-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
                       :editFieldDisplay="editTable.name"
@@ -79,7 +79,7 @@
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
                    :json-data="entityTableFilter"
-                   :csv-title="'Bate Item Kategorie Lys/Stock Item Category Table'"
+                   :csv-title="'Klaskamer Lys/Classroom Table'"
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
@@ -92,8 +92,8 @@
 
 <script>
 import { getters } from "@/api/store"
-import { tableWork } from "@/components/crud/TableItem.js"
-import TableItemForm from "@/components/crud/TableItemForm"
+import { tableWork } from "@/components/crud/TablePlace.js"
+import TablePlaceForm from "@/components/crud/TablePlaceForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
@@ -104,7 +104,7 @@ export default {
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
-            , TableItemForm
+            , TablePlaceForm
             },
 
   data: () => ({
@@ -116,23 +116,16 @@ export default {
       entityTable:[],
       entityTableHeader:[
            { text: 'Name', value: 'name' }
-          //,{ text: 'StockType', value: 'stocktype'}
-          ,{ text: 'Category', value: 'shortdesc'}
-          ,{ text: 'typeid', value: 'typeid' , align: 'start'}          
+          ,{ text: 'Owner', value: 'owner'}
+          //,{ text: 'Workarea', value: 'workarea'}
+          ,{ text: 'placeid', value: 'placeid' , align: 'start'}          
 
       ],
-      editTable:{typeid:'', catid:'' ,name:'', stocktype:''},
+      editTable:{placeid:'',workareaid:'', ownerid:'' ,name:'', description:''},
       switchType:[],
 
   }),
   computed: {
-      formIsValid () {
-        return (
-          this.editTable.catid &&
-          this.editTable.stocktype &&
-          this.editTable.name
-        )
-      },
       entityTableFilter() {
         //If the table is empty - return blank
         if (!this.entityTable.length) return [];
@@ -143,12 +136,12 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) ) 
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.workarea) ) 
       } 
   },
   methods: {
     retrieveForDeleting(item) {
-      this.$root.$confirm("Are you sure about deleting?", "If you press YES,byebye", { color: 'red' })
+      this.$root.$confirm("Are you sure about deleting?", "If you press YES, gone!", { color: 'red' })
        .then((confirm) => {
          if (confirm) { 
            tableWork.deleteData(item,this.refresh)
@@ -159,16 +152,17 @@ export default {
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {typeid:''
-                    ,name:'A new One'
-                    ,catid:''
-                    ,stocktype:''
+        this.editTable = {placeid:''
+                    ,name:'A new One classroom name'
+                    ,ownerid:''
+                    ,description:''
+                    ,workareaid:''
                     }
         this.showAddTable = true    
     },    
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
-      let index = tableWork.getIndex(item.typeid,this.entityTable)
+      let index = tableWork.getIndex(item.placeid,this.entityTable)
       if (index !== -1) {
         this.updateMessage = 'Edit'
         this.editTable = this.entityTable[index]
@@ -210,9 +204,9 @@ export default {
       //load switches...
       this.switchType = []
       this.entityTable.forEach(e => {
-        console.log(e.shortdesc)
-        if (this.switchType.findIndex(element => element.type === e.shortdesc) == -1 ) {
-          this.switchType.push({switch:true, type: e.shortdesc})
+        console.log(e.workarea)
+        if (this.switchType.findIndex(element => element.type === e.workarea) == -1 ) {
+          this.switchType.push({switch:true, type: e.workarea})
           console.log(this.switchType.length)
         }
       })      
@@ -223,7 +217,7 @@ export default {
           errorSnackbar("ERROR : " +  response.error);  
           return
       }
-      tableWork.getData('loadStockTypes', this.tableDone)
+      tableWork.getData('loadStoccTypes', this.tableDone)
     },
     checkSaveError(response) {
       //First check for an error, and then call getData

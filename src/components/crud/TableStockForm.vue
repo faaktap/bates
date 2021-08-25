@@ -1,4 +1,4 @@
-<template>
+ <template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
 
    <v-card-text>
@@ -11,29 +11,66 @@
      </z-base-tool>
     </v-card-text>    
 
-    <v-card-text class="ma-2 pa-2 justify-center">
+    <v-card-text class="mt-0 mb-0 pt-0 justify-center">
+
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
-       <v-col cols="12" sm="6">
+       <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.name" 
-                       label="Category Name" 
+                       label="Stock Name" 
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
        </v-col>
-       <v-col cols="12" sm="2">
-         <z-text-field v-model="dataTable.catid" 
-                       label="ID" 
+       <v-col cols="12" sm="4">
+         <z-auto-deval v-model="dataTable.devalid" 
+                       label="Devaluation" 
+                       :reqrule="true" />
+
+       </v-col>
+       <v-col v-if="dataTable.devalid != 3" cols="12" sm="4">
+         <z-text-field v-model="dataTable.serialno" 
+                       label="Serial" 
+                       prependIcon="mdi-serial-port"
+                       :reqrule="false" />
+
+       </v-col>
+       <v-col cols="12" sm="4">
+          <z-auto-item-type v-model="dataTable.typeid"
+                           label="Type"
+          />
+       </v-col>         
+       <v-col cols="12" sm="4" md="4">
+         <z-auto-pers v-model="dataTable.originalownerid"
+                       label="Owner" 
+         />
+       </v-col>             
+       <v-col cols="12" sm="4">
+         <z-text-field v-model="dataTable.quantity" 
+                       label="Quantity" 
+                       prependIcon="mdi-format-list-numbered"
                        type="number"
-                       disabled />
+                       />
        </v-col>
-       <v-col cols="12" md="12">
-        <z-textarea v-model="dataTable.description"
-                    label="Note" />
+       <v-col cols="12" sm="6">
+         <z-auto-place v-model="dataTable.placeid" 
+                       label="Place/Class" />
+       </v-col>       
+       <v-col v-if="dataTable.devalid != 3" cols="12" sm="4">
+         <z-text-field v-model="dataTable.price" 
+                       label="Price" 
+                       prependIcon="mdi-currency-sign"
+                       type="number"
+                       />
        </v-col>
+       <v-col cols="12" sm="6">
+         <z-textarea v-if="dataTable.devalid == 3"
+                     v-model="dataTable.description" 
+                     label="Description" />
+       </v-col>       
 
       </v-layout>
-     </v-card-text>       
+     </v-card-text>     
 
-   <v-card-text>
+<v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
                              ,{name: "Cancel", icon:"mdi-location-exit"}]' 
             color="accent"
@@ -41,7 +78,7 @@
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text>    
+</v-card-text>
 
    </v-card>
       
@@ -52,17 +89,26 @@
 import { getters } from "@/api/store"
 import ZTextField from '@/components/fields/ZTextField.vue'
 import ZTextarea from '@/components/fields/ZTextarea.vue'
+import ZAutoPers from '@/components/fields/ZAutoPers.vue'
+import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
+import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
+import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
 import ZBaseTool from '@/components/base/ZBaseTool.vue'
+
 export default {
   name: "TableFilterForm",
   props:{ updateMessage:{}
-         ,dataTable:{}
+         ,dataTable:{require:true}
          ,entity:{} 
          ,editFieldDisplay:{default: "xxx"} 
   },
   components: { ZTextField
-              , ZTextarea
               , ZBaseTool
+              , ZAutoPers
+              , ZAutoPlace
+              , ZTextarea
+              , ZAutoItemType
+              , ZAutoDeval
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),

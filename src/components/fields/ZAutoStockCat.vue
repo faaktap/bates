@@ -5,6 +5,7 @@
                 :value="value"
                 :label="label"                        
                :items="searchStockCategory"
+                prepend-inner-icon="mdi-wardrobe"
                 item-value="catid"
                 item-text="name"
                :search-input.sync="searchInput"

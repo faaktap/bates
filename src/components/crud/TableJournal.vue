@@ -7,7 +7,7 @@
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
-      <v-btn class="ma-2" @click="addNew"> Add {{ entity }}</v-btn>
+      <v-btn class="ma-2" @click="addNew"> Acquire Stock</v-btn>
       <v-btn class="ma-2" @click="refresh"> Refresh </v-btn>
       <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn>
     </v-card>
@@ -34,11 +34,11 @@
                  :search="search"
                  :items-per-page="30"
                  :footer-props="{
-                    'items-per-page-options': [10, 20, 30, 40, 50]
+                    'items-per-page-options': [10, 20,  50]
                   }"
            >
-             <template v-slot:[`item.typeid`]="{ item }">
-              <!--{{ item.typeid }}-->
+             <template v-slot:[`item.journalid`]="{ item }">
+              <!--{{ item.journalid }}-->
                <div class="float-right"> 
                 <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
@@ -48,6 +48,20 @@
                     <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
                 </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForChecking(item)">
+                    <v-icon small color="green" class="my-1">mdi-check-circle-outline</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Check </template>
+                </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
+                    <v-icon small color="green" class="my-1">mdi-recycle-variant</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Write Off </template>
+                </v-btn>
+                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
+                    <v-icon small color="green" class="my-1">mdi-phone-missed-outline</v-icon>
+                    <v-icon small color="green" class="my-1">crosshairs-question</v-icon>
+                    <template v-if="!$vuetify.breakpoint.mobile"> Lost </template>
+                </v-btn>
+                
                 </div>
 
              </template>
@@ -92,7 +106,7 @@
 
 <script>
 import { getters } from "@/api/store"
-import { tableWork } from "@/components/crud/TableItem.js"
+import { tableWork } from "@/components/crud/TableJournal.js"
 import TableItemForm from "@/components/crud/TableItemForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
@@ -114,25 +128,30 @@ export default {
       search:'',
       updateMessage:'Create',      
       entityTable:[],
+      /*
+j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.quantity"
+               + "      ,p1.public_preferredname owner, p2.public_preferredname user"
+               + "      ,s.name stockitem, s.placeid, p.name place"      
+*/               
       entityTableHeader:[
-           { text: 'Name', value: 'name' }
-          //,{ text: 'StockType', value: 'stocktype'}
-          ,{ text: 'Category', value: 'shortdesc'}
-          ,{ text: 'typeid', value: 'typeid' , align: 'start'}          
-
+           { text: 'Journal', value: 'journalid'}
+          ,{ text: 'Name', value: 'stockitem'}
+          ,{ text: 'Place', value: 'place'}
+          ,{ text: 'Date', value: 'datecreated'}
+          ,{ text: 'Quantity', value: 'quantity'}
+          ,{ text: 'Type', value: 'journaltype'}
+          //,{ text: 'Owner', value: 'owner'}
+          //,{ text: 'stockid', value: 'stockid'}
+          //,{ text: 'userid', value: 'userid'}
+          //,{ text: 'journaltypeid', value: 'journaltypeid'}
+          //,{ text: 'User', value: 'user'}
+          //,{ text: 'placeid', value: 'placeid'}
       ],
-      editTable:{typeid:'', catid:'' ,name:'', stocktype:''},
+      editTable:{journalid:'',userid:'',persid:'',journaltypeid:'', datecreated:'', quantity:''},
       switchType:[],
 
   }),
   computed: {
-      formIsValid () {
-        return (
-          this.editTable.catid &&
-          this.editTable.stocktype &&
-          this.editTable.name
-        )
-      },
       entityTableFilter() {
         //If the table is empty - return blank
         if (!this.entityTable.length) return [];
@@ -143,7 +162,7 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) ) 
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.journaltype) ) 
       } 
   },
   methods: {
@@ -159,16 +178,12 @@ export default {
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {typeid:''
-                    ,name:'A new One'
-                    ,catid:''
-                    ,stocktype:''
-                    }
+        this.editTable = {journalid:'',userid:'',persid:'',journaltypeid:'', datecreated:'', quantity:''}
         this.showAddTable = true    
     },    
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
-      let index = tableWork.getIndex(item.typeid,this.entityTable)
+      let index = tableWork.getIndex(item.journalid,this.entityTable)
       if (index !== -1) {
         this.updateMessage = 'Edit'
         this.editTable = this.entityTable[index]
@@ -211,8 +226,8 @@ export default {
       this.switchType = []
       this.entityTable.forEach(e => {
         console.log(e.shortdesc)
-        if (this.switchType.findIndex(element => element.type === e.shortdesc) == -1 ) {
-          this.switchType.push({switch:true, type: e.shortdesc})
+        if (this.switchType.findIndex(element => element.type === e.journaltype) == -1 ) {
+          this.switchType.push({switch:true, type: e.journaltype})
           console.log(this.switchType.length)
         }
       })      
@@ -223,7 +238,7 @@ export default {
           errorSnackbar("ERROR : " +  response.error);  
           return
       }
-      tableWork.getData('loadStockTypes', this.tableDone)
+      tableWork.getData('loadJournal', this.tableDone)
     },
     checkSaveError(response) {
       //First check for an error, and then call getData

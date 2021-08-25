@@ -64,9 +64,10 @@
    <table-stock-category-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
-                      :editFieldDisplay="entity.name"
+                      :editFieldDisplay="editTable.name"
                       @save="clickOnForm"
-                      @cancel="clickOnForm"/>
+                      @cancel="clickOnForm"
+                      @create="clickOnForm"/>
                      
   </v-dialog> 
 <!------------------EXPORT------------------------------------------->
@@ -88,11 +89,11 @@
 import { zmlFetch } from '@/api/zmlFetch';
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TableStockCategory.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 
 import TableStockCategoryForm from "@/components/crud/TableStockCategoryForm"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
 
 export default {
   name: "TableStockCategory",
@@ -111,7 +112,7 @@ export default {
       entityTable:[],
       entityTableHeader:[
            { text: 'Name', value: 'name' }
-          ,{ text: 'Description', value: 'description'}
+          //,{ text: 'Description', value: 'description'}
           ,{ text: 'catid', value: 'catid' , align: 'start'}          
 
       ],
@@ -135,12 +136,10 @@ export default {
   },
   methods: {
     retrieveForDeleting(item) {
-      this.$root.$confirm("Are you sure about deleting?", "If you press YES,byebye", { color: 'red' })
+      this.$root.$confirm("Are you sure about deleting?", "If you press YES, byebye", { color: 'red' })
        .then((confirm) => {
          if (confirm) { 
            tableWork.deleteData(item,this.refresh)
-         } else {
-           alert('you pressed NO ' + item.name)
          }
       })
     },
@@ -181,18 +180,11 @@ export default {
       this.showAddTable = false
     },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
+       crudTask.showError(response)
     },
     tableDone(response) {
-      if (!response.constructor === Array) {
-          console.log('DbErr:',response)
-          this.entityTable = []
-          return
-      }
+      if (crudTask.reportError(response)) return
       this.entityTable = response
-      infoSnackbar("RECORDS : " +  response.length);        
     },
     saveTable() {
         if (!this.formIsValid) {
@@ -217,17 +209,14 @@ export default {
         ts.data = u
         zmlFetch(ts, this.checkSaveError, this.loadError);
     },
-    refresh() {
-        tableWork.getData('loadCategories', this.tableDone)
+    refresh(response) {
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      tableWork.getData('loadCategories', this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
       this.refresh()
     },
   },  

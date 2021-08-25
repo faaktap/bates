@@ -4,20 +4,20 @@
                @input="updateValue"
                 :value="value"
                 :label="label"                        
-               :items="searchPersonel"
-                prepend-inner-icon="mdi-human"
-                item-value="persid"
+               :items="searchItemType"
+                prepend-inner-icon="mdi-sitemap"
+                item-value="typeid"
                 item-text="concatsearch"
                :search-input.sync="searchInput"
                 dense outlined rounded shaped
               >
               <template slot="selection" slot-scope="data">
-                  {{ data.item.concatsearch }}
+                  {{ data.item.name }}
               </template>
               <template slot="item" slot-scope="data">
-                    {{ data.item.fullname }} {{ data.item.menemonic}}  ({{ data.item.persid }} )
+                    {{ data.item.concatsearch }} 
               </template>
-        </v-autocomplete> <!--{{ searchInput}}-->
+        </v-autocomplete> 
 
 </template>
 
@@ -25,24 +25,26 @@
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
 export default {
-   name:"ZAutoPers",
+   name:"ZAutoItemType",
    props:{ 
            value:{}
-         , label: {type:String,default:"Personel/Staff"}
+         , label: {type:String,default:"Item Type"}
    },
    data: () => ({
      searchInput: null,
-     personelTable: [],
+     ItemTypeTable: [],
   }),
   computed: {
-      searchPersonel() {
+      searchItemType() {
         if (!this.searchInput) {
-           return this.personelTable
+           return this.ItemTypeTable
         }
-        let x = this.personelTable.filter(
-          str => str.concatsearch.toUpperCase().includes(this.searchInput.toUpperCase())
+        // Wisdom ZML
+        //filter does not work on null values, so we need a "inline if" to check for a null value
+        //       
+        let x = this.ItemTypeTable.filter( 
+          str => ( str.concatsearch.toUpperCase().includes(this.searchInput.toUpperCase()) )     
         )
-        console.log(x.length, x)
         return x
       }
   },  
@@ -53,19 +55,20 @@ export default {
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT persid, concat(surname,', ',name) fullname, public_preferredname ,menemonic"
-               + "     , concat(surname,', ',name, ' (',ifnull(menemonic,'NON'),')') concatsearch"
-               + "  FROM dkhs_personel "
-               + " ORDER BY surname"
+        ts.sql = "SELECT i.typeid, i.name, i.stocktype, c.name category"
+               + "     , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch"
+               + "  FROM s_itemtype i, s_category c "
+               + " WHERE i.catid = c.catid "
+               + "ORDER BY i.name"
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, this.loadData)
     },
     loadData(response) {
-        this.personelTable = response
+        this.ItemTypeTable = response
     }
   },  
   mounted() {
-    if (this.personelTable.length < 2) this.getData()
+     if (this.ItemTypeTable.length < 2) this.getData()
      console.log('Start' , this.$options.name)
   }
 }

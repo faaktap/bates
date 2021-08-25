@@ -1,5 +1,6 @@
 <!--
-   This is a grouping together of actions. If vertical is true, it will build them in a line via buttons.
+   This is a grouping together of actions. 
+     If vertical is true, it will build them in a line via buttons.
    If vertical is false, we build a list.
    If prop vertical is false, it will built the in a vertical list. via list items
    If btn.optional is 1, then we do not display it in toolbar.
@@ -10,6 +11,7 @@
 <template>
  <div>
 <!--  m= {{ $vuetify.breakpoint.mobile }} sm={{ $vuetify.breakpoint.smAndDown }} -->
+{{ menuDisplay }} {{ buttonGroup }}
     <template v-if="menuDisplay == 'horizontal'">
       <v-btn v-for="btn in buttons[ buttonGroup[0] ]" 
             :key="btn.btn" 

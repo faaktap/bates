@@ -1,15 +1,16 @@
 <template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
-     <template v-if="updateMessage == 'Create' && dataTable.qty > 1">
-       <v-card-title class="ma-7 pt-2 justify-center accent">
-              you are    {{ updateMessage }}ing : a new entry
-       </v-card-title>                  
-     </template>
-     <template v-else >
-       <v-card-title class="ma-7 pt-2 justify-center accent">
-              you are {{ updateMessage }}ing : {{ dataTable.name }}
-       </v-card-title>
-     </template>
+
+   <v-card-text>
+     <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+            color="accent"
+            dark="true"
+            @toolclick="listenToToolbar">
+            {{ updateText }}
+     </z-base-tool>
+    </v-card-text> 
+
     <v-card-text class="ma-2 pa-2 justify-center">
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
        <v-col cols="12" sm="6"  md="4">
@@ -78,16 +79,16 @@
 
       </v-layout>
      </v-card-text>       
-     <v-card-actions class="ma-6 pa-2 accent green--text">
-       <v-spacer />
-       <template v-if="updateMessage == 'Create'">
-          <v-btn  @click="$emit('save', dataTable,'create')"> Create </v-btn>
-       </template>
-       <template v-else>
-          <v-btn @click="$emit('save', dataTable,'save')">  Save </v-btn>
-       </template>
-          <v-btn @click="$emit('cancel', dataTable,'cancel')"> Cancel </v-btn>
-     </v-card-actions>
+   <v-card-text>
+
+     <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+            color="accent"
+            dark="true"
+            @toolclick="listenToToolbar">
+            {{ updateText }}
+     </z-base-tool>
+    </v-card-text> 
 
    </v-card>
       
@@ -103,11 +104,12 @@ import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZRadio from '@/components/fields/ZRadio.vue'
 import ZCheckbox from '@/components/fields/ZCheckbox.vue'
 import ZTextarea from '@/components/fields/ZTextarea.vue'
+import ZBaseTool from '@/components/base/ZBaseTool.vue'
 export default {
   name: "TableFilterForm",
   //props:['updateMessage', 'dataTable','entity'],
   props:{ updateMessage:{}
-         ,dataTable:{}
+         ,dataTable:{require:true}
          ,entity:{} 
          ,editFieldDisplay:{default: "xxx"} 
   },
@@ -118,6 +120,7 @@ export default {
               , ZAutoPers
               , ZRadio
               , ZCheckbox
+              , ZBaseTool
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
@@ -127,13 +130,28 @@ export default {
              {divider: true},
              {text: 'Open', value: 'Open'  },
              {divider: true},
-             {text: 'Close', value: 'Close' }],
-
-// see https://codepen.io/anon/pen/PEpaMM?editors=1011
-// also https://stackoverflow.com/questions/56920390/setting-up-v-autocomplete-with-search-function#56920992
+             {text: 'Close', value: 'Close' }],      
   }),
   computed: {
+    buttonText() {
+      if (this.updateMessage.toLowerCase() == 'create') return "Create"
+      if (this.updateMessage.toLowerCase() == 'edit') return "Save"
+      return "notSure"
+    },
+    updateText() {
+      if (this.updateMessage.toLowerCase() == 'create') return `Busy creating : a new entry`  
+      if (this.updateMessage.toLowerCase() == 'edit') {
+          return `Busy editing : "${this.editFieldDisplay}"` 
+      } else {
+          return `Busy "${this.updateMessage}" : ${this.editFieldDisplay} for ${this.entity}` 
+      }
+    }
   },  
+  methods:{
+    listenToToolbar(e) {
+      this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
+    }
+  },
   mounted() {
      console.log('Start' , this.$options.name)
   }

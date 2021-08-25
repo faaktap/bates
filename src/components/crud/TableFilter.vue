@@ -80,9 +80,10 @@ constructs : entityTable, entityTableHeader, editTable
    <table-filter-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
-                      :editFieldDisplay="entity.description"
+                      :editFieldDisplay="editTable.description"
                       @save="clickOnForm"
-                      @cancel="clickOnForm"/>
+                      @cancel="clickOnForm"
+                      @create="clickOnForm"/>
                      
   </v-dialog> 
 <!------------------EXPORT------------------------------------------->
