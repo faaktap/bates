@@ -1,7 +1,6 @@
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
 import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
-//import { getters } from "@/api/store";
 
 export const tableWork = {
     name:'tableJournalJS',
@@ -30,8 +29,9 @@ export const tableWork = {
                + " WHERE j.persid = p1.persid"
                + "   AND j.userid = p2.persid"
                + "   AND s.placeid = p.placeid"
+               + "   AND s.stockid = j.stockid"
                + "   AND j.journaltypeid = t.journaltypeid"
-               + " ORDER BY j.datecreated"
+               + " ORDER BY j.journalid ASC"
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },

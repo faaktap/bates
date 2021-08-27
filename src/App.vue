@@ -2,9 +2,12 @@
   <v-app id="app">
    <AppLayout> 
     <v-container fluid>
-
-      
       <v-img src="img/CleanDKHS.png" max-width="80" class="float-right" contain />
+      
+        <router-view/> 
+      <!--/transition-->
+
+
       <v-btn to="/"> viewlog </v-btn>
       <v-btn to="/ff"> ff </v-btn>
       <v-btn to="/choosesubjects"> ques </v-btn>
@@ -20,8 +23,6 @@
       <v-btn to="/color"> color </v-btn>
       <v-btn to="/toolbars"> toolbars </v-btn>
 
-        <router-view/> 
-      <!--/transition-->
     </v-container>
    </AppLayout>   
 

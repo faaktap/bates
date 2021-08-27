@@ -1,7 +1,7 @@
 <template>
-<!--                  :rules="reqrule ? rules.required : []"  -->
         <v-autocomplete
                @input="updateValue"
+               @blur.stop="passPersonID"
                 :value="value"
                 :label="label"                        
                :items="itemList"
@@ -44,14 +44,23 @@ export default {
       }
   },  
   methods:{
+    passPersonID() {
+      if (this.lastOneSelected) {
+          let index = this.placeTable.findIndex(ele => ele.placeid == this.lastOneSelected)
+          if (index > -1) {
+            console.log(this.$options.name, 'send owner', this.placeTable[index].ownerid, 'for',this.placeTable[index].name)
+            this.$emit('select',this.placeTable[index].ownerid)      
+          }
+      }
+    },
     updateValue(e) {
-      console.log('emitting ---- ', e)
       this.$emit('input', e)
+      this.lastOneSelected = e
     },
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT p.placeid, p.name, w.name workarea, p.description "
+        ts.sql = "SELECT p.placeid, p.name, w.name workarea, p.description,p.ownerid "
                + "     , concat(p.name, ' (',w.name,')') concatsearch"
                + "  FROM s_place p, s_workarea w "
                + " WHERE p.workareaid = w.workareaid "
@@ -65,8 +74,8 @@ export default {
     }
   },  
   mounted() {
+    console.log('Start' , this.$options.name,this.placeTable.length)
      if (this.placeTable.length < 2) this.getData()
-     console.log('Start' , this.$options.name)
   }
 }
 </script>

@@ -3,7 +3,7 @@ import { zmlFetch } from '@/api/zmlFetch';
 import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
 //import { getters } from "@/api/store";
 
-export const tableWork = {
+export const tabwSItem = {
     name:'tableItemJS',
     hello: (p1) => {console.log('hello from (JS) ' , p1)},
     getIndex: (itemID,table) => {
@@ -14,7 +14,7 @@ export const tableWork = {
         return index
     },
     delete: (itemID,table) => {
-        let index = tableWork.getIndex(itemID,table)
+        let index = tabwSItem.getIndex(itemID,table)
         if (index != -1) {
            table.splice(index,1);    
         }

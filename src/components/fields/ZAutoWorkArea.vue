@@ -15,7 +15,7 @@
                   {{ data.item.name }}
               </template>
               <template slot="item" slot-scope="data">
-                    {{ data.item.name }}  ({{ data.item.workareaid }} )
+                    {{ data.item.name }}  
               </template>
         </v-autocomplete> <!--{{ searchInput}}-->
 

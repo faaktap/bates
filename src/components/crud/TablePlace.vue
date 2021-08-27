@@ -1,9 +1,13 @@
 <template>
 
  <v-container fluid> 
-   <v-card color="green" class="pa-2 mb-2 text-center">
-     {{ entity }} View Table
-   </v-card>
+  <base-title-expand :heading="entity + ' View Table'">
+   
+    <p>Classrooms, Halls, Centres, Offices, Garages, Etc.</p> 
+    <p>Add them here, and assign a responsible person to them.</p>
+
+  </base-title-expand>
+
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
@@ -93,11 +97,13 @@
 <script>
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TablePlace.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 import TablePlaceForm from "@/components/crud/TablePlaceForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
+import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
+
 
 export default {
   name: "TableItem",
@@ -105,6 +111,7 @@ export default {
   components: {FrontJsonToCsv
             , BaseSearch
             , TablePlaceForm
+            , BaseTitleExpand
             },
 
   data: () => ({
@@ -115,10 +122,11 @@ export default {
       updateMessage:'Create',      
       entityTable:[],
       entityTableHeader:[
-           { text: 'Name', value: 'name' }
+           { text: 'RoomNo', value: 'name' }
           ,{ text: 'Owner', value: 'owner'}
-          //,{ text: 'Workarea', value: 'workarea'}
-          ,{ text: 'placeid', value: 'placeid' , align: 'start'}          
+          ,{ text: 'Workarea', value: 'workarea'}
+          ,{ text: 'Description', value: 'description'}
+          ,{ text: 'actions', value: 'placeid' , align: 'right'}          
 
       ],
       editTable:{placeid:'',workareaid:'', ownerid:'' ,name:'', description:''},
@@ -170,63 +178,43 @@ export default {
         this.showAddTable = true
       }
     },
+    tableDone(response) {
+      if (crudTask.reportError(response)) return
+      this.entityTable = response
+      //load switches...only when empty
+      crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
+    },
+
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
         case 'save':
-          tableWork.saveData(editTable, this.refresh)
-          break
+             tableWork.saveData(editTable, this.refresh)
+             break
         case 'create':
-          console.log('we create')
-          tableWork.createNewItem(editTable, this.refresh)
-          break
+             console.log('we create')
+             tableWork.createNewItem(editTable, this.refresh)
+             break
         case 'cancel':
-          console.log('we cancel')
-          break
+             console.log('we cancel')
+             break
         default:
-          alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
-    },
-    tableDone(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      this.entityTable = response
-      infoSnackbar("RECORDS : " +  response.length);  
-      //load switches...
-      this.switchType = []
-      this.entityTable.forEach(e => {
-        console.log(e.workarea)
-        if (this.switchType.findIndex(element => element.type === e.workarea) == -1 ) {
-          this.switchType.push({switch:true, type: e.workarea})
-          console.log(this.switchType.length)
-        }
-      })      
+       crudTask.showError(response)
     },
     refresh(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      tableWork.getData('loadStoccTypes', this.tableDone)
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
       this.refresh()
     },
   },  

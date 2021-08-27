@@ -19,7 +19,7 @@
                   
          <template v-slot:activator="{ on, attrs }">
 
-         <v-btn @click="$emit('toolclick',t.name)" 
+         <v-btn @click.stop="$emit('toolclick',t.name)" 
                 :color="color + ' darken-1'"
                 small
                 class="mt-1 mr-2"
@@ -54,7 +54,7 @@
 
       <v-list>
         <v-list-item v-for="t in toolList" :key="t.name">
-           <v-btn @click="$emit('toolclick',t.name)" text dense small class="ma-2 pa-2" > 
+           <v-btn @click.stop="$emit('toolclick',t.name)" text dense small class="ma-2 pa-2" > 
              {{ t.name }}
            </v-btn>  
         </v-list-item>

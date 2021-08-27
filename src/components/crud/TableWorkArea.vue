@@ -1,9 +1,11 @@
 <template>
 
  <v-container fluid> 
-   <v-card color="green" class="pa-2 mb-2 text-center">
-     {{ entity }} View Table
-   </v-card>
+  <base-title-expand :heading="entity + ' View Table'">
+   
+    <p>To tie the rooms/garages/places together. Hallway 1, or `behind the pavillion` </p>
+
+  </base-title-expand>
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
@@ -80,17 +82,20 @@
 <script>
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TableWorkArea.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 import TableWorkAreaForm from "@/components/crud/TableWorkAreaForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
+import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
+
 
 export default {
   name: "TableWorkArea",
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
+            , BaseTitleExpand
             , TableWorkAreaForm
             },
 
@@ -106,7 +111,7 @@ export default {
           //,{ text: 'Description', value: 'description'}
           //,{ text: 'ownerid', value: 'ownerid'}     
           //,{ text: 'ownername', value: 'ownername'} 
-          ,{ text: 'workareaid', value: 'workareaid'}
+          ,{ text: 'actions', value: 'workareaid', align:'right'}
 
       ],
       editTable:{workareaid:'',ownerid:'',name:'', description:''},
@@ -157,6 +162,11 @@ export default {
         this.showAddTable = true
       }
     },
+    tableDone(response) {
+      if (crudTask.reportError(response)) return
+      this.entityTable = response
+    },
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
@@ -171,43 +181,21 @@ export default {
              console.log('we cancel')
              break
         default:
-             alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
+       crudTask.showError(response)
     },
-    tableDone(response) {
-      console.log('we got here (tableDone) - ', response)
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      this.entityTable = response
-      console.log('do assignment')
-      infoSnackbar("RECORDS : " +  response.length);        
-      console.log('after snack')
-    },
-    refresh(response) {  
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }      
-      tableWork.getData('loadWorkArea', this.tableDone)
+    refresh(response) {
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
       this.refresh()
     },
   },  

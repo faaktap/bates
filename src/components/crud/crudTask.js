@@ -17,6 +17,22 @@ export const crudTask = {
    ,showError: (response) => {
       errorSnackbar("ERROR : " +  response) 
     } 
+   ,recalcSwitches: (switchTable, entityTable, switchAttribute) => {
+      if (switchTable && switchTable.length) return
+      const typeMap = new Map();
+      entityTable.forEach(e => {
+        for (const [key, value] of Object.entries(e)) {
+          if (key == switchAttribute) {
+            //console.log('we found it and its value is ', value)
+            //So we add it to our map
+            typeMap.set(value, typeMap.size+1);
+          }
+        }
+         
+      });
+      typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k}) } )
+      return true
+   }
    ,someOtherFunc: () => {} 
 }
  

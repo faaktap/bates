@@ -1,6 +1,7 @@
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
 import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
+import { journalTask } from '@/components/crud/journalTask.js';
 
 export const tableWork = {
     name:'tableStockJS',
@@ -23,7 +24,7 @@ export const tableWork = {
         let ts = {}
         ts.task = 'PlainSql'
         ts.sql = "SELECT s.stockid, s.typeid, s.userid, s.originalownerid, s.devalid, s.placeid"
-               + "     , s.name, s.datereceived, s.description, s.serialno"
+               + "     , s.name, s.datereceived, s.description, s.serialno, s.quantity, s.price"
                + "     , p1.public_preferredname originalownername, p2.public_preferredname user"
                + "     , p.name place, d.rulename, t.name itemtype, c.name category"
                + "  FROM s_stock s, dkhs_personel p1, dkhs_personel p2 , s_place p, s_devaluation d"
@@ -40,28 +41,28 @@ export const tableWork = {
     },
     createNewItem: (record, pAfterwards) => {
        let ts = {}
-       ts.task = 'PlainSql'
-       ts.sql = "insert into s_stock values(null, " 
-                + record.typeid + "," 
-                + record.userid + ","
-                + record.originalownerid + ","
-                + record.devalid + ","
-                + record.placeid + ","
-                + "'" + record.name + "',"
-                + "'" + record.description + "',"
-                + record.quantity + ","
-                + "'" + record.serialno + "',"
-                + "now()" + ","
-                + record.price + ")"
-       console.log(ts.sql)
+       ts.task = 'insertStock'
+       ts.data = {stockid: record.stockid
+                 ,typeid:  record.typeid
+                 ,userid:  record.userid
+                 ,originalownerid:    record.originalownerid
+                 ,devalid:    record.devalid
+                 ,placeid: record.placeid
+                 ,name: record.name
+                 ,description: record.description
+                 ,quantity: record.quantity
+                 ,serialno: record.serialno
+                 ,price:    record.price}       
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
     },
     saveData: (record,pcallback=doneFetch) => {  
         let ts = {}
-        alert('oriowner=', record.originalownerid)
-        //ts.task = 'PlainSql'
         ts.task = 'updateStock'
+        if (record.journalNote !== undefined)  {
+            infoSnackbar(record.journalNote)
+            journalTask.stockTakeJournal(record)
+        }
         ts.data = {stockid: record.stockid
                   ,typeid:  record.typeid
                   ,userid:  record.userid
@@ -109,7 +110,8 @@ export const tableWork = {
       ts.sql = 'delete from s_stock where stockid = ' + record.stockid
       ts.api = zmlConfig.apiPath
       zmlFetch(ts, pcallback, errorFetch)
-  },
+    },somefunc() {
+  }
 }
 
 function doneFetch (response) {

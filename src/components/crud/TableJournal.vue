@@ -1,10 +1,17 @@
 <template>
 
  <v-container fluid> 
-   <v-card color="green" class="pa-2 mb-2 text-center">
-     {{ entity }} View Table
-   </v-card>
-<!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
+
+  <base-title-expand :heading="entity + ' View Table'">
+   
+    <p class="ma-4">Some Explanation : We would not allow editing in here, since these transactions
+      will be created based on activities happening in the stock system.
+      <br>
+      ie. If you create a new stock item, you should see and "acquire" transaction in here.
+    </p>
+
+  </base-title-expand>
+  <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
       <v-btn class="ma-2" @click="addNew"> Acquire Stock</v-btn>
@@ -37,29 +44,12 @@
                     'items-per-page-options': [10, 20,  50]
                   }"
            >
-             <template v-slot:[`item.journalid`]="{ item }">
-              <!--{{ item.journalid }}-->
+             <template v-slot:[`item.owner`]="{ item }">
+              {{ item.owner }}
                <div class="float-right"> 
-                <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
-                    <v-icon small color="red" class="my-1">mdi-delete</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
-                </v-btn>
                 <v-btn class="mx-2" x-small  @click="retrieveForEditing(item)">
                     <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
-                </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForChecking(item)">
-                    <v-icon small color="green" class="my-1">mdi-check-circle-outline</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Check </template>
-                </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
-                    <v-icon small color="green" class="my-1">mdi-recycle-variant</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Write Off </template>
-                </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
-                    <v-icon small color="green" class="my-1">mdi-phone-missed-outline</v-icon>
-                    <v-icon small color="green" class="my-1">crosshairs-question</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Lost </template>
                 </v-btn>
                 
                 </div>
@@ -107,11 +97,13 @@
 <script>
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TableJournal.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 import TableItemForm from "@/components/crud/TableItemForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
+import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
+
 
 export default {
   name: "TableItem",
@@ -119,6 +111,7 @@ export default {
   components: {FrontJsonToCsv
             , BaseSearch
             , TableItemForm
+            , BaseTitleExpand
             },
 
   data: () => ({
@@ -135,16 +128,17 @@ j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.qu
 */               
       entityTableHeader:[
            { text: 'Journal', value: 'journalid'}
+          ,{ text: 'stockid', value: 'stockid'}
           ,{ text: 'Name', value: 'stockitem'}
           ,{ text: 'Place', value: 'place'}
           ,{ text: 'Date', value: 'datecreated'}
           ,{ text: 'Quantity', value: 'quantity'}
           ,{ text: 'Type', value: 'journaltype'}
-          //,{ text: 'Owner', value: 'owner'}
-          //,{ text: 'stockid', value: 'stockid'}
+          ,{ text: 'Owner', value: 'owner'}
+
           //,{ text: 'userid', value: 'userid'}
           //,{ text: 'journaltypeid', value: 'journaltypeid'}
-          //,{ text: 'User', value: 'user'}
+          ,{ text: 'User', value: 'user'}
           //,{ text: 'placeid', value: 'placeid'}
       ],
       editTable:{journalid:'',userid:'',persid:'',journaltypeid:'', datecreated:'', quantity:''},
@@ -191,63 +185,43 @@ j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.qu
         this.showAddTable = true
       }
     },
+    tableDone(response) {
+      if (crudTask.reportError(response)) return
+      this.entityTable = response
+
+      //load switches...only when empty
+      crudTask.recalcSwitches(this.switchType, this.entityTable, 'journaltype')
+    },    
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
         case 'save':
-          tableWork.saveData(editTable, this.refresh)
-          break
+             tableWork.saveData(editTable, this.refresh)
+             break
         case 'create':
-          console.log('we create')
-          tableWork.createNewItem(editTable, this.refresh)
-          break
+             console.log('we create')
+             tableWork.createNewItem(editTable, this.refresh)
+             break
         case 'cancel':
-          console.log('we cancel')
-          break
+             console.log('we cancel')
+             break
         default:
-          alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
-    },
-    tableDone(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      this.entityTable = response
-      infoSnackbar("RECORDS : " +  response.length);  
-      //load switches...
-      this.switchType = []
-      this.entityTable.forEach(e => {
-        console.log(e.shortdesc)
-        if (this.switchType.findIndex(element => element.type === e.journaltype) == -1 ) {
-          this.switchType.push({switch:true, type: e.journaltype})
-          console.log(this.switchType.length)
-        }
-      })      
+       crudTask.showError(response)
     },
     refresh(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      tableWork.getData('loadJournal', this.tableDone)
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
       this.refresh()
     },
   },  

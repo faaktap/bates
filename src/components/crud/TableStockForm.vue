@@ -15,6 +15,12 @@
 
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
        <v-col cols="12" sm="4">
+          <z-auto-item-type v-model="dataTable.typeid"
+                           @select="typeWasSelected"
+                           label="Type"
+          />
+       </v-col>                  
+       <v-col cols="12" sm="4">       
          <z-text-field v-model="dataTable.name" 
                        label="Stock Name" 
                        prependIcon="mdi-file-document"
@@ -34,15 +40,11 @@
 
        </v-col>
        <v-col cols="12" sm="4">
-          <z-auto-item-type v-model="dataTable.typeid"
-                           label="Type"
-          />
-       </v-col>         
-       <v-col cols="12" sm="4" md="4">
-         <z-auto-pers v-model="dataTable.originalownerid"
-                       label="Owner" 
-         />
-       </v-col>             
+         <z-auto-place v-model="dataTable.placeid" 
+                      @select="ownerWasSelected" 
+                       label="Place/Class" />
+       </v-col>       
+
        <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.quantity" 
                        label="Quantity" 
@@ -50,22 +52,25 @@
                        type="number"
                        />
        </v-col>
-       <v-col cols="12" sm="6">
-         <z-auto-place v-model="dataTable.placeid" 
-                       label="Place/Class" />
-       </v-col>       
-       <v-col v-if="dataTable.devalid != 3" cols="12" sm="4">
+       <v-col cols="12" sm="4" md="4">
+         <z-auto-pers v-model="dataTable.originalownerid"
+                      @select="placeWasSelected"
+                       label="Owner" 
+         />
+       </v-col>             
+       <v-col cols="12" sm="4">
+         <z-textarea v-show="!dataTable.devalid == 3"
+                     v-model="dataTable.description" 
+                     label="Description" />
+       </v-col>          
+       <v-col v-show="dataTable.devalid != 3" cols="12" sm="4">
          <z-text-field v-model="dataTable.price" 
                        label="Price" 
                        prependIcon="mdi-currency-sign"
                        type="number"
                        />
        </v-col>
-       <v-col cols="12" sm="6">
-         <z-textarea v-if="dataTable.devalid == 3"
-                     v-model="dataTable.description" 
-                     label="Description" />
-       </v-col>       
+    
 
       </v-layout>
      </v-card-text>     
@@ -130,6 +135,26 @@ export default {
     }
   },  
   methods:{
+    typeWasSelected(e) {
+      console.log('getting a type', e)
+      if (e && !this.dataTable.name) {
+        this.dataTable.name = e
+      }
+    },
+    placeWasSelected(e) {
+      console.log('getting a place', e)
+      if (e && !this.dataTable.placeid) {
+        this.dataTable.placeid = e
+      }
+    },
+    ownerWasSelected(e) {
+      console.log('getting a owner', e)
+      if (e && !this.dataTable.originalownerid) {
+        this.dataTable.originalownerid = e
+      } else {
+        console.log('we already have a owner :' ,this.dataTable.originalownerid)
+      }
+    },
     listenToToolbar(e) {
       this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
     }
@@ -142,6 +167,6 @@ export default {
 
 <style scoped>
 .v-text-field--outlined >>> fieldset {
-  border-color: rgba(192, 0, 250, 0.98);
+  border-color: rgba(128, 91, 139, 0.719);
 }
 </style>

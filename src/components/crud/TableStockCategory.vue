@@ -1,9 +1,11 @@
 <template>
 
  <v-container fluid> 
-   <v-card color="green" class="pa-2 mb-2 text-center">
-     {{ entity }} View Table
-   </v-card>
+  <base-title-expand :heading="entity + ' View Table'">
+   
+    <p>Broad stock categories - to lessen the clutter.</p>
+
+  </base-title-expand>
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
@@ -86,7 +88,6 @@
 </template>
 
 <script>
-import { zmlFetch } from '@/api/zmlFetch';
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TableStockCategory.js"
 import { crudTask } from "@/components/crud/crudTask.js"
@@ -94,12 +95,14 @@ import { crudTask } from "@/components/crud/crudTask.js"
 import TableStockCategoryForm from "@/components/crud/TableStockCategoryForm"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
+import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 export default {
   name: "TableStockCategory",
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
+            , BaseTitleExpand
             , TableStockCategoryForm
             },
 
@@ -113,7 +116,7 @@ export default {
       entityTableHeader:[
            { text: 'Name', value: 'name' }
           //,{ text: 'Description', value: 'description'}
-          ,{ text: 'catid', value: 'catid' , align: 'start'}          
+          ,{ text: 'actions', value: 'catid', align:'right'}
 
       ],
       editTable:{catid:'',name:'', description:''},
@@ -121,18 +124,11 @@ export default {
 
   }),
   computed: {
-      formIsValid () {
-        return (
-          this.editTable.catid &&
-          this.editTable.description &&
-          this.editTable.name
-        )
-      },
-      entityTableFilter() {
-        //If the table is empty - return blank
-        if (!this.entityTable.length) return []
-        return this.entityTable
-      }
+    entityTableFilter() {
+      //If the table is empty - return blank
+      if (!this.entityTable.length) return []
+      return this.entityTable
+    }
   },
   methods: {
     retrieveForDeleting(item) {
@@ -145,10 +141,7 @@ export default {
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {catid:''
-                    ,name:'A new One'
-                    ,description:''
-                    }
+        this.editTable = {catid:'', name:'A new One', description:''}
         this.showAddTable = true    
     },    
     retrieveForEditing(item) {
@@ -161,6 +154,11 @@ export default {
         this.showAddTable = true
       }
     },
+    tableDone(response) {
+      if (crudTask.reportError(response)) return
+      this.entityTable = response
+    },
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
@@ -175,44 +173,17 @@ export default {
              console.log('we cancel')
              break
         default:
-             alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
     loadError(response) {
        crudTask.showError(response)
     },
-    tableDone(response) {
-      if (crudTask.reportError(response)) return
-      this.entityTable = response
-    },
-    saveTable() {
-        if (!this.formIsValid) {
-          alert('form not valid yet')
-          return
-        }
-        if (this.updateMessage == 'Create') {
-            this.createNewTable(this.editTable)
-            return
-        }
-        this.saveSqlTable(this.editTable)
-    },
-    saveSqlTable(u) {
-        let ts = {}
-        ts.task = 'Update'+this.entity
-        ts.data = u
-        zmlFetch(ts, this.checkSaveError, this.loadError);
-    },
-    createNewTable(u) {
-        let ts = {}
-        ts.task = 'Add'+this.entity
-        ts.data = u
-        zmlFetch(ts, this.checkSaveError, this.loadError);
-    },
     refresh(response) {
       //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
-      tableWork.getData('loadCategories', this.tableDone)
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
       //If we have an error, report and wait.      

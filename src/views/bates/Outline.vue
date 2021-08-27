@@ -1,16 +1,22 @@
 <template>
  <div>
 
-   <v-btn @click="sel='cat'"  small class="ma-2"> Voorraad Kategorie </v-btn>
-   <v-btn @click="sel='type'" small class="ma-2"> Voorraad Tipes </v-btn>
-   <v-btn @click="sel='area'" small class="ma-2"> Area </v-btn>
-   <v-btn @click="sel='class'" small class="ma-2"> Klasse? </v-btn>
-   <v-btn @click="sel='stock'" small class="ma-2"> Stock </v-btn>
+   <v-btn @click="sel='cat'"  small class="ma-2"
+          tip="baie basiese kategorie / hoof struktuur"> Kategorie / Category </v-btn>
+   <v-btn @click="sel='type'" small class="ma-2"
+          tip="opgedeel in kategoriee - maar hierdie is 'n verfyning"> Voorraad Tipes / Category Breakdown Types </v-btn>
+   <v-btn @click="sel='area'" small class="ma-2"
+          tip="Om maklik kamers in areas op te kan deel"> Area waarin klasse/plekke is / Work Area </v-btn>
+   <v-btn @click="sel='class'" small class="ma-2"
+          tip="klasse kan ook die 'garage' wees, met die bussies en grassnyers?"> Klasse / Classrooms </v-btn>
+   <v-btn @click="sel='stock'" small class="ma-2"
+          tip="Van hier word joernaal inskrywings gedoen vir all verandering of checks"> Voorraad / Stock </v-btn>
    <v-btn @click="sel='journal'" small class="ma-2"> Journal </v-btn>
-    <table-item v-if="sel=='type'" 
-                entity="Stock Item Types" />
+    
     <table-stock-category v-if="sel=='cat'"
                           entity="Category" />
+    <table-item v-if="sel=='type'" 
+                entity="Category Breakdown" />
     <table-work-area v-if="sel=='area'"
                      entity="Work Area" /> 
     <table-place v-if="sel=='class'"
@@ -19,8 +25,11 @@
                      entity="Journal" />  
     <table-stock v-if="sel=='stock'"
                      entity="Stock" /> 
-    <h1> PRACTISE </h1>
-    <table-filter entity="Bate" /> 
+
+    <v-window v-if="sel == 'test'" >
+      <h1> PRACTISE </h1>
+      <table-filter entity="Test Some Stuff" /> 
+    </v-window>
  </div>
 </template>
 

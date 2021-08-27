@@ -1,10 +1,50 @@
 <template>
 
  <v-container fluid> 
-   <v-card color="green" class="pa-2 mb-2 text-center">
-     {{ entity }} View Table
-   </v-card>
-<!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
+   <base-title-expand :heading="entity + ' View Table'">
+
+       <p class="heading-4">How does this work?? </p>
+       <p class="float-right">
+                <v-btn class="mx-1" x-small  tip="delete">
+                    <v-icon small color="red" class="my-1">mdi-delete</v-icon>
+                     Delete
+                </v-btn>
+                <v-btn class="mx-1" x-small tip="edit">
+                    <v-icon tip="edit" small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
+                     Edit 
+                </v-btn>
+                <v-btn class="mx-1" x-small tip="check/stocktake">
+                    <v-icon small color="purple" class="my-1">mdi-check-circle-outline</v-icon>
+                     Check 
+                </v-btn>
+                <v-btn class="mx-1" x-small tip="decomission/write off">
+                    <v-icon small color="orange" class="my-1">mdi-recycle-variant</v-icon>
+                     Write Off 
+                </v-btn>
+                <v-btn class="mx-1" x-small  tip="lost/gone/stolen">
+                    <v-icon small color="gray" class="my-1">mdi-crosshairs-question</v-icon>
+                    Lost 
+                </v-btn>
+       </p>
+       <p> Look at the buttons on the righthand side. Each stock item can be processed with one of these 
+         buttons.
+         <ul>
+           <li> Delete will be used n testing, since a stock item cannot be deleted </li>
+           <li> Edit will be used also in testing, and admin mode, since we cannot control what you do </li>
+           <li> Check will be used yearly, the form will popup, you can make changes, and then save.
+             This will create a journal entry that you have seen the form, and are happy</li>
+           <li> WriteOff will be used to mark it as not viable for repairs.</li>
+           <li> lost/gone/stolen - will delete it from your view.</li>
+         </ul>
+       </p>
+       <p>Each stock item will have these buttons. To create a new stock item, click on the "Acquire Stock".
+         Once our stock is loaded, this will be handled by a single person I guess.
+       </p>
+       <p>Edit can be a general purpose button for "movement" . ie. From one class to another, or from one 
+         person to another...</p>
+
+   </base-title-expand>
+   <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
       <v-btn class="ma-2" @click="addNew"> Acquire Stock</v-btn>
@@ -38,31 +78,37 @@
                   }"
            >
              <template v-slot:[`item.stockid`]="{ item }">
-              {{ item.stockid }}
-               <div class="float-right"> 
-                <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
+              <!-- {{ item.stockid }} -->
+               <!--v-btn-toggle borderless 
+                             dense
+                             group 
+                             rounded
+                             tip="Delete, Edit, StockTake, WriteOff, Stolen"
+                             class="float-right"--> 
+                <v-btn class="mx-1" x-small  @click="retrieveForDeleting(item)"
+                       tip="delete"
+                >
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
                 </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForEditing(item)">
-                    <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
+                <v-btn class="mx-1" x-small  @click="retrieveForEditing(item)"
+                       tip="edit">
+                    <v-icon tip="edit" small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
                 </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForChecking(item)">
-                    <v-icon small color="green" class="my-1">mdi-check-circle-outline</v-icon>
+                <v-btn class="mx-1" x-small  @click="retrieveForChecking(item)"
+                       tip="check/stocktake">
+                    <v-icon small color="purple" class="my-1">mdi-check-circle-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Check </template>
                 </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
-                    <v-icon small color="green" class="my-1">mdi-recycle-variant</v-icon>
+                <v-btn class="mx-1" x-small  @click="retrieveForWriteOff(item)"
+                       tip="decomission/write off">
+                    <v-icon small color="orange" class="my-1">mdi-recycle-variant</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Write Off </template>
                 </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForWriteOff(item)">
-                    <v-icon small color="green" class="my-1">mdi-phone-missed-outline</v-icon>
-                    <v-icon small color="green" class="my-1">crosshairs-question</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Lost </template>
-                </v-btn>
-                
-                </div>
+
+               <!--/v-btn-toggle-->
+               
 
              </template>
 
@@ -76,10 +122,10 @@
   </v-card>
 <!------------------ADD/UPDATE FORM------------------------------------------->
   <v-dialog v-model="showAddTable"  
-           :fullscreen="$vuetify.breakpoint.mobile" 
+            fullscreen
             content-class="elevation-2"
             style="overflow:hidden"
-            xwidth="auto">
+            width="auto">
    <table-stock-form :updateMessage="updateMessage" 
                       :dataTable="editTable"
                       :entity="entity"
@@ -107,11 +153,12 @@
 <script>
 import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TableStock.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 import TableStockForm from "@/components/crud/TableStockForm"
 
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
+import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 export default {
   name: "TableStock",
@@ -119,6 +166,7 @@ export default {
   components: {FrontJsonToCsv
             , BaseSearch
             , TableStockForm
+            , BaseTitleExpand
             },
 
   data: () => ({
@@ -148,7 +196,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
           //,{ text: 'placeid', value: 'placeid'}
       ],
       editTable:{stockid:''
-                  ,typeid:''
+                  ,typeid:1
                   ,userid:''
                   ,originalownerid:''
                   ,devalid:''
@@ -182,20 +230,28 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
        .then((confirm) => {
          if (confirm) { 
            tableWork.deleteData(item,this.refresh)
-         } else {
-           //alert('you pressed NO ' + item.name)
          }
       })
     },
     addNew() {
         this.updateMessage = 'Create'
         this.editTable = {stockid:''  ,typeid:''         ,userid:190
-                  ,originalownerid:190 ,devalid:3         ,placeid:''
+                  ,originalownerid:'' ,devalid:'3'         ,placeid:''
                   ,name:''            ,description:''   ,quantity:1
                   ,serialno:''        ,datereceived:''  ,price:0
                   }
         this.showAddTable = true    
     },    
+    retrieveForChecking(item) {
+      let index = tableWork.getIndex(item.stockid,this.entityTable)
+      if (index !== -1) {
+        this.updateMessage = 'Edit'
+        this.editTable = this.entityTable[index]
+        this.editTable.journalNote = 'Checking'
+        console.log('loaded:', this.editTable)
+        this.showAddTable = true
+      }
+    },
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
       let index = tableWork.getIndex(item.stockid,this.entityTable)
@@ -206,62 +262,43 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
         this.showAddTable = true
       }
     },
+    tableDone(response) {
+      if (crudTask.reportError(response)) return 
+      this.entityTable = response
+
+      //load switches...only when empty
+      crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')      
+    },
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
         case 'save':
-          tableWork.saveData(editTable, this.refresh)
-          break
+             tableWork.saveData(editTable, this.refresh)
+             break
         case 'create':
-          console.log('we create')
-          tableWork.createNewItem(editTable, this.refresh)
-          break
+             console.log('we create')
+             tableWork.createNewItem(editTable, this.refresh)
+             break
         case 'cancel':
-          console.log('we cancel')
-          break
+             console.log('we cancel')
+             break
         default:
-          alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
-    },
-    tableDone(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      this.entityTable = response
-      //infoSnackbar("RECORDS : " +  response.length);  
-      //load switches...
-      this.switchType = []
-      this.entityTable.forEach(e => {
-        console.log(e.shortdesc)
-        if (this.switchType.findIndex(element => element.type === e.category) == -1 ) {
-          this.switchType.push({switch:true, type: e.category})
-        }
-      })      
+       crudTask.showError(response)
     },
     refresh(response) {
-      if (response !== undefined && response.errorcode && response.errorcode != 0) {
-          console.log('DbErr:',response)
-          errorSnackbar("ERROR : " +  response.error);  
-          return
-      }
-      tableWork.getData('loadStock', this.tableDone)
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
       this.refresh()
     },
   },  

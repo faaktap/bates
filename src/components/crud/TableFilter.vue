@@ -17,7 +17,7 @@ constructs : entityTable, entityTableHeader, editTable
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
       <v-btn class="ma-2" @click="addNew"> Add {{ entity }}</v-btn>
-      <v-btn class="ma-2" @click="getData"> Refresh </v-btn>
+      <!--v-btn class="ma-2" @click="getData"> Refresh </v-btn-->
       <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn>
     </v-card>
 <!------------------SWITCH------------------------------------------->     
@@ -45,7 +45,6 @@ constructs : entityTable, entityTableHeader, editTable
                  :footer-props="{
                     'items-per-page-options': [10, 20, 30, 40, 50]
                   }"
-                 @click="clickOnTableRow"
            >
              <!--template v-slot:cell(bdate)="{ item }"-->
              <template v-slot:[`item.bdate`]="{ item }">
@@ -102,13 +101,12 @@ constructs : entityTable, entityTableHeader, editTable
 </template>
 
 <script>
-import { zmlFetch } from '@/api/zmlFetch';
 import { getters } from "@/api/store"
 import TableFilterForm from "@/components/crud/TableFilterForm"
 import { tableWork } from "@/components/crud/TableFilter.js"
+import { crudTask } from "@/components/crud/crudTask.js"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
-import { errorSnackbar, infoSnackbar } from "@/api/GlobalActions"
 
 export default {
   name: "TableFilter",
@@ -203,95 +201,46 @@ export default {
         this.showAddTable = true
       }
     },
-    clickOnTableRow(p1,p2) {
-      console.log('clickonrow')
-      alert('clickOnRow  ' + p1 + p2)
-      let index = this.entityTable.findIndex(ele => ele.id == p1.id)
-      console.log('index = ', index)
-      this.xxeditTable(index)
-    },
+    //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
       console.log(editTable, method)
       switch (method) {
         case 'save':
-             console.log('we save')
+             tableWork.saveData(editTable, this.refresh)
              break
         case 'create':
              console.log('we create')
+             tableWork.createNewItem(editTable, this.refresh)
              break
         case 'cancel':
              console.log('we cancel')
              break
         default:
-             alert('We do not know about ' + method)
+             crudTask.showError('We do not know about ' + method)
       }
       this.showAddTable = false
     },
-    getData () {
-       this.showAddTable = false
-       let ts = {}
-       alert('fetch',ts)
-    },
     loadError(response) {
-      console.log('ERROR on LOAD', response)
-      let errorMessage = response.errorcode + ' ' + response.error
-      errorSnackbar("ERROR:" +  errorMessage);
+       crudTask.showError(response)
     },
-    TableDone(response) {
-      if (!response.constructor === Array) {
-          console.log('DbErr:',response)
-          this.entityTable = []
-          return
-      }
+    tableDone(response) {
+      if (crudTask.reportError(response)) return
       this.entityTable = response
-      infoSnackbar("RECORDS : " +  response.length);        
     },
-    xxeditTable(index) {
-        this.updateMessage = 'Edit'
-        this.editTable = this.entityTable[index]
-        this.showAddTable = true        
-    },
-    saveTable() {
-        if (!this.formIsValid) {
-          alert('form not valid yet')
-          return
-        }
-        if (this.updateMessage == 'Create') {
-            this.createNewTable(this.editTable)
-            return
-        }
-        this.saveSqlTable(this.editTable)
-    },
-    saveSqlTable(u) {
-        let ts = {}
-        ts.task = 'Update'+this.entity
-        ts.data = u
-        zmlFetch(ts, this.checkSaveError, this.loadError);
-    },
-    createNewTable(u) {
-        let ts = {}
-        ts.task = 'Add'+this.entity
-        ts.data = u
-        zmlFetch(ts, this.checkSaveError, this.loadError);
+    refresh(response) {
+      //If we have an error, report and wait.
+      if (crudTask.reportError(response)) return
+      //tableWork.getData('loadCategories', this.tableDone)
     },
     checkSaveError(response) {
-      //First check for an error, and then call getData
-      if (response.constructor === Array || response.errorcode == 0) {
-         infoSnackbar('update')
-      } else {
-        let err = "We had an Error!, " + response.errorcode + ' ' + response.error
-         errorSnackbar(err)
-      }
-      this.getData()
+      //If we have an error, report and wait.      
+      if (crudTask.reportError(response)) return
+      this.refresh()
     },
-    showUs(response) {
-      console.log('showus = ' , response)
-    }    
   },  
   mounted() {
      console.log('Start' , this.$options.name)
-     tableWork.hello('from ' + this.$options.name)
-     tableWork.getData('loadstuff', this.showUs)
+     this.refresh()
   }
 }
 </script>

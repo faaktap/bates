@@ -11,7 +11,7 @@
      </z-base-tool>
     </v-card-text>    
 
-    <v-card-text class="ma-2 pa-2 justify-center">
+    <v-card-text class="ma-2 pa-2 justify-center" >
 
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
        <v-col cols="12" sm="6">

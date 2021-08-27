@@ -14,33 +14,33 @@
     <v-card-text class="ma-2 pa-2 justify-center">
 
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
-       <v-col cols="12" sm="6">
+       <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.name" 
-                       label="Category Name" 
+                       label="Room/Place Name" 
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
        </v-col>
+       <v-col cols="12" sm="4">
+         <z-auto-work-area v-model="dataTable.workareaid"
+                       label="Workarea" />
+       </v-col>             
+       <v-col cols="12" sm="4">
+         <z-auto-pers v-model="dataTable.ownerid"
+                       label="Owner" />
+       </v-col>             
        <v-col cols="12" sm="2">
          <z-text-field v-model="dataTable.placeid" 
                        label="ID" 
                        type="number"
                        disabled />
        </v-col>       
-       <v-col cols="12" sm="6" md="4">
-         <z-auto-work-area v-model="dataTable.workareaid"
-                       label="Workarea" />
-       </v-col>             
-       <v-col cols="12" sm="6" md="4">
-         <z-auto-pers v-model="dataTable.ownerid"
-                       label="Owner" />
-       </v-col>             
 
        <v-col cols="12" sm="6">
       <!--   <z-auto-stock-cat v-model="dataTable.catid"
                            label="Category"
          -->
        </v-col>         
-       <v-col cols="12" sm="2">
+       <v-col cols="12" sm="8">
          <z-textarea v-model="dataTable.description" 
                        label="Description" />
        </v-col>       

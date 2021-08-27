@@ -2,8 +2,9 @@
 <!--                  :rules="reqrule ? rules.required : []"  -->
         <v-autocomplete
                @input="updateValue"
+               @blur="passItemText"
                 :value="value"
-                :label="label"                        
+                :label="label"                         
                :items="searchItemType"
                 prepend-inner-icon="mdi-sitemap"
                 item-value="typeid"
@@ -33,6 +34,7 @@ export default {
    data: () => ({
      searchInput: null,
      ItemTypeTable: [],
+     lastOneSelected:''
   }),
   computed: {
       searchItemType() {
@@ -49,8 +51,17 @@ export default {
       }
   },  
   methods:{
+    passItemText() {
+      if (this.lastOneSelected) {
+          let index = this.ItemTypeTable.findIndex(ele => ele.typeid == this.lastOneSelected)
+          if (index > -1) {
+            this.$emit('select',this.ItemTypeTable[index].name)      
+          }
+      }
+    },
     updateValue(e) {
       this.$emit('input', e)
+      this.lastOneSelected = e
     },
     getData() {
         let ts = {}
@@ -68,8 +79,8 @@ export default {
     }
   },  
   mounted() {
+     console.log('Start' , this.$options.name, this.ItemTypeTable.length)    
      if (this.ItemTypeTable.length < 2) this.getData()
-     console.log('Start' , this.$options.name)
   }
 }
 </script>

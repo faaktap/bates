@@ -2,6 +2,7 @@
 <!--                  :rules="reqrule ? rules.required : []"  -->
         <v-autocomplete
                @input="updateValue"
+               @blur.stop="passSomething"
                 :value="value"
                 :label="label"                        
                :items="searchPersonel"
@@ -15,7 +16,7 @@
                   {{ data.item.concatsearch }}
               </template>
               <template slot="item" slot-scope="data">
-                    {{ data.item.fullname }} {{ data.item.menemonic}}  ({{ data.item.persid }} )
+                    {{ data.item.fullname }} {{ data.item.menemonic}}  
               </template>
         </v-autocomplete> <!--{{ searchInput}}-->
 
@@ -33,6 +34,7 @@ export default {
    data: () => ({
      searchInput: null,
      personelTable: [],
+     lastOneSelected:null,
   }),
   computed: {
       searchPersonel() {
@@ -47,14 +49,24 @@ export default {
       }
   },  
   methods:{
+    passSomething() {
+      if (this.lastOneSelected) {
+          let index = this.personelTable.findIndex(ele => ele.typeid == this.lastOneSelected)
+          if (index > -1) {
+            //we cannot send room, since we have no key number
+            //this.$emit('select',this.personelTable[index].room)
+          }
+      }
+    },    
     updateValue(e) {
       this.$emit('input', e)
+      this.lastOneSelected = e
     },
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
         ts.sql = "SELECT persid, concat(surname,', ',name) fullname, public_preferredname ,menemonic"
-               + "     , concat(surname,', ',name, ' (',ifnull(menemonic,'NON'),')') concatsearch"
+               + "     , concat(surname,', ',name, ' (',ifnull(menemonic,'NON'),')') concatsearch, room"
                + "  FROM dkhs_personel "
                + " ORDER BY surname"
         ts.api = zmlConfig.apiPath
@@ -66,7 +78,7 @@ export default {
   },  
   mounted() {
     if (this.personelTable.length < 2) this.getData()
-     console.log('Start' , this.$options.name)
+     console.log('Start' , this.$options.name, 'lastone?',this.lastOneSelected)
   }
 }
 </script>
