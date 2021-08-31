@@ -44,14 +44,12 @@
              <template v-slot:[`item.placeid`]="{ item }">
               <!--{{ item.placeid }}-->
                <div class="float-right"> 
-                <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
-                    <v-icon small color="red" class="my-1">mdi-delete</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
-                </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForEditing(item)">
-                    <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
-                </v-btn>
+                 <z-table-btn color="red" 
+                             text="delete"
+                            @click="retrieveForDeleting(item)"/>
+                 <z-table-btn color="green" 
+                             text="edit"
+                            @click="retrieveForEditing(item)" />  
                 </div>
 
              </template>
@@ -103,7 +101,7 @@ import TablePlaceForm from "@/components/crud/TablePlaceForm"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
 import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
-
+import ZTableBtn from '@/components/fields/ZTableBtn.vue'
 
 export default {
   name: "TableItem",
@@ -112,6 +110,7 @@ export default {
             , BaseSearch
             , TablePlaceForm
             , BaseTitleExpand
+            , ZTableBtn
             },
 
   data: () => ({

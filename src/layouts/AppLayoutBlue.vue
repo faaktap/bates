@@ -44,7 +44,7 @@ export default {
       AppLayoutLinks
   },
   data: () => ({
-    demo:0,
+    demo:1,
     bottomvalue: 1
   }),
   mounted: function () {

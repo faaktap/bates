@@ -9,7 +9,7 @@ const routes = [
     component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
     path: '/outline',
     name: 'Outline',
-    meta: {layout: la[4], authentication: "public" }
+    meta: {layout: la[1], authentication: "public" }
   }, 
   {
     component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Scoring.vue'),

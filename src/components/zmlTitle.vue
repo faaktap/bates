@@ -50,7 +50,7 @@ import ToolbarButtons from '@/components/ToolbarButtons'
 export default {
   name:"zmlTitle",
   components: {ToolbarButtons},
-  props:{maintitle:String},
+  props:{maintitle:{}, clickToGoBack:{default:true}},
   data: () => ({
     mainIcon: ["mdi-kettle","mdi-kettle-steam-outline","mdi-kettle-steam","mdi-coffee"],
     curIcon: 1,
@@ -61,9 +61,10 @@ export default {
   methods:{
     goHome() {
       //titleDialog = !titleDialog
-      if (this.$router.currentRoute.path !== "/") {
+      if (this.clickToGoBack==true && this.$router.currentRoute.path !== "/") {
             this.$router.push('/') 
       }
+      this.$emit("click")
 
     },
       about() {

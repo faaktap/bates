@@ -79,37 +79,18 @@
            >
              <template v-slot:[`item.stockid`]="{ item }">
               <!-- {{ item.stockid }} -->
-               <!--v-btn-toggle borderless 
-                             dense
-                             group 
-                             rounded
-                             tip="Delete, Edit, StockTake, WriteOff, Stolen"
-                             class="float-right"--> 
-                <v-btn class="mx-1" x-small  @click="retrieveForDeleting(item)"
-                       tip="delete"
-                >
-                    <v-icon small color="red" class="my-1">mdi-delete</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
-                </v-btn>
-                <v-btn class="mx-1" x-small  @click="retrieveForEditing(item)"
-                       tip="edit">
-                    <v-icon tip="edit" small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
-                </v-btn>
-                <v-btn class="mx-1" x-small  @click="retrieveForChecking(item)"
-                       tip="check/stocktake">
-                    <v-icon small color="purple" class="my-1">mdi-check-circle-outline</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Check </template>
-                </v-btn>
-                <v-btn class="mx-1" x-small  @click="retrieveForWriteOff(item)"
-                       tip="decomission/write off">
-                    <v-icon small color="orange" class="my-1">mdi-recycle-variant</v-icon>
-                    <template v-if="!$vuetify.breakpoint.mobile"> Write Off </template>
-                </v-btn>
-
-               <!--/v-btn-toggle-->
-               
-
+                <z-table-btn color="red" 
+                             text="delete"
+                            @click="retrieveForDeleting(item)"/>
+                <z-table-btn color="green" 
+                             text="edit"
+                            @click="retrieveForEditing(item)" />                <!-- mdi-circle-edit-outline -->
+                <z-table-btn color="purple" 
+                             icon="mdi-check-circle-outline" text="check"
+                            @click="retrieveForChecking(item)" />
+                <z-table-btn color="orange" 
+                             icon="mdi-delete-circle-outline" text="w/off"
+                            @click="retrieveForWriteOff(item)" />                            
              </template>
 
            </v-data-table>
@@ -159,6 +140,7 @@ import TableStockForm from "@/components/crud/TableStockForm"
 import FrontJsonToCsv from '@/api/csv/FrontJsonToCsv.vue'
 import BaseSearch from '@/components/base/BaseSearch.vue'
 import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
+import ZTableBtn from '@/components/fields/ZTableBtn.vue'
 
 export default {
   name: "TableStock",
@@ -167,6 +149,7 @@ export default {
             , BaseSearch
             , TableStockForm
             , BaseTitleExpand
+            , ZTableBtn
             },
 
   data: () => ({

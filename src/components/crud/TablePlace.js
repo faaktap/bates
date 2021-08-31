@@ -27,7 +27,7 @@ export const tableWork = {
                + "  FROM s_place p, s_workarea w, dkhs_personel s"
                + " WHERE p.workareaid = w.workareaid"
                + "   AND p.ownerid = s.persid"
-               + " ORDER BY p.name"
+               + " ORDER BY s.surname"
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
