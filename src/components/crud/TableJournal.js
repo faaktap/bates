@@ -15,31 +15,31 @@ export const tableWork = {
     delete: (itemID,table) => {
         let index = tableWork.getIndex(itemID,table)
         if (index != -1) {
-           table.splice(index,1);    
+           table.splice(index,1);
         }
     },
     getData: (key, pCallback) => {
         console.log(key)
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.quantity"
-               + "      ,p1.public_preferredname owner, p2.public_preferredname user"
-               + "      ,s.name stockitem, s.placeid, p.name place, t.name journaltype"
-               + "  FROM s_journal j, dkhs_personel p1, dkhs_personel p2 , s_stock s, s_place p, s_journaltype t"
-               + " WHERE j.persid = p1.persid"
-               + "   AND j.userid = p2.persid"
-               + "   AND s.placeid = p.placeid"
-               + "   AND s.stockid = j.stockid"
-               + "   AND j.journaltypeid = t.journaltypeid"
-               + " ORDER BY j.journalid ASC"
+        ts.sql = `SELECT j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.quantity\
+                     ,p1.public_preferredname owner, p2.public_preferredname user \
+                    ,s.name stockitem, s.placeid, p.name place, t.name journaltype \
+                FROM s_journal j, dkhs_personel p1, dkhs_personel p2 , s_stock s, s_place p, s_journaltype t \
+               WHERE j.persid = p1.persid\
+                 AND j.userid = p2.persid\
+                 AND s.placeid = p.placeid\
+                 AND s.stockid = j.stockid\
+                 AND j.journaltypeid = t.journaltypeid\
+               ORDER BY j.journalid ASC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
     createNewItem: (record, pAfterwards) => {
        let ts = {}
        ts.task = 'PlainSql'
-       ts.sql = "insert into s_journal values(null, " 
-                + record.stockid + "," 
+       ts.sql = "insert into s_journal values(null, "
+                + record.stockid + ","
                 + record.userid + ","
                 + record.persid + ","
                 + record.journaltypeid + ","
@@ -49,7 +49,7 @@ export const tableWork = {
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
     },
-    saveData: (record,pcallback=doneFetch) => {  
+    saveData: (record,pcallback=doneFetch) => {
         let ts = {}
         ts.task = 'PlainSql'
         ts.data = {journalid: record.journalid
@@ -74,7 +74,7 @@ export const tableWork = {
         zmlFetch(ts, pcallback, errorFetch)
 
     },
-    deleteData: (record,pcallback=doneFetch) => {  
+    deleteData: (record,pcallback=doneFetch) => {
       let ts = {}
       ts.task = 'PlainSql'
       ts.data = {journalid: record.journalid

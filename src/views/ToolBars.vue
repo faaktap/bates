@@ -126,7 +126,8 @@ export default {
   }),
   methods:{
       listenToToolbar(e) {
-          alert(e)
+          alert('toolbar:')
+          console.log('toolbar',e)
       } ,
   },
   mounted: function () {

@@ -6,68 +6,68 @@ const la = ["AppLayoutDefault","AppLayoutBasic","AppLayoutBlue","AppLayoutGray"]
 
 const routes = [
   {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/Home.vue'),
+    path: '/',
+    name: 'Home',
+    alias: '/home',
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/Classes.vue'),
+    path: '/class/:area?',
+    props: true,
+    name: 'Classes',
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/WorkArea.vue'),
+    path: '/area',
+    name: 'WorkArea',
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/StockCategory.vue'),
+    path: '/category',
+    name: 'StockCategory',
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/Stock.vue'),
+    path: '/stock/:room?',
+    name: 'Stock',
+    props:true,
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "bates" */ '../views/Reports.vue'),
+    path: '/reports',
+    name: 'Reports',
+    props:true,
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
     component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
     path: '/outline',
     name: 'Outline',
     meta: {layout: la[1], authentication: "public" }
-  }, 
+  },
   {
     component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Scoring.vue'),
     path: '/scoring',
     name: 'Scoring',
     meta: {layout: la[4], authentication: "public" }
-  }, 
+  },
   {
     component: () => import(/* webpackChunkName: "bates" */ '../views/ToolBars.vue'),
     path: '/toolbars',
     name: 'Toolbars',
     meta: {layout: la[4], authentication: "public" }
-  }, 
-  {
-    path: '/VL',
-    name: 'ViewLog',
-    component: () => import(/* webpackChunkName: "log" */ '../views/ViewLog.vue'),
-    meta: {layout: la[1], authentication: "public" }
-  },
-  {
-    path: '/ff',
-    name: 'ff',
-    component: () => import(/* webpackChunkName: "vfbasetest" */ '../components/vfbase/vfbasetest'),
-    meta: {layout: la[3], authentication: "public" }
-  },
-  {
-    path: '/choosesubjects',
-    name: 'skool',
-    component: () => import(/* webpackChunkName: "vfbasetest" */ '../components/vfbase/skool'),
-    meta: {layout: la[3], authentication: "public" }
-  },
-  {
-    component: () => import(/* webpackChunkName: "admin" */ '@/views/ViewFunctions.vue'),
-    path: '/viewfunctions',
-    name: 'ViewFunctions',
-    meta: {layout: la[3], authentication: "admin" }
   },
   {
     component: login,path: '/login',
     name: 'Login',
     meta: {layout: la[3],
     authentication: "public"}
-  },  {
-    component: () => import(/* webpackChunkName: "test" */ '@/views/Bland.vue'),
-    name: 'bland',
-    path: '/bland',
-    meta: {layout: la[3], authentication: "public"}
-  },  {
-    component: () => import(/* webpackChunkName: "test" */ '@/components/FlexGridStuff.vue')
-    ,name: 'flex'
-    ,path: '/flex'
-    ,meta: {layout: la[0], authentication: "public"}
-  },
-  {
-    component: () => import(/* webpackChunkName: "test" */ '@/components/base/WhackAMole.vue')
-    ,name: 'game'
-    ,path: '/game'
-    ,meta: {layout: la[0], authentication: "public"}
   },
   {
     component: () => import(/* webpackChunkName: "test" */ '@/components/base/baseTabAndEdit.vue')
@@ -76,24 +76,11 @@ const routes = [
     ,meta: {layout: la[0], authentication: "public"}
   },
   {
-    //emailheck
-    component: () => import(/* webpackChunkName: "test" */ '@/views/StreamLineDB.vue')
-    ,name: 'streamline'
-    ,path: '/streamline'
-    ,meta: {layout: la[0], authentication: "public"}
-  },      
-  {
-    component: () => import(/* webpackChunkName: "test" */ '@/views/EmailCheck.vue')
-    ,name: 'EmailCheck'
-    ,path: '/emailcheck'
-    ,meta: {layout: la[0], authentication: "public"}
-  },  
-  {
     component: () => import(/* webpackChunkName: "test" */ '@/components/TextColorPicker.vue')
-    ,name: 'color' 
+    ,name: 'color'
     ,path: '/color'
     ,meta: {layout: la[3], authentication: "public"}
-  },      
+  },
     {
     component: () => import(/* webpackChunkName: "test" */ '@/views/ErrorPage.vue')
     ,name: 'ErrorPage'

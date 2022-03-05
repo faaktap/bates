@@ -9,7 +9,7 @@ function zmlLog(user, pagename,logobj, callback,errcallback) {
         task.data.user = user || 'none'
         task.task = 'dolog'
         task.status = 'trying'
-        task.api =  zmlConfig. apiDKHS
+        task.api =  "https://kuiliesonline.co.za/api/bates/bates.php"
         let apiConfig = {method: 'POST',
                   headers: {'Accept': 'application/json'
                          , 'Content-Type': 'application/json;charset=UTF-8'},

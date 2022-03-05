@@ -16,32 +16,38 @@ export const tableWork = {
     delete: (itemID,table) => {
         let index = tableWork.getIndex(itemID,table)
         if (index != -1) {
-           table.splice(index,1);    
+           table.splice(index,1);
         }
     },
-    getData: (key, pCallback) => {
-        console.log(key)
+    getData: (key, pCallback, filter) => {
+        console.log('getdata:', key, 'filter=',filter)
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT s.stockid, s.typeid, s.userid, s.originalownerid, s.devalid, s.placeid"
-               + "     , s.name, s.datereceived, s.description, s.serialno, s.quantity, s.price"
-               + "     , p1.public_preferredname originalownername, p2.public_preferredname user"
-               + "     , p.name place, d.rulename, t.name itemtype, c.name category"
-               + "  FROM s_stock s, dkhs_personel p1, dkhs_personel p2 , s_place p, s_devaluation d"
-               + "      ,s_itemtype t, s_category c"
-               + " WHERE s.originalownerid = p1.persid"
-               + " AND s.userid = p2.persid"
-               + " AND s.placeid = p.placeid"
-               + " AND s.devalid = d.devalid"
-               + " AND t.typeid = s.typeid"
-               + " AND t.catid = c.catid"
-               + " ORDER BY s.name"
+        ts.sql = `SELECT s.stockid, s.typeid, s.userid, s.originalownerid, s.devalid, s.placeid\
+  , s.name, s.datereceived, s.description, s.serialno, s.quantity, s.price\
+  , p1.public_preferredname originalownername, p2.public_preferredname user\
+  , p.name place, d.rulename, t.name itemtype, c.name category, p.name place\
+  FROM s_stock s, dkhs_personel p1, dkhs_personel p2 , s_place p, s_devaluation d\
+      ,s_itemtype t, s_category c\
+ WHERE s.originalownerid = p1.persid\
+ AND s.userid = p2.persid\
+ AND s.price >= 0\
+ AND s.placeid = p.placeid\
+ AND s.devalid = d.devalid\
+ AND t.typeid = s.typeid\
+ AND t.catid = c.catid\
+ ${filter}\
+ ORDER BY s.name`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
     createNewItem: (record, pAfterwards) => {
        let ts = {}
        ts.task = 'insertStock'
+       if (!record.placeid || !record.typeid) {
+           alert('we need a place id and a typeid')
+       }
+       console.log('Adding' , record)
        ts.data = {stockid: record.stockid
                  ,typeid:  record.typeid
                  ,userid:  record.userid
@@ -52,17 +58,15 @@ export const tableWork = {
                  ,description: record.description
                  ,quantity: record.quantity
                  ,serialno: record.serialno
-                 ,price:    record.price}       
+                 ,price:    record.price}
+       console.log(record,ts.api)
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
+       //journalTask.stockTakeJournal(record,1) (We insert in bates zmldbfunction.php on new id)
     },
-    saveData: (record,pcallback=doneFetch) => {  
+    saveData: (record,pcallback=doneFetch) => {
         let ts = {}
         ts.task = 'updateStock'
-        if (record.journalNote !== undefined)  {
-            infoSnackbar(record.journalNote)
-            journalTask.stockTakeJournal(record)
-        }
         ts.data = {stockid: record.stockid
                   ,typeid:  record.typeid
                   ,userid:  record.userid
@@ -75,49 +79,37 @@ export const tableWork = {
                   ,serialno: record.serialno
                   ,price:    record.price}
                   //,datereceived: record.datereceived
-                  
-        ts.data.bind = {
-             typeid:   record.typeid
-            ,userid:   record.userid
-            ,originalownerid:    record.originalownerid
-            ,devalid:  record.devalid
-            ,placeid:  record.placeid
-            ,quantity: record.quantity
-            ,price:    record.price
-            ,name:     record.name
-            ,description: record.description
-            ,serialno: record.serialno}
-            //,datereceived: record.datereceived
-            
-        ts.sql = 'update s_stock set typeid = :typeid'
-               + '     , userid = :userid'
-               + '     , originalownerid = :originalownerid'
-               + '     , devalid = :devalid'
-               + '     , placeid = :placeid'
-               + '     , name = :name'
-               + '     , description = :description '
-               + '     , serialno = :serialno'
-               + '     , quantity = :quantity'
-               + '     , price = :price'  //Date Received value will never change.
-               + ' where stockid = '  + record.stockid
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pcallback, errorFetch)
+        journalTask.stockTakeJournal(record,3)
 
     },
-    deleteData: (record,pcallback=doneFetch) => {  
+    deleteData: (record,pcallback=doneFetch) => {
       let ts = {}
       ts.task = 'PlainSql'
-      ts.sql = 'delete from s_stock where stockid = ' + record.stockid
+      ts.sql = 'update s_stock set price = -1 where stockid = ' + record.stockid
       ts.api = zmlConfig.apiPath
       zmlFetch(ts, pcallback, errorFetch)
-    },somefunc() {
+      journalTask.stockTakeJournal(record,6)
+    },
+    loadPlaceID(roomname, pCallback) {
+        zmlFetch({task:'plainSql',
+                 sql:`SELECT ownerid, placeid from s_place where name like '${roomname}'`
+                 } ,pCallback
+        )
+    }
+    ,somefunc() {
   }
 }
 
 function doneFetch (response) {
     console.log('doneLoading:', response)
     if ( response.error ) {
-        errorSnackbar(response.error)
+        if (response.error.findIndex('Duplicate entry') != -1 ) {
+          errorSnackbar('That item was created already, please change it')
+        } else {
+          errorSnackbar(response.error)
+        }
     } else {
         infoSnackbar('We saved your data, will email it as well')
     }
@@ -125,5 +117,5 @@ function doneFetch (response) {
 
 function errorFetch (response) {
     console.log('error:', response)
-    errorSnackbar('We had an error saving your data!' + response)
+    errorSnackbar('We had a TS error !' + response)
 }

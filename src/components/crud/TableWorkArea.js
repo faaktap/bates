@@ -16,14 +16,14 @@ export const tableWork = {
     delete: (itemID,table) => {
         let index = tableWork.getIndex(itemID,table)
         if (index != -1) {
-           table.splice(index,1);    
+           table.splice(index,1);
         }
     },
     getData: (key, pCallback) => {
         console.log(key)
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT * FROM s_workarea ORDER BY name"
+        ts.sql = `SELECT * FROM s_workarea ORDER BY name`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
@@ -35,7 +35,7 @@ export const tableWork = {
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
     },
-    saveData: (record,pcallback=doneFetch) => {  
+    saveData: (record,pcallback=doneFetch) => {
         let ts = {}
         ts.task = 'PlainSql'
         ts.data = {workareaid: record.workareaid
@@ -51,7 +51,7 @@ export const tableWork = {
         zmlFetch(ts, pcallback, errorFetch)
 
     },
-    deleteData: (record,pcallback=doneFetch) => {  
+    deleteData: (record,pcallback=doneFetch) => {
       let ts = {}
       ts.task = 'PlainSql'
       ts.sql = 'delete from s_workarea where workareaid = ' + record.workareaid

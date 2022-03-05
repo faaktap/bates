@@ -1,31 +1,21 @@
 <template>
   <v-app id="app">
-   <AppLayout> 
-    <v-container fluid>
-      <v-img src="img/CleanDKHS.png" max-width="80" class="float-right" contain />
-      
-        <router-view/> 
+   <AppLayout>
+    <v-container fluid style="backgroundcolor:green">
+
+
+        <router-view />
       <!--/transition-->
-
-
-      <v-btn to="/"> viewlog </v-btn>
-      <v-btn to="/ff"> ff </v-btn>
-      <v-btn to="/choosesubjects"> ques </v-btn>
-      <v-btn to="/outline"> bates </v-btn>
+      <!-- <v-btn to="/outline"> bates </v-btn>
       <v-btn to="/scoring"> Scoring </v-btn>
-      <v-btn to="/viewfunctions"> functions </v-btn>
       <v-btn to="/login"> login </v-btn>
-      <v-btn to="/bland"> bland </v-btn>
-      <v-btn to="/flex"> flex </v-btn>
       <v-btn to="/basetabandedit"> basetabandedit </v-btn>
-      <v-btn to="/streamline"> streamline </v-btn>
-      <v-btn to="/emailcheck"> emailcheck </v-btn>
       <v-btn to="/color"> color </v-btn>
-      <v-btn to="/toolbars"> toolbars </v-btn>
+      <v-btn to="/toolbars"> toolbars </v-btn> -->
 
     </v-container>
-   </AppLayout>   
 
+   </AppLayout>
     <v-snackbar
       top centered
       :color="snackbarColor"
@@ -39,31 +29,35 @@
         >Close</v-btn>
       </template>
     </v-snackbar>
-    
-    <confirm ref="confirm"></confirm>   
+
+    <confirm ref="confirm"></confirm>
   </v-app>
 </template>
 
 
 <script>
+import { zmlLog } from '@/api/zmlLog.js';
 import { getters } from "@/api/store";
 import { zData } from "@/api/zGetBackgroundData.js"
 import confirm from "@/api/DialogConfirm";
 import EventBus, { ACTIONS } from '@/api/event-bus';
+//import TablePlace from '@/components/crud/TablePlace.vue';
 export default {
   name: 'ZmlApp',
-  components:{confirm},    
+  components:{confirm},
   data: () => ({
     getZml: getters.getState({ object: "gZml" }),
     snackbarMessage: "",
     snackbarColor: "red accent-4",
     snackbar: false,
   }),
-  methods: { 
+  methods: {
   },
   mounted: function () {
     console.log("Start:",this.$options.name)
     zData.initialData('Load Subject Data')
+
+    zmlLog(this.getZml.login.username , "LoginBates", this.getZml.login.userid + ',' + this.getZml.login.lastdate)
 
 /* START External Programs that uses app.vue to make use of global stuff.    */
     this.$root.$confirm = this.$refs.confirm.open
@@ -72,7 +66,7 @@ export default {
         if (color) this.snackbarColor = color
         this.snackbar = true;
       });
-/* END External Programs that uses app.vue to make use of global stuff.    */      
+/* END External Programs that uses app.vue to make use of global stuff.    */
   },
   destroyed () {
     EventBus.$off(ACTIONS.SNACKBAR)

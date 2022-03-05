@@ -1,6 +1,6 @@
 <template>
  <v-container fluid>
-   <base-title-expand :heading="entity + ' Table'">
+   <base-title-expand :heading="entity + ' View Table'">
 
        <p class="heading-4">How does this work?? </p>
        <p class="float-right">
@@ -16,6 +16,14 @@
                     <v-icon small color="purple" class="my-1">mdi-check-circle-outline</v-icon>
                      Check
                 </v-btn>
+                <v-btn class="mx-1" x-small tip="decomission/write off">
+                    <v-icon small color="orange" class="my-1">mdi-recycle-variant</v-icon>
+                     Write Off
+                </v-btn>
+                <v-btn class="mx-1" x-small  tip="lost/gone/stolen">
+                    <v-icon small color="gray" class="my-1">mdi-crosshairs-question</v-icon>
+                    Lost
+                </v-btn>
        </p>
        <p> Look at the buttons on the righthand side. Each stock item can be processed with one of these
          buttons.
@@ -24,6 +32,8 @@
            <li> Edit will be used also in testing, and admin mode, since we cannot control what you do </li>
            <li> Check will be used yearly, the form will popup, you can make changes, and then save.
              This will create a journal entry that you have seen the form, and are happy</li>
+           <li> WriteOff will be used to mark it as not viable for repairs.</li>
+           <li> lost/gone/stolen - will delete it from your view.</li>
          </ul>
        </p>
        <p>Each stock item will have these buttons. To create a new stock item, click on the "Acquire Stock".
@@ -77,14 +87,18 @@
                 <z-table-btn color="purple"
                              icon="mdi-check-circle-outline" text="check"
                             @click="retrieveForChecking(item)" />
+                <z-table-btn color="orange"
+                             icon="mdi-delete-circle-outline" text="w/off"
+                            @click="retrieveForWriteOff(item)" />
              </template>
+
            </v-data-table>
          </v-card>
        </v-col>
     </v-row>
 <!------------------TABLE END------------------------------------------->
   <v-card color="green" class="mt-2 pa-2 text-center">
-     End of {{ entity }} Table
+     End Of {{ entity }} View Table
   </v-card>
 <!------------------ADD/UPDATE FORM------------------------------------------->
   <v-dialog v-model="showAddTable"
@@ -129,7 +143,7 @@ import ZTableBtn from '@/components/fields/ZTableBtn.vue'
 
 export default {
   name: "TableStock",
-  props: ['entity','roomname'],
+  props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
             , TableStockForm
@@ -139,7 +153,6 @@ export default {
 
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
-      alwaysFilter:'',
       showAddTable: false,
       showTablePrint:false,
       search:'',
@@ -179,8 +192,6 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
                   ,datereceived:''
                   ,price:0},
       switchType:[],
-      defaultPlace:null,
-      defaultOwner:null,
 
   }),
   computed: {
@@ -208,18 +219,10 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {stockid:''
-                  , typeid:''
-                  , userid:190
-                  , originalownerid:this.defaultOwner
-                  , devalid:'3'
-                  , placeid:this.defaultPlace
-                  , name:''
-                  , description:''
-                  , quantity:1
-                  , serialno:''
-                  , datereceived:''
-                  , price:0
+        this.editTable = {stockid:''  ,typeid:''         ,userid:190
+                  ,originalownerid:'' ,devalid:'3'         ,placeid:''
+                  ,name:''            ,description:''   ,quantity:1
+                  ,serialno:''        ,datereceived:''  ,price:0
                   }
         this.showAddTable = true
     },
@@ -244,24 +247,11 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
       }
     },
     tableDone(response) {
-      console.log('check error in stokc->crud')
-      if (crudTask.reportError(response)) {
-        //alert('we got an error at tableDone - but will ignore for now..')
-        return
-      }
-      console.log('check no rows in stokc->crud')
-      if (crudTask.reportNoRows(response)) {
-        //We have no items for this query
-        this.entityTable = []
-      } else {
-         this.entityTable = response
-         //load switches...only when empty
-         console.log('load swotched')
-         crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
-         console.log('done swotched')
-      }
+      if (crudTask.reportError(response)) return
+      this.entityTable = response
 
-
+      //load switches...only when empty
+      crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
     },
     //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
@@ -272,9 +262,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
              break
         case 'create':
              console.log('we create')
-             if (editTable.placeid && editTable.typeid) {
-                 tableWork.createNewItem(editTable, this.refresh)
-             } else { return }
+             tableWork.createNewItem(editTable, this.refresh)
              break
         case 'cancel':
              console.log('we cancel')
@@ -289,34 +277,18 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
     },
     refresh(response) {
       //If we have an error, report and wait.
-      if (crudTask.reportError(response)){
-          alert('we got an crudTasj.reportError on response - ignore for now')
-          //return
-      }
-      tableWork.getData('load'+this.$options.name, this.tableDone, this.alwaysFilter)
+      if (crudTask.reportError(response)) return
+      tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
       //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       this.refresh()
     },
-    loadPlaceId(response) {
-      console.log(response)
-      this.defaultPlace = response[0].placeid
-      this.defaultOwner = response[0].ownerid
-      this.refresh()
-    }
   },
   mounted() {
      console.log('Start' , this.$options.name)
-     if (this.roomname) {
-       this.alwaysFilter = ` AND p.name = "${this.roomname}" `
-       tableWork.loadPlaceID(this.roomname,this.loadPlaceId)
-     } else {
-       this.refresh()
-     }
-     //Get placeid for the current roomname, and only then do a refresh.
-
+     this.refresh()
   }
 }
 </script>

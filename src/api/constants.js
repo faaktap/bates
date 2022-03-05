@@ -1,5 +1,5 @@
-const PROJECT_ID = "zml48.1"
-const MEASUREMENT_ID = "Z-ZML48.1"
+const PROJECT_ID = "zmlBates0.2"
+const MEASUREMENT_ID = "Z-BAT0.2"
 const DEFAULT_LAYOUT = "AppLayoutDefault"
 const MAX_UPLOAD_SIZE = 90 * 1024 * 1024
 
@@ -18,7 +18,6 @@ const MAX_UPLOAD_SIZE = 90 * 1024 * 1024
 
 export const zmlConfig = {
   apiPath:    "https://kuiliesonline.co.za/api/bates/bates.php",
- //apiPath:    "http://127.0.0.1:81/api/local/local.php",
   apiUpload:  "https://kuiliesonline.co.za/api/fileUpload/fileUpload.php",
   apiDKHS:    "https://kuiliesonline.co.za/api/dkhs/dkhs.php",
   localPath:  "https://kuiliesonline.co.za/",

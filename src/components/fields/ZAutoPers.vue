@@ -4,7 +4,7 @@
                @input="updateValue"
                @blur.stop="passSomething"
                 :value="value"
-                :label="label"                        
+                :label="label"
                :items="searchPersonel"
                 prepend-inner-icon="mdi-human"
                 item-value="persid"
@@ -16,22 +16,23 @@
                   {{ data.item.concatsearch }}
               </template>
               <template slot="item" slot-scope="data">
-                    {{ data.item.fullname }} {{ data.item.menemonic}}  
+                    {{ data.item.fullname }} {{ data.item.menemonic}}
               </template>
-        </v-autocomplete> <!--{{ searchInput}}-->
-
+        </v-autocomplete>
 </template>
 
 <script>
+import { getters } from "@/api/store";
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
 export default {
    name:"ZAutoPers",
-   props:{ 
-           value:{}
-         , label: {type:String,default:"Personel/Staff"}
+   props:{
+     value:{}
+    ,label: {type:String,default:"Personel/Staff"}
    },
    data: () => ({
+     getZml: getters.getState({ object: "gZml" }),
      searchInput: null,
      personelTable: [],
      lastOneSelected:null,
@@ -47,7 +48,7 @@ export default {
         console.log(x.length, x)
         return x
       }
-  },  
+  },
   methods:{
     passSomething() {
       if (this.lastOneSelected) {
@@ -57,25 +58,30 @@ export default {
             //this.$emit('select',this.personelTable[index].room)
           }
       }
-    },    
+    },
     updateValue(e) {
       this.$emit('input', e)
       this.lastOneSelected = e
     },
     getData() {
-        let ts = {}
-        ts.task = 'PlainSql'
-        ts.sql = "SELECT persid, concat(surname,', ',name) fullname, public_preferredname ,menemonic"
-               + "     , concat(surname,', ',name, ' (',ifnull(menemonic,'NON'),')') concatsearch, room"
-               + "  FROM dkhs_personel "
-               + " ORDER BY surname"
-        ts.api = zmlConfig.apiPath
-        zmlFetch(ts, this.loadData)
+        if (this.getZml.owner.length > 0) {
+          this.personelTable = this.getZml.owner
+        } else {
+          let ts = {}
+          ts.task = 'PlainSql'
+          ts.sql = "SELECT persid, concat(surname,', ',name) fullname, public_preferredname ,menemonic"
+                 + "     , concat(surname,', ',name, ' (',ifnull(menemonic,'NON'),')') concatsearch, room"
+                 + "  FROM dkhs_personel "
+                 + " ORDER BY surname"
+          ts.api = zmlConfig.apiPath
+          zmlFetch(ts, this.loadData)
+        }
     },
     loadData(response) {
         this.personelTable = response
+        this.getZml.owner = response
     }
-  },  
+  },
   mounted() {
     if (this.personelTable.length < 2) this.getData()
      console.log('Start' , this.$options.name, 'lastone?',this.lastOneSelected)

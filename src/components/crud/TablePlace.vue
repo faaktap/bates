@@ -1,10 +1,12 @@
 <template>
 
- <v-container fluid> 
-  <base-title-expand :heading="entity + ' View Table'">
-   
-    <p>Classrooms, Halls, Centres, Offices, Garages, Etc.</p> 
+ <v-container fluid>
+  <base-title-expand :heading="entity + ' Table'">
+
+    <p>Classrooms, Halls, Centres, Offices, Garages, Etc.</p>
     <p>Add them here, and assign a responsible person to them.</p>
+    <p>Most stocktaking will start here - double click on a place/location/room and
+      we will redirect you to the stock capture program </p>
 
   </base-title-expand>
 
@@ -15,11 +17,11 @@
       <v-btn class="ma-2" @click="refresh"> Refresh </v-btn>
       <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn>
     </v-card>
-<!------------------SWITCH------------------------------------------->     
-    <v-card v-if="switchType && switchType.length" 
+<!------------------SWITCH------------------------------------------->
+    <v-card v-if="switchType && switchType.length"
              class="row wrap text-center d-flex justify-space-between ml-0 mt-1 mb-2 pl-1 pr-1">
-         <v-card v-for="s in switchType" 
-                :key="s.id" 
+         <v-card v-for="s in switchType"
+                :key="s.id"
                  class="mb-2">
            <v-switch v-model="s.switch"
                      hide-details
@@ -27,7 +29,7 @@
                     :label="s.type" >
            </v-switch>
          </v-card>
-    </v-card>    
+    </v-card>
 <!-------------------TABLE------------------------------------------>
     <v-row>
        <v-col cols="12">
@@ -37,19 +39,21 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 mobile-breakpoint="0"
                  :footer-props="{
                     'items-per-page-options': [10, 20, 30, 40, 50]
                   }"
+                  @dblclick:row="startStockTake"
            >
              <template v-slot:[`item.placeid`]="{ item }">
               <!--{{ item.placeid }}-->
-               <div class="float-right"> 
-                 <z-table-btn color="red" 
+               <div class="float-right">
+                 <z-table-btn color="red"
                              text="delete"
                             @click="retrieveForDeleting(item)"/>
-                 <z-table-btn color="green" 
+                 <z-table-btn color="green"
                              text="edit"
-                            @click="retrieveForEditing(item)" />  
+                            @click="retrieveForEditing(item)" />
                 </div>
 
              </template>
@@ -58,25 +62,25 @@
          </v-card>
        </v-col>
     </v-row>
-<!------------------TABLE END------------------------------------------->   
+<!------------------TABLE END------------------------------------------->
   <v-card color="green" class="mt-2 pa-2 text-center">
-     End Of {{ entity }} View Table
+     End of {{ entity }} Table
   </v-card>
 <!------------------ADD/UPDATE FORM------------------------------------------->
-  <v-dialog v-model="showAddTable"  
-           :fullscreen="$vuetify.breakpoint.mobile" 
+  <v-dialog v-model="showAddTable"
+           :fullscreen="$vuetify.breakpoint.mobile"
             content-class="elevation-2"
             style="overflow:hidden"
             xwidth="auto">
-   <table-place-form :updateMessage="updateMessage" 
+   <table-place-form :updateMessage="updateMessage"
                       :dataTable="editTable"
                       :entity="entity"
                       :editFieldDisplay="editTable.name"
                       @save="clickOnForm"
                       @cancel="clickOnForm"
                       @create="clickOnForm"/>
-                     
-  </v-dialog> 
+
+  </v-dialog>
 <!------------------EXPORT------------------------------------------->
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
@@ -85,11 +89,11 @@
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
-    </v-btn> 
+    </v-btn>
    </front-json-to-csv>
   </v-dialog>
-<!------------------------------------------------------------->  
- </v-container>   
+<!------------------------------------------------------------->
+ </v-container>
 </template>
 
 <script>
@@ -105,7 +109,7 @@ import ZTableBtn from '@/components/fields/ZTableBtn.vue'
 
 export default {
   name: "TableItem",
-  props: ['entity'],
+  props: ['entity', 'area'],
   components: {FrontJsonToCsv
             , BaseSearch
             , TablePlaceForm
@@ -118,18 +122,20 @@ export default {
       showAddTable: false,
       showTablePrint:false,
       search:'',
-      updateMessage:'Create',      
+      updateMessage:'Create',
       entityTable:[],
       entityTableHeader:[
            { text: 'RoomNo', value: 'name' }
           ,{ text: 'Owner', value: 'owner'}
           ,{ text: 'Workarea', value: 'workarea'}
           ,{ text: 'Description', value: 'description'}
-          ,{ text: 'actions', value: 'placeid' , align: 'right'}          
+          ,{ text: 'Function', value: 'function'}
+          ,{ text: 'actions', value: 'placeid' , align: 'right'}
 
       ],
       editTable:{placeid:'',workareaid:'', ownerid:'' ,name:'', description:''},
       switchType:[],
+      defaultWorkArea:null
 
   }),
   computed: {
@@ -143,14 +149,27 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.workarea) ) 
-      } 
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.workarea) )
+      }
   },
   methods: {
+    startStockTake(e,{item}) {
+      console.log(e,item)
+      this.$root.$confirm('Asset Capture'
+         , `Do you want to start asset capture for location ${item.name} ?`, { color: 'green' })
+       .then((confirm) => {
+         if (confirm) {
+           this.$router.push({ name: 'Stock' ,params:{room:item.name},meta: {layout: "AppLayoutDefault" }})
+         } else {
+           //alert('you pressed NO ' + item.name)
+         }
+      })
+
+    },
     retrieveForDeleting(item) {
       this.$root.$confirm("Are you sure about deleting?", "If you press YES, gone!", { color: 'red' })
        .then((confirm) => {
-         if (confirm) { 
+         if (confirm) {
            tableWork.deleteData(item,this.refresh)
          } else {
            //alert('you pressed NO ' + item.name)
@@ -160,13 +179,14 @@ export default {
     addNew() {
         this.updateMessage = 'Create'
         this.editTable = {placeid:''
-                    ,name:'A new One classroom name'
+                    ,name:'A new Room name'
                     ,ownerid:''
                     ,description:''
+                    ,function:'Teach'
                     ,workareaid:''
                     }
-        this.showAddTable = true    
-    },    
+        this.showAddTable = true
+    },
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
       let index = tableWork.getIndex(item.placeid,this.entityTable)
@@ -180,6 +200,9 @@ export default {
     tableDone(response) {
       if (crudTask.reportError(response)) return
       this.entityTable = response
+      if (this.getZml.place.length > 0 && response.length > this.getZml.place.length) {
+          this.getZml.place =  response
+      }
       //load switches...only when empty
       crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
     },
@@ -209,16 +232,23 @@ export default {
     refresh(response) {
       //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
-      tableWork.getData('load'+this.$options.name, this.tableDone)
+      let filter = ''
+      if (this.defaultWorkArea) {
+        filter = `AND w.name like "${this.defaultWorkArea}%"`
+      }
+      tableWork.getData('load'+this.$options.name, this.tableDone, filter)
     },
     checkSaveError(response) {
-      //If we have an error, report and wait.      
+      //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       this.refresh()
     },
-  },  
+  },
   mounted() {
-     console.log('Start' , this.$options.name)
+     console.log('Start' , this.$options.name, this.area)
+     if (this.area) {
+       this.defaultWorkArea = this.area
+     }
      this.refresh()
   }
 }
