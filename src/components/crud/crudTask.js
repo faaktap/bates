@@ -1,4 +1,5 @@
 import { infoSnackbar,errorSnackbar } from '@/api/GlobalActions';
+import { getters } from "@/api/store";
 export const crudTask = {
     hello: (p1) => {console.log('hello from (JS) ' , p1)}
    ,name: "JSCrudTasks"
@@ -43,5 +44,49 @@ export const crudTask = {
       typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k}) } )
       return true
    }
-   ,someOtherFunc: () => {}
+   ,save: (entityTableName, data) => {
+     console.log('save crudData : ', entityTableName, data.length)
+     let gzp = getters.getState({ object: "gZml" })
+     switch (entityTableName) {
+      case "itemtype":
+        return getters.getState({ object: "gZml" }).itemtype = data
+      case "workarea":
+        return getters.getState({ object: "gZml" }).workarea = data
+      case "place":
+        if (gzp.place  && data.length > gzp.place.length) {
+           gzp.place = data
+           console.log('save the data', gzp.place, gzp.place.length)
+        } else {
+          console.log('DO NOT save the data'. data.length, gzp.place.length)
+        }
+        return
+      case "owner":
+        return getters.getState({ object: "gZml" }).owner = data
+      case "category":
+        return getters.getState({ object: "gZml" }).category = data
+     }
+   }
+   ,load: (entityTableName) => {
+     console.log('load crudData : ', entityTableName)
+     let gzp = getters.getState({ object: "gZml" })
+    switch (entityTableName) {
+     case "itemtype":
+       console.log(gzp.itemtype.length)
+       return gzp.itemtype
+     case "workarea":
+       console.log(gzp.workarea.length)
+       return gzp.workarea
+     case "place":
+       console.log(gzp.place.length, gzp.place)
+       return gzp.place
+     case "owner":
+       console.log(gzp.owner.length)
+       return gzp.owner
+     case "category":
+      console.log(gzp.category.length)
+       return gzp.category
+    }
+    console.log('something slipped thrui!!!!')
+  }
+
 }

@@ -7,7 +7,7 @@
 <script>
 import TablePlace from '@/components/crud/TablePlace.vue';
 export default {
-  name: "Outline",
+  name: "Classes",
   props:["area"],
   components: {
                 TablePlace

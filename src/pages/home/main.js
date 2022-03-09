@@ -18,12 +18,13 @@ Vue.prototype.$playSound = (path = 'img/SodaCanOpen.mp3', volume = .5) => {
   console.log(path)
 }
 
+/* test component creation
 Vue.mixin({
   created() {
     console.log('[created]H ' + this.$options.name,)
   },
 });
-
+*/
 
 window.onerror = function(message, url, lineNumber) {
   alert(message + lineNumber + url)
@@ -55,22 +56,6 @@ let i18n = new VueI18n({
   formatFallbackMessages: true,
   messages: messages
 })
-
-
-import VueHtmlToPaper from 'vue-html-to-paper';
-Vue.use(VueHtmlToPaper, {
-  name: '_blank',
-  specs: [
-    'fullscreen=yes',
-    'titlebar=yes',
-    'scrollbars=yes'
-  ],
-  styles: [
-    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
-  ]
-})
-console.log('hello', Vue.prototype)
 
 
 new Vue({

@@ -27,12 +27,12 @@
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
        </v-col>
-       <v-col cols="12" sm="4">
+       <!-- <v-col cols="12" sm="4">
          <z-auto-deval v-model="dataTable.devalid"
                        label="Devaluation"
                        :reqrule="true" />
 
-       </v-col>
+       </v-col> -->
        <v-col v-if="dataTable.devalid != 3" cols="12" sm="4">
          <z-text-field v-model="dataTable.serialno"
                        label="Serial"
@@ -99,7 +99,7 @@ import ZTextarea from '@/components/fields/ZTextarea.vue'
 import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
-import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
+//import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
 import ZBaseTool from '@/components/base/ZBaseTool.vue'
 
 export default {
@@ -115,7 +115,7 @@ export default {
               , ZAutoPlace
               , ZTextarea
               , ZAutoItemType
-              , ZAutoDeval
+//            , ZAutoDeval
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),

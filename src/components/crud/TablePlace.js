@@ -25,6 +25,7 @@ export const tableWork = {
         ts.task = 'PlainSql'
         ts.sql = `SELECT placeid, p.workareaid, p.ownerid, p.name, p.description\
                  , w.name workarea, s.public_preferredname owner, p.function\
+                 , concat(p.name, ' - ',w.name) concatsearch \
                   FROM s_place p, s_workarea w, dkhs_personel s\
                  WHERE p.workareaid = w.workareaid\
                   AND p.ownerid = s.persid\

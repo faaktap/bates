@@ -23,7 +23,7 @@ const routes = [
   },
 
   {
-    component: () => import(/* webpackChunkName: "bates" */ '../views/Classes.vue'),
+    component: () => import(/* webpackChunkName: "bates" */ '@/components/crud/TablePlace.vue'),
     path: '/class/:area?',
     props: true,
     name: 'Classes',

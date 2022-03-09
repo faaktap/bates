@@ -27,34 +27,30 @@
         <v-card flat>
           <v-card-actions>
             <template v-if="tab == 0">
-               <z-auto-place v-model="reportValueToCount[item.id]"
-                label="Place"
-                @objectSelected="objectSelected" />
+               <z-auto-place v-model="reportValueToCount[rPlace]"
+                label="Place" />
             </template>
             <template v-else-if="tab == 1">
-              <z-auto-pers v-model="reportValueToCount[item.id]"
-                  label="Owner"
-                  @objectSelected="objectSelected" />
+              <z-auto-pers v-model="reportValueToCount[rOwner]"
+                  label="Owner" />
             </template>
             <template v-else>
-              <z-auto-item-type v-model="reportValueToCount[item.id]"
-                  label="Item Type"
-                  @objectSelected="objectSelected" />
+              <z-auto-item-type v-model="reportValueToCount[rItemType]"
+                  label="Item Type" />
             </template>
           </v-card-actions>
           <v-card-title>
             {{ item.answer }}
           </v-card-title>
           <v-card-actions>
-            <v-btn small @click="build"> showReport </v-btn>
+            <v-btn small @click="build"> Build </v-btn>
           </v-card-actions>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
-
   <reports-table v-if="sqlSelect"
-     :reportHeader="reportHeader"
+     :tableHeader="sqlHeader"
      :sqlSelect="sqlSelect"
      />
 </v-container>
@@ -80,26 +76,25 @@ export default {
     items: [
           {id:0,menu:'List for a Class' ,f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.placeid = "
-               ,answer:'select a class', obj:{}},
+               ,answer:'select a class'},
           {id:1,menu:'List for a person',f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.originalownerid = "
-               ,answer:'select a person', obj:{}},
+               ,answer:'select a person'},
           {id:2,menu:'List for an item' ,f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.typeid = "
-               ,answer:'select an item', obj:{}}
+               ,answer:'select an item'}
         ],
     reportValueToCount:[],
+    rOwner: 1,
+    rPlace: 0,
+    rItemType: 2,
     sqlSelect:null,
-    reportHeader:null
+    sqlHeader: [{value:'name',text: 'name'}]
 
   }),
   computed:{
   },
   methods: {
-    objectSelected(e) {
-      console.log('objSelected = ',e)
-      this.items[this.tab].obj = e
-    },
     getCount() {
       let ts = {}
       ts.task = 'PlainSql'
@@ -107,47 +102,41 @@ export default {
       ts.sql = `${this.items[this.tab].sql} ${this.reportValueToCount[this.tab]}`
       zmlFetch(ts, this.showCount)
     },
-    showCount(response) {
-      console.log('showCount start',this.items[this.tab].obj)
-      switch (this.tab) {
-        case 0:
-          this.items[this.tab].answer = `For location ${this.items[this.tab].obj.name} (${this.items[this.tab].obj.description}) we found ${response[0].items} item(s)`
-          break
-        case 1:
-          this.items[this.tab].answer = `For person ${this.items[1].obj.fullname} we found ${response[0].items} item(s)`
-          break
 
-      }
+    selOwner() {
+      let ts = {}
+      ts.task = 'PlainSql'
+      ts.sql = `SELECT count(*) items from s_stock s WHERE s.originalownerid = ${this.reportValueToCount[this.rOwner]}`
+      zmlFetch(ts, this.showCount)
+    },
+    selPlace() {
+      let ts = {}
+      ts.task = 'PlainSql'
+      ts.sql = `SELECT count(*) items from s_stock s WHERE s.placeid = ${this.reportValueToCount[this.rPlace]}`
+      zmlFetch(ts, this.showCount)
+    },
+    selItemType() {
+      let ts = {}
+      ts.task = 'PlainSql'
+      ts.sql = `SELECT count(*) items from s_stock s WHERE s.typeid = ${this.reportValueToCount[this.rItemType]}`
+      zmlFetch(ts, this.showCount)
+    },
+    showCount(response) {
+      console.log('showCount start')
+      this.items[this.tab].answer = `For ${this.reportValueToCount[this.tab]} we have ${response[0].items} items found`
       console.log('tab = ', this.tab, 'count = ', response[0], this.items[this.tab].answer)
     },
     build(u) {
       console.log('build base on this.tab',u)
-      switch (this.tab) {
-        case 0:
-         this.sqlSelect =
-`SELECT ifnull(c.name,t.catid) category\
-     , s.name\
-     , ifnull(p1.public_preferredname,'?') ownername\
-     , ifnull(p.name,s.placeid) place\
-     , ifnull(t.name,s.typeid) itemtype\
-     , s.serialno\
-     , s.quantity\
- FROM s_stock s\
- LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
- LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
- LEFT JOIN s_place p on s.placeid = p.placeid\
- LEFT JOIN s_category c on t.catid = c.catid\
- WHERE s.price >= 0\
- and s.placeid = ${this.items[this.tab].obj.placeid}\
- ORDER BY s.name`
-         this.reportHeader = this.items[this.tab].answer
-         break
-        case 1:
-          alert('1')
-          break
-        case 2:
-          alert('1')
-          break
+      if (this.tab == 0) {
+         this.sqlSelect = 'select * from s_category'
+         this.sqlHeader =  [{text: 'name',value:'name'},{text: 'id',value:'catid'}]
+      } else {
+         this.sqlSelect = 'select catid, name, description from s_category'
+         this.sqlHeader =  [{text: 'name',value:'name'}
+                           ,{text: 'id',value:'catid'}
+                           ,{text: 'desc',value:'description'}]
+
       }
     },
 

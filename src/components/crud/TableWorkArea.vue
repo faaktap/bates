@@ -23,6 +23,7 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 mobile-breakpoint="0"
                  :footer-props="{
                     'items-per-page-options': [10, 20]
                   }"
@@ -93,7 +94,7 @@ import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 
 export default {
-  name: "TableWorkArea",
+  name: "TableWrkArea",
   props: { entity:{default:"Location(Work) Areas"}
          },
   components: {FrontJsonToCsv
@@ -179,6 +180,7 @@ export default {
     tableDone(response) {
       if (crudTask.reportError(response)) return
       this.entityTable = response
+      crudTask.save('workarea', response)
     },
     //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
@@ -215,7 +217,10 @@ export default {
   },
   mounted() {
      console.log('Start' , this.$options.name)
-     this.refresh()
+     this.entityTable = crudTask.load('workarea')
+     if (this.entityTable.length == 0) {
+       this.refresh()
+     }
   }
 }
 </script>

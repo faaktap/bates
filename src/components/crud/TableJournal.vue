@@ -40,8 +40,9 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20,  50]
+                    'items-per-page-options': [20, 40,  150]
                   }"
            >
            </v-data-table>

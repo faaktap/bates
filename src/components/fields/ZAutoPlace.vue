@@ -20,6 +20,7 @@
 import { getters } from "@/api/store";
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
+import { crudTask } from "@/components/crud/crudTask.js"
 export default {
    name:"ZAutoPlace",
    props:{
@@ -57,31 +58,34 @@ export default {
     },
     updateValue(e) {
       this.$emit('input', e)
+      let index = this.placeTable.findIndex(ele => ele.placeid == e)
+      if (index > -1) {
+        console.log(this.$options.name, 'send object')
+        this.$emit('objectSelected',this.placeTable[index])
+      }
       this.lastOneSelected = e
     },
     getData() {
-        if (this.getZml.place.length > 0) {
-          this.placeTable = this.getZml.place
-        } else {
-          let ts = {}
-          ts.task = 'PlainSql'
-          ts.sql = "SELECT p.placeid, p.name, w.name workarea, p.description,p.ownerid "
-               + "     , concat(p.name, ' (',w.name,')') concatsearch"
-               + "  FROM s_place p, s_workarea w "
-               + " WHERE p.workareaid = w.workareaid "
-               + "ORDER BY p.name"
-          ts.api = zmlConfig.apiPath
-          zmlFetch(ts, this.loadData)
-        }
+      let ts = {}
+      ts.task = 'PlainSql'
+      ts.sql = "SELECT p.placeid, p.name, w.name workarea, p.description,p.ownerid "
+           + "     , concat(p.name, ' - ',w.name) concatsearch"
+           + "  FROM s_place p, s_workarea w "
+           + " WHERE p.workareaid = w.workareaid "
+           + "ORDER BY p.name"
+      ts.api = zmlConfig.apiPath
+      zmlFetch(ts, this.loadData)
+
     },
     loadData(response) {
-        this.placeTable = response
-        this.getZml.place = response
+      this.placeTable = response
+      crudTask.save('place', response)
     }
   },
   mounted() {
     console.log('Start' , this.$options.name,this.placeTable.length)
-     if (this.placeTable.length < 2) this.getData()
-  }
+    this.placeTable = crudTask.load('place')
+    if (this.placeTable.length == 0) this.getData()
+  },
 }
 </script>

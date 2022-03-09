@@ -62,8 +62,9 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20,  50]
+                    'items-per-page-options': [20, 40,  250]
                   }"
            >
              <template v-slot:[`item.stockid`]="{ item }">
@@ -157,11 +158,11 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
            { text: 'Name', value: 'name'}
           ,{ text: 'Place', value: 'place'}
           ,{ text: 'Category', value: 'category'}
-          ,{ text: 'Date', value: 'datereceived'}
+          //,{ text: 'Date', value: 'datereceived'}
           ,{ text: 'Quantity', value: 'quantity'}
-          ,{ text: 'OOwner', value: 'ownername'}
+          ,{ text: 'Owner', value: 'ownername'}
           ,{ text: 'stockid', value: 'stockid'}
-          ,{ text: 'userid', value: 'userid'}
+          //,{ text: 'userid', value: 'userid'}
           //,{ text: 'ownerid', value: 'originalownerid'}
           //,{ text: 'User', value: 'user'}
           //,{ text: 'placeid', value: 'placeid'}

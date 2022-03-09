@@ -1,11 +1,13 @@
 <template>
 <div>
-    <v-hover v-slot:default="{ hover }" open-delay="200">
+    <v-hover
+      v-if="!$vuetify.breakpoint.mobile"
+      v-slot:default="{ hover }"
+      open-delay="200">
     <v-btn :elevation="hover ? 12 : 2"
             :class="{'on-hover': hover,'overwrite-hover': $vuetify.breakpoint.xsOnly}"
             @click="goHome()"
             class="ma-2"
-            large
     >
     <v-spacer />
       <v-icon color="green darken-3" class="ma-2">

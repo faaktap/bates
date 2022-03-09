@@ -30,6 +30,7 @@
            </v-switch>
          </v-card>
     </v-card>
+
 <!-------------------TABLE------------------------------------------>
     <v-row>
        <v-col cols="12">
@@ -41,7 +42,7 @@
                  :items-per-page="30"
                  mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20, 30, 40, 50]
+                    'items-per-page-options': [20, 30, 150]
                   }"
                   @dblclick:row="startStockTake"
            >
@@ -97,7 +98,6 @@
 </template>
 
 <script>
-import { getters } from "@/api/store"
 import { tableWork } from "@/components/crud/TablePlace.js"
 import { crudTask } from "@/components/crud/crudTask.js"
 import TablePlaceForm from "@/components/crud/TablePlaceForm"
@@ -108,8 +108,11 @@ import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 import ZTableBtn from '@/components/fields/ZTableBtn.vue'
 
 export default {
-  name: "TableItem",
-  props: ['entity', 'area'],
+  name: "TablePlace",
+  props: {
+    entity: {default:'location / class'},
+    area:{}
+  },
   components: {FrontJsonToCsv
             , BaseSearch
             , TablePlaceForm
@@ -118,7 +121,6 @@ export default {
             },
 
   data: () => ({
-      getZml: getters.getState({ object: "gZml" }),
       showAddTable: false,
       showTablePrint:false,
       search:'',
@@ -141,7 +143,9 @@ export default {
   computed: {
       entityTableFilter() {
         //If the table is empty - return blank
-        if (!this.entityTable.length) return [];
+        if (!this.entityTable.length) {
+          return [];
+        }
         //If we have any switches on, add them to onlyThese
         let onlyThese = this.switchType.filter(ele => ele.switch == true)
         //If we have no switch active, activate at least one
@@ -149,7 +153,12 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.workarea) )
+        //if we have no switches to make active, show all
+        if (!onlyThese.length ) {
+          return this.entityTable
+        } else {
+          return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.workarea) )
+        }
       }
   },
   methods: {
@@ -200,9 +209,7 @@ export default {
     tableDone(response) {
       if (crudTask.reportError(response)) return
       this.entityTable = response
-      if (this.getZml.place.length > 0 && response.length > this.getZml.place.length) {
-          this.getZml.place =  response
-      }
+      crudTask.save('place', this.entityTable)
       //load switches...only when empty
       crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
     },
@@ -247,9 +254,16 @@ export default {
   mounted() {
      console.log('Start' , this.$options.name, this.area)
      if (this.area) {
+       this.switchType.push({ type: this.area, cnt: 1 })
        this.defaultWorkArea = this.area
      }
-     this.refresh()
+     this.entityTable = crudTask.load('place')
+     console.log('after load placedata', this.entityTable)
+     if (this.entityTable.length == 0) {
+       this.refresh()
+     } else {
+       crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
+     }
   }
 }
 </script>

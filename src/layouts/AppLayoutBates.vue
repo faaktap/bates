@@ -226,6 +226,7 @@ export default {
       username:"Side Menu",
       showSettingsDialog:false,
       navItems:[
+    { icon: 'mdi-printer-wireless',    title: 'Reports',       to: '/reports'  },
     { icon: 'mdi-percent',    title: 'Devaluation',       to: '/Outline'  },
     { icon: 'mdi-bookshelf',  title: 'Journal',             to: '/Outline'  },
     { icon: 'mdi-warehouse',      title: 'Stock',             to: '/Outline'  },

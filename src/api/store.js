@@ -30,6 +30,8 @@ const state = Vue.observable({
            place: [],
            owner: [],
            workarea:[],
+           itemtype:[],
+           category:[],
            devalList:[],
            locale: 'af',
            persMenemonic:[],   //SELECT user_name, userid FROM `dkhs_learner` WHERE user_type = 'teacher'

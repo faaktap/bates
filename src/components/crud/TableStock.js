@@ -51,7 +51,6 @@ export const tableWork = {
         , ifnull(d.rulename,s.devalid) rulename\
         , ifnull(t.name,s.typeid) itemtype \
         , ifnull(c.name,t.catid) category\
-        , p.name place \
         , s.description, s.serialno, s.quantity, s.price  \
     FROM s_stock s \
     LEFT JOIN dkhs_personel p2 on s.userid = p2.persid \

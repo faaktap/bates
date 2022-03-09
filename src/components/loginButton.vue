@@ -1,6 +1,11 @@
 <template>
  <div class="text-center">
-    <v-menu top xoffset-y max-height="400" close-on-content-click>
+    <v-menu
+       v-if="!$vuetify.breakpoint.mobile"
+       top
+       xoffset-y
+       max-height="400"
+       close-on-content-click>
      <v-toolbar color="teal" dense dark>
       <v-app-bar-nav-icon></v-app-bar-nav-icon>
       <v-toolbar-title>

@@ -3,7 +3,7 @@
         <v-autocomplete
                @input="updateValue"
                 :value="value"
-                :label="label"                        
+                :label="label"
                :items="searchStockCategory"
                 prepend-inner-icon="mdi-wardrobe"
                 item-value="catid"
@@ -24,11 +24,10 @@
 <script>
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
-//import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
-//import { getters } from "@/api/store"
+import { crudTask } from "@/components/crud/crudTask.js"
 export default {
    name:"ZStockCat",
-   props:{ 
+   props:{
            value:{}
          , label: {type:String,default:"Stock Category"}
    },
@@ -42,15 +41,15 @@ export default {
            return this.stockCategoryTable
         }
         let x = this.stockCategoryTable.filter(
-          str => ( str.name.toUpperCase().includes(this.searchInput.toUpperCase()) 
-                   || 
-                   str.description.toUpperCase().includes(this.searchInput.toUpperCase()) 
+          str => ( str.name.toUpperCase().includes(this.searchInput.toUpperCase())
+                   ||
+                   str.description.toUpperCase().includes(this.searchInput.toUpperCase())
           )
         )
         console.log(x.length, x)
         return x
       }
-  },  
+  },
   methods:{
     updateValue(e) {
       this.$emit('input', e)
@@ -66,11 +65,14 @@ export default {
     },
     loadData(response) {
         this.stockCategoryTable = response
+        crudTask.save('category', response)
     }
-  },  
+  },
   mounted() {
-     if (this.stockCategoryTable.length < 2) this.getData()
      console.log('Start' , this.$options.name)
+     this.stockCategoryTable = crudTask.load('category')
+     if (this.stockCategoryTable.length == 0) this.getData()
+
   }
 }
 </script>

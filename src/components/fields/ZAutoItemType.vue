@@ -27,6 +27,7 @@
 <script>
 import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
+import { crudTask } from "@/components/crud/crudTask.js"
 export default {
    name:"ZAutoItemType",
    props:{
@@ -35,18 +36,18 @@ export default {
    },
    data: () => ({
      searchInput: null,
-     ItemTypeTable: [],
+     itemTypeTable: [],
      lastOneSelected:''
   }),
   computed: {
     searchItemType() {
         if (!this.searchInput) {
-           return this.ItemTypeTable
+           return this.itemTypeTable
         }
         // Wisdom ZML
         //filter does not work on null values, so we need a "inline if" to check for a null value
         //
-        let x = this.ItemTypeTable.filter(
+        let x = this.itemTypeTable.filter(
           str => ( str.concatsearch.toUpperCase().includes(this.searchInput.toUpperCase()) )
         )
         return x
@@ -58,12 +59,17 @@ export default {
       // Do not change the value here - just emit blank otherwise handler.apply is not a function
       // this.updateValue = ''
       this.$emit('input', '')
+      let index = this.itemTypeTable.findIndex(ele => ele.typeid == e)
+      if (index > -1) {
+        console.log(this.$options.name, 'send object')
+        this.$emit('objectSelected',this.itemTypeTable[index])
+      }
     },
     passItemText() {
       if (this.lastOneSelected) {
-          let index = this.ItemTypeTable.findIndex(ele => ele.typeid == this.lastOneSelected)
+          let index = this.itemTypeTable.findIndex(ele => ele.typeid == this.lastOneSelected)
           if (index > -1) {
-            this.$emit('select',this.ItemTypeTable[index].name)
+            this.$emit('select',this.itemTypeTable[index].name)
           }
       }
     },
@@ -85,12 +91,14 @@ export default {
         zmlFetch(ts, this.loadData)
     },
     loadData(response) {
-        this.ItemTypeTable = response
+        this.itemTypeTable = response
+        crudTask.save('itemtype', response)
     }
   },
   mounted() {
-     console.log('Start' , this.$options.name, this.ItemTypeTable.length)
-     if (this.ItemTypeTable.length < 2) this.getData()
+     console.log('Start' , this.$options.name, this.itemTypeTable.length)
+     this.itemTypeTable = crudTask.load('itemtype')
+     if (this.itemTypeTable.length == 0) this.getData()
   }
 }
 </script>

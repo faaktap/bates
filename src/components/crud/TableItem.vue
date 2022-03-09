@@ -38,8 +38,9 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 :mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20, 30, 40, 50]
+                    'items-per-page-options': [20, 40, 150]
                   }"
            >
              <template v-slot:[`item.typeid`]="{ item }">
@@ -120,7 +121,7 @@ import BaseSearch from '@/components/base/BaseSearch.vue'
 import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 export default {
-  name: "TableItem",
+  name: "TableItemCat",
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
@@ -184,25 +185,22 @@ export default {
         this.showAddTable = true
     },
     retrieveForEditing(item) {
-      console.log('retrie4edit',item)
       let index = tabwSItem.getIndex(item.typeid,this.entityTable)
       if (index !== -1) {
         this.updateMessage = 'Edit'
         this.editTable = this.entityTable[index]
-        console.log('loaded:', this.editTable)
         this.showAddTable = true
       }
     },
     tableDone(response) {
       if (crudTask.reportError(response)) return
       this.entityTable = response
+      crudTask.save('itemtype', response)
 
       //load switches...only when empty
       crudTask.recalcSwitches(this.switchType, this.entityTable, 'shortdesc')
     },
     retrieveForAddStock(item){
-      console.log('retrieveforstockadd', item)
-      console.log('retrieveforstockadd', item.typeid)
       this.updateMessage = 'Create'
       this.editStockTable = {stockid:''  ,typeid:item.typeid
                            ,userid:this.getZml.login.userid
@@ -214,7 +212,6 @@ export default {
       this.showAddStockTable = true
     },
     clickOnStockForm(editTable,method) {
-      console.log('back from stock form', editTable, method)
       if (method != 'cancel')  {
          this.editStockTable = editTable
          tableWork.createNewItem(this.editStockTable, this.refresh)
@@ -230,11 +227,9 @@ export default {
              tabwSItem.saveData(editTable, this.refresh)
              break
         case 'create':
-             console.log('we create')
              tabwSItem.createNewItem(editTable, this.refresh)
              break
         case 'cancel':
-             console.log('we cancel')
              break
         default:
              crudTask.showError('We do not know about ' + method)
@@ -247,9 +242,7 @@ export default {
     refresh(response) {
       //If we have an error, report and wait.
       crudTask.reportError(response)
-      console.log('refresh')
       tabwSItem.getData(this.entity, this.tableDone)
-      console.log('after re')
     },
     checkSaveError(response) {
       //If we have an error, report and wait.
@@ -259,7 +252,10 @@ export default {
   },
   mounted() {
      console.log('Start' , this.$options.name)
-     this.refresh()
+     this.entityTable = crudTask.load('itemtype')
+     if (this.entityTable.length == 0) {
+       this.refresh()
+     }
   }
 }
 </script>

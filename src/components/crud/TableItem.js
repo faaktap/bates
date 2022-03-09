@@ -16,7 +16,7 @@ export const tabwSItem = {
     delete: (itemID,table) => {
         let index = tabwSItem.getIndex(itemID,table)
         if (index != -1) {
-           table.splice(index,1);    
+           table.splice(index,1);
         }
     },
     getData: (key, pCallback) => {
@@ -24,6 +24,7 @@ export const tabwSItem = {
         let ts = {}
         ts.task = 'PlainSql'
         ts.sql = "SELECT i.typeid, i.catid, i.name, i.stocktype, c.name shortdesc, c.description longdesc"
+               + "     , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch"
                + "  FROM s_itemtype i, s_category c"
                + " WHERE c.catid = i.catid"
                + " ORDER BY i.name"
@@ -38,7 +39,7 @@ export const tabwSItem = {
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
     },
-    saveData: (record,pcallback=doneFetch) => {  
+    saveData: (record,pcallback=doneFetch) => {
         let ts = {}
         ts.task = 'PlainSql'
         ts.data = {typeid: record.typeid
@@ -54,7 +55,7 @@ export const tabwSItem = {
         zmlFetch(ts, pcallback, errorFetch)
 
     },
-    deleteData: (record,pcallback=doneFetch) => {  
+    deleteData: (record,pcallback=doneFetch) => {
       let ts = {}
       ts.task = 'PlainSql'
       ts.data = {typeid: record.typeid

@@ -22,8 +22,9 @@
                  :items="entityTableFilter"
                  :search="search"
                  :items-per-page="30"
+                 mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20, 30, 40, 50]
+                    'items-per-page-options': [20, 40, 150]
                   }"
            >
              <template v-slot:[`item.description`]="{ item }">
@@ -98,7 +99,7 @@ import BaseSearch from '@/components/base/BaseSearch.vue'
 import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 export default {
-  name: "TableStockCategory",
+  name: "TableCategory",
   props: ['entity'],
   components: {FrontJsonToCsv
             , BaseSearch
@@ -157,6 +158,7 @@ export default {
     tableDone(response) {
       if (crudTask.reportError(response)) return
       this.entityTable = response
+      crudTask.save('category', response)
     },
     //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
@@ -193,7 +195,8 @@ export default {
   },
   mounted() {
      console.log('Start' , this.$options.name)
-     this.refresh()
+     this.entityTable = crudTask.load('category')
+     if (this.entityTable.length == 0) this.refresh()
   }
 }
 </script>

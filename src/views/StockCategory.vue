@@ -25,7 +25,7 @@
         </v-btn>
       </v-btn-toggle>
     </v-toolbar>
-{{ toggleDisplay }}
+
 <v-container v-if="toggleDisplay == 0" fluid>
     <table-stock-category entity="Category" />
 </v-container>
