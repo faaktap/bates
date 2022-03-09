@@ -1,8 +1,8 @@
 <template>
 
- <v-container fluid> 
-  <base-title-expand :heading="entity + ' View Table'">
-   
+ <v-container fluid>
+  <base-title-expand :heading="entity + ' Table'">
+
     <p>Broad stock categories - to lessen the clutter.</p>
 
   </base-title-expand>
@@ -31,12 +31,12 @@
                {{ item.description.substr(0,80)}} ...
                </template>
                <template v-else>
-                 {{ item.description }} 
+                 {{ item.description }}
                </template>
              </template>
              <template v-slot:[`item.catid`]="{ item }">
               <!--{{ item.catid }}-->
-               <div class="float-right"> 
+               <div class="float-right">
                 <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
@@ -53,25 +53,25 @@
          </v-card>
        </v-col>
     </v-row>
-<!------------------TABLE END------------------------------------------->   
+<!------------------TABLE END------------------------------------------->
   <v-card color="green" class="mt-2 pa-2 text-center">
-     End Of {{ entity }} View Table
+     End of {{ entity }} Table
   </v-card>
 <!------------------ADD/UPDATE FORM------------------------------------------->
-  <v-dialog v-model="showAddTable"  
-           :fullscreen="$vuetify.breakpoint.mobile" 
+  <v-dialog v-model="showAddTable"
+           :fullscreen="$vuetify.breakpoint.mobile"
             content-class="elevation-2"
             style="overflow:hidden"
             xwidth="auto">
-   <table-stock-category-form :updateMessage="updateMessage" 
+   <table-stock-category-form :updateMessage="updateMessage"
                       :dataTable="editTable"
                       :entity="entity"
                       :editFieldDisplay="editTable.name"
                       @save="clickOnForm"
                       @cancel="clickOnForm"
                       @create="clickOnForm"/>
-                     
-  </v-dialog> 
+
+  </v-dialog>
 <!------------------EXPORT------------------------------------------->
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
@@ -80,11 +80,11 @@
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
-    </v-btn> 
+    </v-btn>
    </front-json-to-csv>
   </v-dialog>
-<!------------------------------------------------------------->  
- </v-container>   
+<!------------------------------------------------------------->
+ </v-container>
 </template>
 
 <script>
@@ -111,7 +111,7 @@ export default {
       showAddTable: false,
       showTablePrint:false,
       search:'',
-      updateMessage:'Create',      
+      updateMessage:'Create',
       entityTable:[],
       entityTableHeader:[
            { text: 'Name', value: 'name' }
@@ -134,7 +134,7 @@ export default {
     retrieveForDeleting(item) {
       this.$root.$confirm("Are you sure about deleting?", "If you press YES, byebye", { color: 'red' })
        .then((confirm) => {
-         if (confirm) { 
+         if (confirm) {
            tableWork.deleteData(item,this.refresh)
          }
       })
@@ -142,8 +142,8 @@ export default {
     addNew() {
         this.updateMessage = 'Create'
         this.editTable = {catid:'', name:'A new One', description:''}
-        this.showAddTable = true    
-    },    
+        this.showAddTable = true
+    },
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
       let index = tableWork.getIndex(item.catid,this.entityTable)
@@ -186,11 +186,11 @@ export default {
       tableWork.getData('load'+this.$options.name, this.tableDone)
     },
     checkSaveError(response) {
-      //If we have an error, report and wait.      
+      //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       this.refresh()
     },
-  },  
+  },
   mounted() {
      console.log('Start' , this.$options.name)
      this.refresh()

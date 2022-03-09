@@ -159,7 +159,7 @@ export default {
          , `Do you want to start asset capture for location ${item.name} ?`, { color: 'green' })
        .then((confirm) => {
          if (confirm) {
-           this.$router.push({ name: 'Stock' ,params:{room:item.name},meta: {layout: "AppLayoutDefault" }})
+           this.$router.push({ name: 'Stock' ,params:{room:item.name}})
          } else {
            //alert('you pressed NO ' + item.name)
          }

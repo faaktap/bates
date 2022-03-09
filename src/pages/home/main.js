@@ -1,20 +1,12 @@
 import Vue from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify';
-import router from './router'
-
+import App from '@/App.vue'
+import vuetify from '@/plugins/vuetify';
+import router from '@/router'
 
 import AppLayout from '@/layouts/AppLayout'
 Vue.component('AppLayout', AppLayout)
 
 Vue.config.productionTip = true
-
-// Vue.mixin({
-//   created() {
-//     console.log('[created]1 ' + this.$options.name,)
-//   },
-// });
-
 
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
@@ -25,6 +17,12 @@ Vue.prototype.$playSound = (path = 'img/SodaCanOpen.mp3', volume = .5) => {
   audio.play();
   console.log(path)
 }
+
+Vue.mixin({
+  created() {
+    console.log('[created]H ' + this.$options.name,)
+  },
+});
 
 
 window.onerror = function(message, url, lineNumber) {
@@ -73,6 +71,8 @@ Vue.use(VueHtmlToPaper, {
   ]
 })
 console.log('hello', Vue.prototype)
+
+
 new Vue({
   i18n,
   vuetify,

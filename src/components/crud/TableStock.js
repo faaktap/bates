@@ -2,6 +2,7 @@ import { zmlConfig } from '@/api/constants';
 import { zmlFetch } from '@/api/zmlFetch';
 import { infoSnackbar, errorSnackbar } from '@/api/GlobalActions';
 import { journalTask } from '@/components/crud/journalTask.js';
+import { getters } from "@/api/store";
 
 export const tableWork = {
     name:'tableStockJS',
@@ -19,25 +20,49 @@ export const tableWork = {
            table.splice(index,1);
         }
     },
-    getData: (key, pCallback, filter) => {
-        console.log('getdata:', key, 'filter=',filter)
+    getDevalList(){
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = `SELECT s.stockid, s.typeid, s.userid, s.originalownerid, s.devalid, s.placeid\
-  , s.name, s.datereceived, s.description, s.serialno, s.quantity, s.price\
-  , p1.public_preferredname originalownername, p2.public_preferredname user\
-  , p.name place, d.rulename, t.name itemtype, c.name category, p.name place\
-  FROM s_stock s, dkhs_personel p1, dkhs_personel p2 , s_place p, s_devaluation d\
-      ,s_itemtype t, s_category c\
- WHERE s.originalownerid = p1.persid\
- AND s.userid = p2.persid\
- AND s.price >= 0\
- AND s.placeid = p.placeid\
- AND s.devalid = d.devalid\
- AND t.typeid = s.typeid\
- AND t.catid = c.catid\
- ${filter}\
- ORDER BY s.name`
+        ts.sql = `SELECT typeid FROM s_itemtype WHERE stocktype != 'FREE'`
+        ts.api = zmlConfig.apiPath
+        zmlFetch(ts, tableWork.loadDevalList)
+    },
+    loadDevalList (response) {
+        response.forEach(element => {
+            getters.getState({ object: "gZml" }).devalList.push(element.typeid)
+        });
+        // alert('deval list loaded', getters.getState({ object: "gZml" }).devalList.length,getters.getState({ object: "gZml" }).devalList)
+    },
+    getData: (key, pCallback, filter) => {
+        console.log('getdata:', key, 'filter=',filter)
+        //check first if we have the FREE vs STOCK table
+        console.log('getdata: check the devallist')
+        console.log(getters.getState({ object: "gZml" }).devalList)
+        if (!getters.getState({ object: "gZml" }).devalList.length) {
+            tableWork.getDevalList()
+        }
+        let ts = {}
+        ts.task = 'PlainSql'
+        ts.sql = `SELECT s.stockid, s.typeid, s.userid, s.originalownerid\
+        , s.devalid, s.placeid  , s.name, s.datereceived\
+        , ifnull(p1.public_preferredname,'?') ownername\
+        , ifnull(p2.public_preferredname,'?') user \
+        , ifnull(p.name,s.placeid) place\
+        , ifnull(d.rulename,s.devalid) rulename\
+        , ifnull(t.name,s.typeid) itemtype \
+        , ifnull(c.name,t.catid) category\
+        , p.name place \
+        , s.description, s.serialno, s.quantity, s.price  \
+    FROM s_stock s \
+    LEFT JOIN dkhs_personel p2 on s.userid = p2.persid \
+    LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid  \
+    LEFT JOIN s_devaluation d on s.devalid = d.devalid \
+    LEFT JOIN s_itemtype t on  t.typeid = s.typeid \
+    LEFT JOIN s_place p on s.placeid = p.placeid \
+    LEFT JOIN s_category c on t.catid = c.catid\
+    WHERE s.price >= 0 \
+      ${filter}\
+      ORDER BY s.name`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },

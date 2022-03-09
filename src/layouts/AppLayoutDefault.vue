@@ -1,13 +1,11 @@
 <template>
  <div>
-  <transition name="slide-fade">
-    <slot />
-  </transition>      
+  <slot />
   <transition appear name="slide-y-transition" :duration="{ enter: 1500, leave: 800 }">
     <v-card class="ma-1" 
             color="rgba(105, 199, 71, 0.3)" 
             align="center">
-      - MICH SCORE 0.04 -
+      - ZML 0.04 -
     </v-card>
   </transition>
  </div>   

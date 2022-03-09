@@ -105,7 +105,7 @@
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
                    :json-data="entityTableFilter"
-                   :csv-title="'Bate  Lys/Stock Table'"
+                   :csv-title="'Bate Lys/Stock Table'"
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
@@ -159,9 +159,9 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
           ,{ text: 'Category', value: 'category'}
           ,{ text: 'Date', value: 'datereceived'}
           ,{ text: 'Quantity', value: 'quantity'}
-          ,{ text: 'OOwner', value: 'originalownername'}
+          ,{ text: 'OOwner', value: 'ownername'}
           ,{ text: 'stockid', value: 'stockid'}
-          //,{ text: 'userid', value: 'userid'}
+          ,{ text: 'userid', value: 'userid'}
           //,{ text: 'ownerid', value: 'originalownerid'}
           //,{ text: 'User', value: 'user'}
           //,{ text: 'placeid', value: 'placeid'}
@@ -210,7 +210,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
         this.updateMessage = 'Create'
         this.editTable = {stockid:''
                   , typeid:''
-                  , userid:190
+                  , userid:this.getZml.login.userid
                   , originalownerid:this.defaultOwner
                   , devalid:'3'
                   , placeid:this.defaultPlace
@@ -260,8 +260,15 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
          crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
          console.log('done swotched')
       }
-
-
+      // this.translate(this.entityTable)
+    },
+    translate(tab) {
+      tab.foreach(e => {
+        // stap deur e se velde, en soek vir 'n slash
+        // as jy een kry, besluit of jy die voorste of agterste deel gaan gebuik, en sny hom
+        // kyk dalk na getZml.login.lang, of net watter ene die korste is.
+        console.log(e)
+      })
     },
     //--------------------------------------------------------------------------------
     clickOnForm(editTable,method){
@@ -273,6 +280,9 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
         case 'create':
              console.log('we create')
              if (editTable.placeid && editTable.typeid) {
+                 if (editTable.devalid != 3) {
+                   //test for devaluation rule
+                 }
                  tableWork.createNewItem(editTable, this.refresh)
              } else { return }
              break

@@ -1,8 +1,8 @@
 <template>
 
- <v-container fluid> 
+ <v-container fluid>
   <base-title-expand :heading="entity + ' View Table'">
-   
+
     <p>Refined item types - main category could be furniture, here we would have tables, desks and chairs</p>
     <p>To add stock from here, press the add stock button on the specific item
       (This is just to make it easier to add items)
@@ -16,11 +16,11 @@
       <v-btn class="ma-2" @click="refresh"> Refresh </v-btn>
       <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn>
     </v-card>
-<!------------------SWITCH------------------------------------------->     
-    <v-card v-if="switchType && switchType.length" 
+<!------------------SWITCH------------------------------------------->
+    <v-card v-if="switchType && switchType.length"
              class="row wrap text-center d-flex justify-space-between ml-0 mt-1 mb-2 pl-1 pr-1">
-         <v-card v-for="s in switchType" 
-                :key="s.id" 
+         <v-card v-for="s in switchType"
+                :key="s.id"
                  class="mb-2">
            <v-switch v-model="s.switch"
                      hide-details
@@ -28,7 +28,7 @@
                     :label="s.type" >
            </v-switch>
          </v-card>
-    </v-card>    
+    </v-card>
 <!-------------------TABLE------------------------------------------>
     <v-row>
        <v-col cols="12">
@@ -44,7 +44,7 @@
            >
              <template v-slot:[`item.typeid`]="{ item }">
               <!--{{ item.typeid }}-->
-               <div class="float-right"> 
+               <div class="float-right">
                 <v-btn class="mx-1" x-small  @click="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
@@ -57,41 +57,41 @@
                        tip="add Stock">
                     <v-icon small color="blue" class="my-1">mdi-plus</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Add Stock </template>
-                </v-btn>                
+                </v-btn>
                 </div>
              </template>
            </v-data-table>
          </v-card>
        </v-col>
     </v-row>
-<!------------------TABLE END------------------------------------------->   
+<!------------------TABLE END------------------------------------------->
   <v-card color="green" class="mt-2 pa-2 text-center">
      End Of {{ entity }} View Table
   </v-card>
 <!------------------ADD/UPDATE FORM------------------------------------------->
-  <v-dialog v-model="showAddTable"  
-            fullscreen 
+  <v-dialog v-model="showAddTable"
+            fullscreen
             content-class="elevation-2"
             style="overflow:hidden"
             xwidth="auto">
-   <table-item-form :updateMessage="updateMessage" 
+   <table-item-form :updateMessage="updateMessage"
                       :dataTable="editTable"
                       :entity="entity"
                       :editFieldDisplay="editTable.name"
                       @save="clickOnForm"
                       @cancel="clickOnForm"
                       @create="clickOnForm"/>
-  </v-dialog> 
+  </v-dialog>
 <!------------------ADD/UPDATE STOCK FORM-------------------------------------->
   <v-dialog v-model="showAddStockTable"  fullscreen>
-   <table-stock-form :updateMessage="updateMessage" 
+   <table-stock-form :updateMessage="updateMessage"
                       :dataTable="editStockTable"
                        entity="Stock from Type"
                       :editFieldDisplay="editStockTable.name"
                       @save="clickOnStockForm"
                       @cancel="clickOnStockForm"
                       @create="clickOnStockForm"/>
-  </v-dialog>   
+  </v-dialog>
 <!------------------EXPORT------------------------------------------->
   <v-dialog v-model="showTablePrint" width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
    <front-json-to-csv v-if="entityTable"
@@ -100,11 +100,11 @@
                    @hideModal="showTablePrint = false">
     <v-btn>
       Download with custom title
-    </v-btn> 
+    </v-btn>
    </front-json-to-csv>
   </v-dialog>
-<!------------------------------------------------------------->  
- </v-container>   
+<!------------------------------------------------------------->
+ </v-container>
 </template>
 
 <script>
@@ -135,10 +135,10 @@ export default {
       showAddStockTable: false,
       showTablePrint:false,
       search:'',
-      updateMessage:'Create',      
+      updateMessage:'Create',
       entityTable:[],
       entityTableHeader:[
-           { text: 'Category', value: 'shortdesc'}        
+           { text: 'Category', value: 'shortdesc'}
           ,{ text: 'Name', value: 'name' }
           //,{ text: 'StockType', value: 'stocktype'}
           ,{ text: 'actions', value: 'typeid' , align: 'right'}
@@ -160,14 +160,14 @@ export default {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) ) 
-      } 
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) )
+      }
   },
   methods: {
     retrieveForDeleting(item) {
       this.$root.$confirm("Are you sure about deleting?", "If you press YES,byebye", { color: 'red' })
        .then((confirm) => {
-         if (confirm) { 
+         if (confirm) {
            tabwSItem.deleteData(item,this.refresh)
          } else {
            //alert('you pressed NO ' + item.name)
@@ -181,8 +181,8 @@ export default {
                     ,catid:''
                     ,stocktype:''
                     }
-        this.showAddTable = true    
-    },    
+        this.showAddTable = true
+    },
     retrieveForEditing(item) {
       console.log('retrie4edit',item)
       let index = tabwSItem.getIndex(item.typeid,this.entityTable)
@@ -205,12 +205,13 @@ export default {
       console.log('retrieveforstockadd', item.typeid)
       this.updateMessage = 'Create'
       this.editStockTable = {stockid:''  ,typeid:item.typeid
-                           ,userid:190
-                           ,originalownerid:190 ,devalid: 3      ,placeid:''
+                           ,userid:this.getZml.login.userid
+                           ,originalownerid:''
+                           ,devalid: 3      ,placeid:''
                            ,name:''            ,description:''   ,quantity:1
                            ,serialno:''        ,datereceived:''  ,price:0
                            }
-      this.showAddStockTable = true         
+      this.showAddStockTable = true
     },
     clickOnStockForm(editTable,method) {
       console.log('back from stock form', editTable, method)
@@ -251,11 +252,11 @@ export default {
       console.log('after re')
     },
     checkSaveError(response) {
-      //If we have an error, report and wait.      
+      //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       this.refresh()
     },
-  },  
+  },
   mounted() {
      console.log('Start' , this.$options.name)
      this.refresh()

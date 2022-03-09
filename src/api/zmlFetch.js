@@ -27,13 +27,13 @@ function zmlFetch(task,callback,errcallback, extraParameter) {
         })  
         .then(responseAsJson => { 
            //here we can decompress if return is gzipped, or we can do local callback to save globals?
-           zmlConfig.cl('FETCH--------------: after fetch callback for ',task.task)
+           // zmlConfig.cl('FETCH--------------: after fetch callback for ',task.task)
            if (callback) callback(responseAsJson,task,extraParameter ?? 'none')
         })
         .catch(err => {
             if ( typeof errcallback === 'undefined') {
                 //('we have no error callback on this call', err, task.task)
-                zmlConfig.cl('FETCH--------------catch with no callback',task.task,err)
+                // zmlConfig.cl('FETCH--------------catch with no callback',task.task,err)
             } else {
                 zmlConfig.cl('FETCH--------------catch with errcallback',task.task,err)
                 errcallback(err)                

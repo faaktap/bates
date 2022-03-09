@@ -1,9 +1,11 @@
 <template>
- <div v-if="dataList && dataHeader">
+ <div v-if="dataList && dataHeader" id="printMe">
+<div class="print" style="float: left;">DKHS-BTS</div>
+<div class="print" style="float: right;">High School De Kuilen Hoërskool</div>
    <v-row no-gutters class="mb-6" >
-    <v-col cols="12" class="heading-2 text-center"> 
+    <v-col cols="12" class="heading-2 text-center">
       <v-card class="pa-2"  color="blue" >
-          VIEWER :  {{ userHeader }}  
+          VIEWER :  {{ userHeader }}
       </v-card>
     </v-col>
    </v-row>
@@ -16,12 +18,11 @@
     class="elevation-2"
     disable-pagination
     hide-default-footer
-    id="printMe"
     @click:row="clickOnRow"
    >
-   </v-data-table>       
+   </v-data-table>
  </v-card>
- </div>   
+ </div>
 </template>
 
 
@@ -35,7 +36,7 @@ export default {
         dataHeader: [
           {text: 'User',             value: 'user_name' },
           {text: 'Type',             value: 'user_type' }
-        ]      
+        ]
     }),
     methods:{
       clickOnRow(p1,p2) {
@@ -53,9 +54,22 @@ export default {
           })
       },
       printIt() {
-        const style =
-          "@page { margin-top: 10px } @media print { h1 { color: blue },heading { color: blue } }";
-        const headerStyle = "align:center;";
+        // console.log(this.$VueHtmlToPaper);
+        // this.$htmlToPaper('printMe');
+        // alert('wait')
+        const style = `
+          @page { margin-top: 10px }
+          @media print {
+          .print  {display:block}\
+          body {overflow: auto;height: auto;font:Garamond;}\
+          h1 { color: #1c3a1b }\
+          heading { color: #1c3a1b }\
+          p.bodyText {font-size:10pt}\
+          th, td {border-radius:6px; padding: 10px;margin: 10px; border: 1px solid #67656d;}\
+          aside {display: none;}\
+          main {display: block;}\
+         }`
+        const headerStyle = "font-weight: 300; align: center;font:Garamond";
           printJS({
            printable: "printMe",
            type: "html",
@@ -67,7 +81,7 @@ export default {
            onError: e => console.log(e)
           });
 
-/*  Other way of printing the data....        
+/*  Other way of printing the data....
             // Get HTML to print from element
             (this.$refs)
             let prtHtml = '<table style="border-collapse: collapse">'
@@ -93,7 +107,7 @@ export default {
             }
             // Open the print window
             const WinPrint = window.open('', '', 'left=0,top=0,width=800,height=900,toolbar=0,scrollbars=0,status=0');
-            
+
             WinPrint.document.write(`<!DOCTYPE html>
             <html>
               <head>
@@ -103,12 +117,12 @@ export default {
                 ${prtHtml}
               </body>
             </html>`);
-            
+
             WinPrint.document.close();
             WinPrint.focus();
             WinPrint.print();
-            WinPrint.close();          
-*/            
+            WinPrint.close();
+*/
       }
 
     },
@@ -147,10 +161,11 @@ export default {
 </script>
 
 <style scoped>
+.print {display:none;}
 @media print {
-  body { 
+  body {
     overflow: auto;
-    height: auto; 
+    height: auto;
   }
   .scroll-y {
      height: auto;
@@ -159,7 +174,7 @@ export default {
   .v-dialog--fullscreen {
      position: absolute;
      overflow: visible;
-  }  
+  }
 }
 .capitalize-first {
   text-transform: lowercase;

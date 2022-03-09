@@ -219,7 +219,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {stockid:''  ,typeid:''         ,userid:190
+        this.editTable = {stockid:''  ,typeid:''         ,userid:this.getZml.login.userid
                   ,originalownerid:'' ,devalid:'3'         ,placeid:''
                   ,name:''            ,description:''   ,quantity:1
                   ,serialno:''        ,datereceived:''  ,price:0

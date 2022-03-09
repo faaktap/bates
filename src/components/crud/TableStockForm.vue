@@ -12,7 +12,8 @@
     </v-card-text>
 
     <v-card-text class="mt-0 mb-0 pt-0 justify-center">
-
+   <v-card color="red"> {{ message }} </v-card>
+   <form @submit="checkForm" id="TSF" v-on:keyup.enter="onEnter">
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
        <v-col cols="12" sm="4">
           <z-auto-item-type v-model="dataTable.typeid"
@@ -52,7 +53,7 @@
                        type="number"
                        />
        </v-col>
-       <v-col cols="12" sm="4" md="4"> {{ dataTable.originalownerid }}
+       <v-col cols="12" sm="4" md="4">
          <z-auto-pers v-model="dataTable.originalownerid"
                       @select="placeWasSelected"
                        label="Owner"
@@ -73,6 +74,7 @@
 
 
       </v-layout>
+   </form>
      </v-card-text>
 
 <v-card-text>
@@ -118,6 +120,7 @@ export default {
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
       rules: { required: [value => !!value || "Required."] },
+      message: ''
   }),
   computed: {
     buttonText() {
@@ -135,6 +138,34 @@ export default {
     }
   },
   methods:{
+
+    checkForm(e) {
+      console.log('Check Form : ' , e)
+      if (e == 'Save' || e == 'Create') {
+        if (!this.dataTable.typeid) {
+           this.message  = 'At least select a type!'
+           return false
+        }
+        if (parseInt(this.dataTable.quantity) == 0) {
+           this.message  = 'The quantity must be filled in'
+           return false
+        }
+        if (this.dataTable.devalid == 3) {
+          if (parseInt(this.dataTable.price) > 0) {
+            this.message  = 'The price must be filled in'
+            return false
+          }
+        } else {
+          console.log(this.dataTable.serialno , parseInt(this.dataTable.price) , this.dataTable.quantity)
+          console.log(!this.dataTable.serialno , !(parseInt(this.dataTable.price) > 0) , !this.dataTable.quantity)
+          if (!this.dataTable.serialno || !(parseInt(this.dataTable.price) > 0) || !this.dataTable.quantity) {
+            this.message  = 'The serialno, price and quantity must be filled in'
+            return false
+          }
+        }
+      }
+      return true
+    },
     typeWasSelected(e) {
       console.log('getting a type', e)
       if (e) {
@@ -144,8 +175,12 @@ export default {
         } else {
           this.dataTable.name = e.toLowerCase()
         }
-
       }
+      console.log(this.getZml.devalList, this.getZml.devalList.includes(this.dataTable.typeid))
+      if (this.getZml.devalList.includes(this.dataTable.typeid)) {
+        this.dataTable.devalid = 1
+      }
+      console.log('devalid is nou ',this.dataTable.devalid,this.dataTable.typeid)
     },
     placeWasSelected(e) {
       console.log('getting a place', e)
@@ -161,8 +196,12 @@ export default {
         console.log('we already have a owner :' ,this.dataTable.originalownerid)
       }
     },
+    onEnter() {
+      this.listenToToolbar ('Save')
+    },
     listenToToolbar(e) {
-      this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
+      if (this.checkForm(e))
+        this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
     }
   },
   mounted() {

@@ -4,6 +4,7 @@
   <base-title-expand :heading="entity + ' Table'">
 
     <p>To tie the rooms/garages/places together. Hallway 1, or `behind the pavillion` </p>
+    <p>Double click to go to locations for a workarea.</p>
 
   </base-title-expand>
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
@@ -93,7 +94,8 @@ import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 
 export default {
   name: "TableWorkArea",
-  props: ['entity','workarea'],
+  props: { entity:{default:"Location(Work) Areas"}
+         },
   components: {FrontJsonToCsv
             , BaseSearch
             , BaseTitleExpand
@@ -139,7 +141,7 @@ export default {
          , `Do you want to view locations for ${item.name} ?`, { color: 'green' })
        .then((confirm) => {
          if (confirm) {
-           this.$router.push({ name: 'Classes' ,params:{area:item.name},meta: {layout: "AppLayoutDefault" }})
+           this.$router.push({ name: 'Classes' ,params:{area:item.name}})
          } else {
            //alert('you pressed NO ' + item.name)
          }

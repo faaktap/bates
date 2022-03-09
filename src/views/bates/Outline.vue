@@ -1,6 +1,10 @@
 <template>
  <div>
 
+   <v-btn @click="sel='journal'" small class="ma-2"> Journal </v-btn>
+   <v-btn @click="sel='stock'" small class="ma-2"
+          tip="Van hier word joernaal inskrywings gedoen vir all verandering of checks"> Voorraad / Stock </v-btn>
+
    <v-btn @click="sel='cat'"  small class="ma-2"
           tip="baie basiese kategorie / hoof struktuur"> Kategorie / Category </v-btn>
    <v-btn @click="sel='type'" small class="ma-2"
@@ -9,9 +13,7 @@
           tip="Om maklik kamers in areas op te kan deel"> Area waarin klasse/plekke is / Work Area </v-btn>
    <v-btn @click="sel='class'" small class="ma-2"
           tip="klasse kan ook die 'garage' wees, met die bussies en grassnyers?"> Klasse / Classrooms </v-btn>
-   <v-btn @click="sel='stock'" small class="ma-2"
-          tip="Van hier word joernaal inskrywings gedoen vir all verandering of checks"> Voorraad / Stock </v-btn>
-   <v-btn @click="sel='journal'" small class="ma-2"> Journal </v-btn>
+
 
     <table-stock-category v-if="sel=='cat'"
                           entity="Category" />
@@ -53,7 +55,7 @@ export default {
               },
 
   data: () => ({
-      sel:'type',
+      sel:'journal',
   }),
   methods:{
   },

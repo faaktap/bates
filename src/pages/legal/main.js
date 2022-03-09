@@ -1,20 +1,18 @@
 import Vue from 'vue'
-import App from './App.vue'
-import vuetify from './plugins/vuetify';
+import App from '@/App.vue'
+import vuetify from '@/plugins/vuetify';
 import router from './router'
-
 
 import AppLayout from '@/layouts/AppLayout'
 Vue.component('AppLayout', AppLayout)
 
 Vue.config.productionTip = true
 
-// Vue.mixin({
-//   created() {
-//     console.log('[created]1 ' + this.$options.name,)
-//   },
-// });
-
+Vue.mixin({
+  created() {
+    console.log('[created]2 ' + this.$options.name,)
+  },
+});
 
 import VueI18n from 'vue-i18n'
 Vue.use(VueI18n)
@@ -27,17 +25,17 @@ Vue.prototype.$playSound = (path = 'img/SodaCanOpen.mp3', volume = .5) => {
 }
 
 
-window.onerror = function(message, url, lineNumber) {
+window.onerror = function(message, url, lineNumber) {  
   alert(message + lineNumber + url)
   return true;
-};
+}; 
 
 
 // eslint-disable-next-line
 export const cs = {
   // eslint-disable-next-line
-  l: (...args) => {
-     console.log(...args);
+  l: (...args) => {   
+     console.log(...args);   
     }
 }
 
@@ -58,21 +56,6 @@ let i18n = new VueI18n({
   messages: messages
 })
 
-
-import VueHtmlToPaper from 'vue-html-to-paper';
-Vue.use(VueHtmlToPaper, {
-  name: '_blank',
-  specs: [
-    'fullscreen=yes',
-    'titlebar=yes',
-    'scrollbars=yes'
-  ],
-  styles: [
-    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
-  ]
-})
-console.log('hello', Vue.prototype)
 new Vue({
   i18n,
   vuetify,

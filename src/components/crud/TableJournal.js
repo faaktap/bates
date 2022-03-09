@@ -23,15 +23,20 @@ export const tableWork = {
         let ts = {}
         ts.task = 'PlainSql'
         ts.sql = `SELECT j.journalid, j.stockid, j.userid, j.persid, j.journaltypeid, j.datecreated, j.quantity\
-                     ,p1.public_preferredname owner, p2.public_preferredname user \
-                    ,s.name stockitem, s.placeid, p.name place, t.name journaltype \
-                FROM s_journal j, dkhs_personel p1, dkhs_personel p2 , s_stock s, s_place p, s_journaltype t \
-               WHERE j.persid = p1.persid\
-                 AND j.userid = p2.persid\
-                 AND s.placeid = p.placeid\
-                 AND s.stockid = j.stockid\
-                 AND j.journaltypeid = t.journaltypeid\
-               ORDER BY j.journalid ASC`
+        , ifnull(p1.public_preferredname,'owner?') owner\
+        , ifnull(p2.user_name,'user?') user\
+        , ifnull(s.name,'stock?') stockitem\
+        , ifnull(s.placeid, 'place?') placeid\
+        , ifnull(p.name, 'unknown') place\
+        , ifnull(t.name,'j?') journaltype\
+  FROM s_journal j\
+  left join dkhs_personel p1 on j.persid = p1.persid \
+  left join dkhs_learner p2 on j.userid = p2.userid\
+  left join s_stock s on s.stockid = j.stockid\
+  left join s_place p on s.placeid = p.placeid\
+  left join s_journaltype t on j.journaltypeid = t.journaltypeid\
+  ORDER BY j.journalid ASC
+  `
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },

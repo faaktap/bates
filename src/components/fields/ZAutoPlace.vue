@@ -61,7 +61,7 @@ export default {
     },
     getData() {
         if (this.getZml.place.length > 0) {
-          this.placeTable = this.getZml.owner
+          this.placeTable = this.getZml.place
         } else {
           let ts = {}
           ts.task = 'PlainSql'

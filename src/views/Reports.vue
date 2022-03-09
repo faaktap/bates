@@ -1,4 +1,5 @@
 <template>
+<v-container fluid>
  <v-card>
     <v-toolbar
       color="cyan"
@@ -42,21 +43,29 @@
           </v-card-actions>
           <v-card-text>
             {{ item.id }} :: {{ countSql }}
+            <v-btn small @click="build"> Build </v-btn>
           </v-card-text>
         </v-card>
       </v-tab-item>
     </v-tabs-items>
   </v-card>
+  <reports-table v-if="sqlSelect"
+     :tableHeader="sqlHeader"
+     :sqlSelect="sqlSelect"
+     />
+</v-container>
 </template>
 
 <script>
 import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
+import ReportsTable from './ReportsTable.vue'
 export default {
   name: 'Report',
   components:{
     ZAutoPers,
-    ZAutoPlace
+    ZAutoPlace,
+    ReportsTable
   },
   data: () => ({
     show: false,
@@ -68,16 +77,37 @@ export default {
         ],
     countSql:null,
     reportOwner:null,
-    reportPlace:null
+    reportPlace:null,
+    sqlSelect:null,
+    sqlHeader: [{value:'name',text: 'name'}]
 
   }),
+  computed:{
+  },
   methods: {
     selOwner(e1,e2) {console.log('place',e1,e2)},
     selPlace(e1,e2) {console.log('own',e1,e2)},
+    build(u) {
+      console.log('build base on this.tab',u)
+      if (this.tab == 0) {
+         this.sqlSelect = 'select * from s_category'
+         this.sqlHeader =  [{text: 'name',value:'name'},{text: 'id',value:'catid'}]
+    } else {
+         this.sqlSelect = 'select catid, name, description from s_category'
+         this.sqlHeader =  [{text: 'name',value:'name'}
+                           ,{text: 'id',value:'catid'}
+                           ,{text: 'desc',value:'description'}]
+
+    }
+    },
+
   },
   mounted() {
   },
   watch:{
+    tab() {
+      console.log('new tab = ', this.tab)
+    },
     reportPlace() {
       this.countSql = this.items[0].sql + ` where locationid = ${this.reportPlace}`
     },

@@ -83,7 +83,7 @@ export default {
     handleError (msg, hasErrorEvent) {
       console.log(hasErrorEvent)
       throw msg
-      
+
       //if (hasErrorEvent) this.$emit('error', msg)
     }
   }

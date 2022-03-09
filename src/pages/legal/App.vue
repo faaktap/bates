@@ -35,7 +35,7 @@ import EventBus, { ACTIONS } from '@/api/event-bus';
 //import TablePlace from '@/components/crud/TablePlace.vue';
 //import TransitionExpand from '@/components/transition/TransitionExpand.vue'
 export default {
-  name: 'ZmlApp',
+  name: 'ZmlApp111111',
   components:{
       confirm,
       //TransitionExpand

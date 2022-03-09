@@ -1,14 +1,13 @@
 <template>
  <v-container>
   <v-row class="justify-center"  align="center" justify-center>
-  
-    <v-col v-if="getZml.login.isAuthenticated" 
+    <v-col v-if="getZml.login.isAuthenticated"
            class="mx-auto my-12">
      <v-card max-width="500"
            color=#F5F5F5>
       <v-card-title>
        <h2> Kuilies Session Status  </h2>
-      </v-card-title>  
+      </v-card-title>
       <v-card-text class="ma-2">
         <v-card color="gray" class="ma-2 pa-4">
        You are logged in as {{ getZml.login.username }} since {{ getZml.login.lastdate }}.
@@ -24,21 +23,21 @@
       <v-card-actions>
        <v-btn  @click="showProfile = !showProfile" color="info">
         Profile
-       </v-btn>          
-       <v-btn @click="doBack" color="primary"> Back </v-btn>
+       </v-btn>
+       <v-btn @click="doBack" color="primary"> Home </v-btn>
        <v-btn color="info" @click="startLearning"> Continue </v-btn>
         <v-spacer />
        <v-btn  @click="logout" color="info">
         Logout
-       </v-btn>  
-      </v-card-actions>        
+       </v-btn>
+      </v-card-actions>
      </v-card>
     </v-col>
-<!-- ------------------------------------ -->    
-     <v-col v-else 
-             class="mx-auto my-8 justify-center"> 
+<!-- ------------------------------------ -->
+     <v-col v-else
+             class="mx-auto my-8 justify-center">
      <v-hover v-slot:default="{ hover }">
-      <v-card  
+      <v-card
            color=#F5F5F5
            style="xoverflow: auto;"
           :elevation="hover ? 12 : 2"
@@ -46,28 +45,28 @@
       >
        <v-card-title>
          <v-spacer />
-         <h2 class="justify-center"> Kuilies Login </h2>
-         <v-spacer />         
+         <h2 class="justify-center"> Kuilies Bates Login </h2>
+         <v-spacer />
          <v-img src="img/CleanDKHS.png" max-width="80" class="float-left" contain elevation="6"/>
 
        </v-card-title>
        <v-card-text>
         <v-form class="px-3" ref="loginForm" max-width="400" v-on:submit.prevent="onSubmit">
-         <v-text-field  label="User" 
-            v-model="loginObj.username" 
+         <v-text-field  label="User"
+            v-model="loginObj.username"
             autocomplete="username"
-            prepend-icon="mdi-account-circle" 
+            prepend-icon="mdi-account-circle"
             :rules="inputRules"
-            autofocus 
+            autofocus
          />
-         <v-text-field 
-            label="Password" 
+         <v-text-field
+            label="Password"
             autocomplete="current-password"
-            v-model="loginObj.password" 
-            prepend-icon="mdi-lock" 
+            v-model="loginObj.password"
+            prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
-            :type="showPassword ? 'text' : 'password'" 
+            :type="showPassword ? 'text' : 'password'"
             v-on:keyup.enter="onEnter"
          />
         </v-form>
@@ -75,38 +74,38 @@
        <v-card-actions class="px-3">
         <v-btn @click="registrationMessage()" class="mx-8 my-3" color="info"> Register </v-btn>
         <v-spacer />
-        <v-btn 
+        <v-btn
             class="mx-0 my-3"
             :loading="submitting"
             @click.prevent="submit"
             color="info"
             :disabled="submitting"
-        >  Login </v-btn>        
-       </v-card-actions>   
+        >  Login </v-btn>
+       </v-card-actions>
       </v-card>
   </v-hover>
  </v-col><!-- Else End-->
      </v-row>
-     
+
     <v-row>
-      <v-col> 
-        <v-card class="ma-5 pa-4" v-show="getZml.login.isAuthenticated == false"> 
-          <v-icon color="purple darken-2"> mdi-help-circle-outline </v-icon> If you are a learner, your login would start with your schoolno, and 
+      <v-col>
+        <v-card class="ma-5 pa-4" v-show="getZml.login.isAuthenticated == false">
+          <v-icon color="purple darken-2"> mdi-help-circle-outline </v-icon> If you are a learner, your login would start with your schoolno, and
           if you are a teacher it would be your teacher login details. Request them from Werner at  082 563 9790
-          if you are unsure.</v-card>  
-        <v-card class="ma-5 pa-4" v-show="getZml.login.isAuthenticated == true"> 
-          <v-icon color="purple darken-2"> mdi-help-circle-outline </v-icon> 
+          if you are unsure.</v-card>
+        <v-card class="ma-5 pa-4" v-show="getZml.login.isAuthenticated == true">
+          <v-icon color="purple darken-2"> mdi-help-circle-outline </v-icon>
           If you have any questions or problems on this site, feel free to share any ideas
           with us. Drop an email to werner@zmlrekenaars.co.za. If you have content problems, speak to
-          your teacher.</v-card>  
+          your teacher.</v-card>
 
       </v-col>
     </v-row>
     <v-container>
 
 
-<!-- PROFILE --------------------->      
-    <v-dialog v-model="showProfile" :scrollable="false" 
+<!-- PROFILE --------------------->
+    <v-dialog v-model="showProfile" :scrollable="false"
               persistent width="50%" dark
               :fullscreen="$vuetify.breakpoint.smAndDown"
               >
@@ -117,17 +116,17 @@
         <v-card-subtitle> Please make note of your password, or change it</v-card-subtitle>
         <v-card-text>
 
-         <v-text-field 
-               v-model="getZml.login.username" 
+         <v-text-field
+               v-model="getZml.login.username"
                :disabled="getZml.login.userid > 0"
                label="Username" />
-         <v-text-field 
-            v-model="getZml.login.password" 
-            label="Password" 
-            prepend-icon="mdi-lock" 
+         <v-text-field
+            v-model="getZml.login.password"
+            label="Password"
+            prepend-icon="mdi-lock"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
-            :type="showPassword ? 'text' : 'password'" 
+            :type="showPassword ? 'text' : 'password'"
             required />
          <v-text-field v-model="getZml.login.fullname" label="Fullname" required />
          <v-text-field v-model="getZml.login.phone" label="Phone"  />
@@ -172,7 +171,7 @@ export default {
       testMe() {
         return ('hallo');
       }
-    }    
+    }
     ,data() {
       return {
         hover: false,
@@ -185,18 +184,15 @@ export default {
         loginIcon: 'mdi-human-greeting',
         loading: null,
         showPassword: false,
-        showProfile: false,          
+        showProfile: false,
       }
   }
   ,methods: {
     getData() {
-      zData.initialData('Load Important Data')
-      zData.calendarData('Load Holiday and Birthday Data') 
-      zData.functionData('Load functions') 
     },
     doBack() {
       this.getData();
-      zmlLog(this.getZml.login.username , "Login", this.getZml.login.userid + ',' + this.getZml.login.lastdate)      
+      zmlLog(this.getZml.login.username , "Login", this.getZml.login.userid + ',' + this.getZml.login.lastdate)
       if (this.getZml.login.password == 'password' || this.getZml.login.password.length < 3) {
         errorSnackbar("Your password's to easy! Click on the eye to view and change it")
         return
@@ -205,38 +201,24 @@ export default {
     },
     startLearning() {
       this.getData();
-      this.loadLearn()
+      this.startWork()
     },
-    loadLearn() {
-      
-      
+    startWork() {
+      zmlLog(this.getZml.login.username , "Login", this.getZml.login.userid + ',' + this.getZml.login.lastdate)
       switch (this.getZml.login.type) {
-        case 'student' :
-        {
-           //we have a grade value of 09E2 in login.grade, and we want to split it.
-           //slice(startIndex[, endIndex])
-           this.getZml.gradeLastChosen = 'G' + this.getZml.login.grade
-           this.getZml.login.class  = this.getZml.login.grade.slice(3,4)
-           this.getZml.login.gclass = this.getZml.login.grade.slice(2,4)
-           //alert(this.getZml.login.grade)
-           this.getZml.login.grade  = this.getZml.login.grade.slice(0,2).padStart(2,'0')
-           //alert(this.getZml.login.grade)
-           this.$router.push({ name: 'Home' , meta: {layout: "AppLayoutDefault" }})
-           break;
-        }
         case 'teacher':
         {
-          this.$router.push({ name: 'RealHome' , meta: {layout: "AppLayoutDefault" }});  
+          this.$router.push({ name: 'Home'});
           break;
         }
         case 'admin' :
         {
-          this.$router.push({ name: 'RealHome' , meta: {layout: "AppLayoutDefault" }});  
+          this.$router.push({ name: 'Home'});
           break;
         }
         default:
         {
-          this.$router.push({ name: 'Grade' ,meta: {layout: "AppLayoutGray" }});  
+          this.$router.push({ name: 'ErrorPage' });
           break;
         }
       }
@@ -250,11 +232,11 @@ export default {
        }
     },
     registrationMessage() {
-        infoSnackbar("Sorry! No registration from Login Form. You are already registered.")
+        infoSnackbar("Sorry! No registration from Login Form. You are already registered. Ask Werner to send you your login name!")
     },
     logout() {
           const bye = 'Thanks for using the system ' + this.getZml.login.fullname + '!'
-          infoSnackbar(bye);         
+          infoSnackbar(bye);
           this.getZml.login.class = ''
           this.getZml.login.gclass = ''
           this.getZml.login.grade = ''
@@ -285,7 +267,7 @@ export default {
           }
     },
     loginFail(error) {
-        this.submitting = false;                 
+        this.submitting = false;
         infoSnackbar('LoginFailed: We could not make contact with our server. (' + error + ')')
     },
     doneWithLogin(response) {
@@ -311,15 +293,15 @@ export default {
               this.getZml.login.lang = 'A'
             }
             console.log('welcome',response.username, this.getZml.login.lang, this.getZml.login.grade,'idx=',this.getZml.login.grade.indexOf('A'))
-            this.dropAnEmail()
+            // this.dropAnEmail()
             if (response.added == 1  || response.password == 'password') {
               infoSnackbar('Welcome ' + this.getZml.login.fullname + ', please update your details');
-              this.showProfile = 1; 
+              this.showProfile = 1;
             } else {
               infoSnackbar('Welcome ' + response.fullname  + '(' + response.username + ')' )
               let loginDetails = JSON.stringify(this.getZml.login)
               localStorage.setItem('login', loginDetails)
-              this.startLearning()
+              //this.startLearning()
             }
           } else {
             errorSnackbar('Auth Failed:' + response.error)
@@ -345,18 +327,18 @@ export default {
     },
     dropAnEmail() {
       this.getZml.login.password = 'secret'
-      let email = 
+      let email =
               { subject  : "Learn1 : User has logged on " + this.getZml.login.fullname
                ,email_to :"faaktap@gmail.com"
                ,htmlmessage : '<h2> LEARN1 - logged on ' + zmlConfig.projectID + '</h2>'
-                       + '<br>Username : '  + this.getZml.login.username 
-                       + '<br>Fullname : '  + this.getZml.login.fullname 
+                       + '<br>Username : '  + this.getZml.login.username
+                       + '<br>Fullname : '  + this.getZml.login.fullname
                        + '<br>Language : '  + this.getZml.login.lang
                        + '<br>Logins : '    + this.getZml.login.logins
                        + '<br>Phone : '     + this.getZml.login.phone
                        + '<br>Studentid : ' + this.getZml.login.studentid
-                       + '<br>Type : '      + this.getZml.login.type  
-                       + '<br>Username : '  + this.getZml.login.username 
+                       + '<br>Type : '      + this.getZml.login.type
+                       + '<br>Username : '  + this.getZml.login.username
                        + '<br>Grade : '     + this.getZml.login.grade
                        + '<br>GClass : '    + this.getZml.login.gclass
                        + '<br>JSON'         + JSON.stringify( this.getZml.login )
@@ -364,12 +346,12 @@ export default {
       zData.sendEmail(email)
     },
   },
-  created: function() {  
+  created: function() {
   },
   mounted: function () {
     //Check localstorage...
     if (localStorage.getItem('login')) {
-      try { 
+      try {
         this.getZml.login = JSON.parse(localStorage.getItem('login'));
       } catch(e) {
         localStorage.removeItem('login')

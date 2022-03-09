@@ -5,14 +5,15 @@
             :class="{'on-hover': hover,'overwrite-hover': $vuetify.breakpoint.xsOnly}"
             @click="goHome()"
             class="ma-2"
-    > 
+            large
+    >
     <v-spacer />
-      <v-icon color="blue" class="ma-2"> 
+      <v-icon color="green darken-3" class="ma-2">
          <template v-if="hover"> HS </template> <!--{{ mainIcon[curIcon + hover] }}-->
          <template v-else> DK </template>
       </v-icon>
       <div v-show="!$vuetify.breakpoint.smAndDown">
-        {{ maintitle }} 
+        {{ maintitle }}
       </div>
     </v-btn>
     </v-hover>
@@ -21,19 +22,19 @@
          style="transform: scale(0.875);transform-origin: left;"
          overlay-color="purple"
          :fullscreen="$vuetify.breakpoint.mobile">
-  <v-card class="white text--black pa-2"> 
+  <v-card class="white text--black pa-2">
    <v-card-title>
       <legend> {{titleButtonHeading}}</legend>
    </v-card-title>
-   
-   <v-card-text> 
+
+   <v-card-text>
    <v-row>
      <v-col cols="12">
       <toolbar-buttons menuDisplay="shortcutlist" :buttonGroup="toolbars" />
      </v-col>
    </v-row>
    </v-card-text>
-    
+
 
      <v-card-actions>
         <v-btn small color=primary @click="titleDialog=!titleDialog"> {{ titleButtonHeadingCloseButton }} </v-btn>
@@ -62,14 +63,14 @@ export default {
     goHome() {
       //titleDialog = !titleDialog
       if (this.clickToGoBack==true && this.$router.currentRoute.path !== "/") {
-            this.$router.push('/') 
+            this.$router.push('/')
       }
       this.$emit("click")
 
     },
       about() {
         if (this.$router.currentRoute.path !== "/about") {
-            this.$router.push('/about') 
+            this.$router.push('/about')
         }
       },
   },
