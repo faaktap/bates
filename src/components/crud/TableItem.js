@@ -23,11 +23,11 @@ export const tabwSItem = {
         console.log(key)
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT i.typeid, i.catid, i.name, i.stocktype, c.name shortdesc, c.description longdesc"
-               + "     , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch"
-               + "  FROM s_itemtype i, s_category c"
-               + " WHERE c.catid = i.catid"
-               + " ORDER BY i.name"
+        ts.sql = `SELECT i.typeid, i.catid, i.name, i.stocktype, c.name category, c.description longdesc
+                        , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch
+                  FROM s_itemtype i, s_category c
+                 WHERE c.catid = i.catid
+                 ORDER BY concatsearch ASC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
@@ -50,7 +50,8 @@ export const tabwSItem = {
             ,catid: record.catid
             ,name : record.name
             ,stocktype: record.stocktype}
-        ts.sql = 'update s_itemtype set name = :name, stocktype = :stocktype, catid = :catid where typeid = :typeid;'
+        ts.sql = `update s_itemtype set name = :name, stocktype = :stocktype, catid = :catid \
+                   where typeid = :typeid;`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pcallback, errorFetch)
 
@@ -79,6 +80,6 @@ function doneFetch (response) {
 }
 
 function errorFetch (response) {
-    console.log('error:', response)
-    errorSnackbar('We had an error saving your data!' + response)
-}
+    console.log('xexxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxrror:', response)
+    errorSnackbar('We had an error saving your data!' + response.error)
+ }

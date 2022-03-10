@@ -139,7 +139,7 @@ export default {
       updateMessage:'Create',
       entityTable:[],
       entityTableHeader:[
-           { text: 'Category', value: 'shortdesc'}
+           { text: 'Category', value: 'category'}
           ,{ text: 'Name', value: 'name' }
           //,{ text: 'StockType', value: 'stocktype'}
           ,{ text: 'actions', value: 'typeid' , align: 'right'}
@@ -152,16 +152,25 @@ export default {
   }),
   computed: {
       entityTableFilter() {
+        console.log('start filter')
         //If the table is empty - return blank
         if (!this.entityTable.length) return [];
+        console.log('start filter 1')
         //If we have any switches on, add them to onlyThese
         let onlyThese = this.switchType.filter(ele => ele.switch == true)
+        console.log('start filter 2', onlyThese, this.switchType)
+        console.log('start filter 2a', onlyThese.length, this.switchType.length)
         //If we have no switch active, activate at least one
         if (!onlyThese.length ) {
             this.switchType.forEach(element => { element.switch == true})
             onlyThese = this.switchType
         }
-        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.shortdesc) )
+        console.log('start filter 3', onlyThese.length, onlyThese)
+        let answer = this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.category) )
+        console.log('start filter 4', answer)
+        if (answer.length > 0) return answer
+        console.log('start filter 5a')
+        return this.entityTable
       }
   },
   methods: {
@@ -198,7 +207,7 @@ export default {
       crudTask.save('itemtype', response)
 
       //load switches...only when empty
-      crudTask.recalcSwitches(this.switchType, this.entityTable, 'shortdesc')
+      crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
     },
     retrieveForAddStock(item){
       this.updateMessage = 'Create'
@@ -255,6 +264,9 @@ export default {
      this.entityTable = crudTask.load('itemtype')
      if (this.entityTable.length == 0) {
        this.refresh()
+     } else {
+       crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
+       console.log(this.entityTable)
      }
   }
 }

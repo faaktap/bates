@@ -109,7 +109,20 @@
                 :color="$vuetify.breakpoint.smAndDown ? 'white' : 'black'"
                 left>mdi-broom</v-icon>
         <template v-if="!$vuetify.breakpoint.smAndDown">
-        Stock Categories and Breakdown
+        Categorize and Refine
+        </template>
+      </v-btn>
+
+      <v-btn class="mx-2"
+             small
+             title="reporting"
+             :icon="$vuetify.breakpoint.smAndDown"
+             to="/reports">
+        <v-icon :large="$vuetify.breakpoint.smAndDown"
+                :color="$vuetify.breakpoint.smAndDown ? 'white' : 'black'"
+                left>mdi-printer</v-icon>
+        <template v-if="!$vuetify.breakpoint.smAndDown">
+        Reports
         </template>
       </v-btn>
 

@@ -4,7 +4,7 @@
      <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
      <v-btn class="ma-2" @click="showPrint = true"> Export </v-btn>
      </v-card>
-      <v-data-table
+      <v-data-table v-if="orDTTable.length"
             :headers="labels"
             :items="orDTTable"
             :items-per-page="30"
@@ -43,7 +43,7 @@ export default {
   data: () => ({
       showPrint:false,
       orDTTable:[],
-      labels:[]
+      labels:[],
   }),
   computed: {
   },

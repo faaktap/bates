@@ -66,6 +66,7 @@ import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
 import ReportsTable from './ReportsTable.vue'
 import { zmlFetch } from '@/api/zmlFetch.js'
+import { getters } from "@/api/store";
 export default {
   name: 'Report',
   components:{
@@ -75,6 +76,7 @@ export default {
     ReportsTable
   },
   data: () => ({
+    getZml: getters.getState({ object: "gZml" }),
     show: false,
     tab:null,
     items: [
@@ -114,7 +116,10 @@ export default {
           this.items[this.tab].answer = `For location ${this.items[this.tab].obj.name} (${this.items[this.tab].obj.description}) we found ${response[0].items} item(s)`
           break
         case 1:
-          this.items[this.tab].answer = `For person ${this.items[1].obj.fullname} we found ${response[0].items} item(s)`
+          this.items[this.tab].answer = `For person ${this.items[this.tab].obj.fullname} we found ${response[0].items} item(s)`
+          break
+        case 2:
+          this.items[this.tab].answer = `For itemtype ${this.items[this.tab].obj.name} we found ${response[0].items} item(s)`
           break
 
       }
@@ -125,38 +130,72 @@ export default {
       switch (this.tab) {
         case 0:
          this.sqlSelect =
-`SELECT ifnull(c.name,t.catid) category\
-     , s.name\
-     , ifnull(p1.public_preferredname,'?') ownername\
-     , ifnull(p.name,s.placeid) place\
-     , ifnull(t.name,s.typeid) itemtype\
-     , s.serialno\
-     , s.quantity\
- FROM s_stock s\
- LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
- LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
- LEFT JOIN s_place p on s.placeid = p.placeid\
- LEFT JOIN s_category c on t.catid = c.catid\
- WHERE s.price >= 0\
- and s.placeid = ${this.items[this.tab].obj.placeid}\
- ORDER BY s.name`
+    `SELECT ifnull(c.name,t.catid) category\
+         , s.name\
+         , ifnull(p1.public_preferredname,'?') ownername\
+         , ifnull(t.name,s.typeid) itemtype\
+         , s.serialno\
+         , s.quantity\
+     FROM s_stock s\
+     LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
+     LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
+     LEFT JOIN s_place p on s.placeid = p.placeid\
+     LEFT JOIN s_category c on t.catid = c.catid\
+     WHERE s.price >= 0\
+     and s.placeid = ${this.items[this.tab].obj.placeid}\
+     ORDER BY s.name`
+     //         , ifnull(p.name,s.placeid) place\
          this.reportHeader = this.items[this.tab].answer
          break
         case 1:
-          alert('1')
-          break
+         this.sqlSelect =
+    `SELECT ifnull(c.name,t.catid) category\
+         , s.name\
+         , ifnull(p.name,s.placeid) place\
+         , ifnull(t.name,s.typeid) itemtype\
+         , s.serialno\
+         , s.quantity\
+     FROM s_stock s\
+     LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
+     LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
+     LEFT JOIN s_place p on s.placeid = p.placeid\
+     LEFT JOIN s_category c on t.catid = c.catid\
+     WHERE s.price >= 0\
+     and s.originalownerid = ${this.items[this.tab].obj.persid}\
+     ORDER BY s.name`
+         //, ifnull(p1.public_preferredname,'?') ownername\
+         this.reportHeader = this.items[this.tab].answer
+         break
         case 2:
-          alert('1')
-          break
+         this.sqlSelect =
+    `SELECT ifnull(c.name,t.catid) category\
+         , ifnull(t.name,s.typeid) itemtype\
+         , ifnull(p.name,s.placeid) place\
+         , ifnull(p1.public_preferredname,'?') ownername\
+         , s.serialno\
+         , s.quantity\
+     FROM s_stock s\
+     LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
+     LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
+     LEFT JOIN s_place p on s.placeid = p.placeid\
+     LEFT JOIN s_category c on t.catid = c.catid\
+     WHERE s.price >= 0\
+     and s.typeid = ${this.items[this.tab].obj.typeid}\
+     ORDER BY s.name`
+         //, ifnull(p1.public_preferredname,'?') ownername\
+         //ifnull(c.name,t.catid) category , s.name\
+         this.reportHeader = this.items[this.tab].answer
+         break
       }
     },
 
   },
   mounted() {
-    // this.items[0].f = this.selPlace
-    // this.items[1].f = this.selOwner
-    // this.items[2].f = this.selItemType
     this.items.forEach( e => e.f = this.getCount)
+    if (this.getZml.place.length == 0 || this.getZml.owner.length == 0) {
+      //They have been nowhere else = but should not be a problem
+    }
+
   },
   watch:{
     tab() {

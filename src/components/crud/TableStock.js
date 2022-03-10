@@ -61,7 +61,7 @@ export const tableWork = {
     LEFT JOIN s_category c on t.catid = c.catid\
     WHERE s.price >= 0 \
       ${filter}\
-      ORDER BY s.name`
+      ORDER BY s.stockid DESC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },

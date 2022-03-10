@@ -5,11 +5,11 @@
   <v-card-title> What to do </v-card-title>
   <v-card-text> Click on the location button, and search for the room you would like to do stocktaking
     in. Make sure the room's owner is correct, and click the edit button to fix it, if not correct.
-    <p>Then double click on the room, press Yes on confirm and start entering your stuff.</p>
+    <p>Then <i>click</i> on the room, press Yes on confirm and start entering your inventory.</p>
     </v-card-text>
-  <v-card-actions> <v-btn class="mx-2" small to="/class"> location </v-btn> </v-card-actions>
+  <v-card-actions> <v-btn title="Click here to enter your inventory" class="mx-2" small to="/class"> location </v-btn> </v-card-actions>
   <v-card-text> If you would like to assist in the building of stock item descriptions, you
-      are welcome to peruse the "Stock Categories and Breakdown" system. We try and make it
+      are welcome to peruse the <i>"Categorize and Refine"</i> system. We try and make it
       easier to define standard names for most stockitems. The idea is that when we try to find out
       how many of a certain stock item we carry, we do not have to sift thru hundreds of differently
       spelled names, therefore we carry a category, and also inside the category some names we think might
@@ -22,6 +22,8 @@
       At the right of the search button is a ADD, REFRESH and EXPORT button.
       <br>
       Below this information is our list of items, with buttons next to it for editing.
+      <p>
+      For a <i>report</i> by office/classroom, or by person or by "type", use the report button.</p>
   </v-card-text>
  </v-card>
  </v-expand-transition>

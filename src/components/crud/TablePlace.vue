@@ -44,7 +44,7 @@
                  :footer-props="{
                     'items-per-page-options': [20, 30, 150]
                   }"
-                  @dblclick:row="startStockTake"
+                  @click:row="startStockTake"
            >
              <template v-slot:[`item.placeid`]="{ item }">
               <!--{{ item.placeid }}-->

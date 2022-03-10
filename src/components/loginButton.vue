@@ -39,6 +39,8 @@
                   class="white--text font-weight-black">
             Session Status
            </v-btn>
+           <v-spacer/>
+            <small>({{  projectID }})</small>
         </v-card-actions>
       </v-card>
     </v-menu>
@@ -48,11 +50,13 @@
 <script>
 //import ToolbarButtons from '@/components/ToolbarButtons'
 import { getters } from "@/api/store";
+import { zmlConfig } from '@/api/constants';
   export default {
     name: "loginButton",
   //  components: {ToolbarButtons},
     data: () => ({
       getZml: getters.getState({ object: "gZml" }),
+      projectID:zmlConfig.projectID
     }),
     methods:{
       immediateToLogin() {

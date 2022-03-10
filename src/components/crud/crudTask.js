@@ -8,6 +8,9 @@ export const crudTask = {
         console.log(crudTask.name,'DbErr:',response)
         if (response.error.indexOf('Duplicate entry') != -1 ) {
           errorSnackbar("ERROR : We use this item in this location - just update it")
+        } else if (response.error.indexOf('a foreign key constraint') != -1 ) {
+            //ERROR : {"errorInfo":["23000",1451,"Cannot delete or update a parent row: a foreign key constraint fails (`kuilieso_bib`.`s_stock`, CONSTRAINT `stock_type` FOREIGN KEY (`typeid`) REFERENCES `s_itemtype` (`typeid`) ON DELETE NO ACTION ON UPDATE NO ACTION)"]}
+            errorSnackbar('Someone is using the information in their inventory, we cannot delete it')
         } else {
           errorSnackbar("ERROR : " +  response.error)
         }
@@ -29,7 +32,7 @@ export const crudTask = {
       errorSnackbar("ERROR : " +  response)
     }
    ,recalcSwitches: (switchTable, entityTable, switchAttribute) => {
-      if (switchTable && switchTable.length) return
+      if (switchTable && switchTable.length) switchTable.length = 0
       const typeMap = new Map();
       entityTable.forEach(e => {
         for (const [key, value] of Object.entries(e)) {
@@ -39,7 +42,6 @@ export const crudTask = {
             typeMap.set(value, typeMap.size+1);
           }
         }
-
       });
       typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k}) } )
       return true

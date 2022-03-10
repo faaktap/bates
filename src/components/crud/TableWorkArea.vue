@@ -27,7 +27,7 @@
                  :footer-props="{
                     'items-per-page-options': [10, 20]
                   }"
-                 @dblclick:row="startPlaceView"
+                 @click:row="startPlaceView"
            >
              <template v-slot:[`item.workareaid`]="{ item }">
               <!--{{ item.workareaid }}-->

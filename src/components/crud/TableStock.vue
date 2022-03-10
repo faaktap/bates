@@ -323,6 +323,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
      if (this.roomname) {
        this.alwaysFilter = ` AND p.name = "${this.roomname}" `
        tableWork.loadPlaceID(this.roomname,this.loadPlaceId)
+       crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
      } else {
        this.refresh()
      }

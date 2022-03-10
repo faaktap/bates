@@ -76,17 +76,24 @@ export default {
     updateValue(e) {
       console.log('updateValue emit = ', e)
       this.$emit('input', e)
+
+      let index = this.itemTypeTable.findIndex(ele => ele.typeid == e)
+      if (index > -1) {
+        console.log(this.$options.name, 'send object')
+        this.$emit('objectSelected',this.itemTypeTable[index])
+      }
+
       this.lastOneSelected = e
       this.passItemText(e)
     },
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = "SELECT i.typeid, i.name, i.stocktype, c.name category"
-               + "     , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch"
-               + "  FROM s_itemtype i, s_category c "
-               + " WHERE i.catid = c.catid "
-               + "ORDER BY i.name"
+        ts.sql = `SELECT i.typeid, i.name, i.stocktype, c.name category, c.description longdesc,
+                       , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch
+                   FROM s_itemtype i, s_category c 
+                  WHERE i.catid = c.catid 
+               ORDER BY concatsearch ASC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, this.loadData)
     },
