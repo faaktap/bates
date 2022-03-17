@@ -244,7 +244,7 @@ export default {
     { icon: 'mdi-bookshelf',  title: 'Journal',             to: '/Outline'  },
     { icon: 'mdi-warehouse',      title: 'Stock',             to: '/Outline'  },
       ],
-      title: 'Kuilies Bates'
+      title: 'Kuilies Inventory'
     }
   },
 }

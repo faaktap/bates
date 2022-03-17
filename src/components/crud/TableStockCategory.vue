@@ -3,7 +3,7 @@
  <v-container fluid>
   <base-title-expand :heading="entity + ' Table'">
 
-    <p>Broad stock categories - to lessen the clutter.</p>
+    <p>Broad inventory categories - to lessen the clutter.</p>
 
   </base-title-expand>
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
@@ -142,7 +142,7 @@ export default {
     },
     addNew() {
         this.updateMessage = 'Create'
-        this.editTable = {catid:'', name:'A new One', description:''}
+        this.editTable = {catid:'', name:'', description:''}
         this.showAddTable = true
     },
     retrieveForEditing(item) {

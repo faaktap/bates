@@ -16,7 +16,7 @@ export const tableWork = {
     delete: (itemID,table) => {
         let index = tableWork.getIndex(itemID,table)
         if (index != -1) {
-           table.splice(index,1);    
+           table.splice(index,1);
         }
     },
     getData: (key, pCallback) => {
@@ -30,12 +30,12 @@ export const tableWork = {
     createNewItem: (record, pAfterwards) => {
        let ts = {}
        ts.task = 'PlainSql'
-       ts.sql = "insert into s_category values(null, '" +record.name+ "','" + record.description + "');'"
+       ts.sql = `insert into s_category values (null, "${record.name}" , "${record.description}")`
        console.log(ts.sql)
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
     },
-    saveData: (record,pcallback=doneFetch) => {  
+    saveData: (record,pcallback=doneFetch) => {
         let ts = {}
         ts.task = 'PlainSql'
         ts.data = {catid: record.catid
@@ -49,7 +49,7 @@ export const tableWork = {
         zmlFetch(ts, pcallback, errorFetch)
 
     },
-    deleteData: (record,pcallback=doneFetch) => {  
+    deleteData: (record,pcallback=doneFetch) => {
       let ts = {}
       ts.task = 'PlainSql'
       ts.data = {catid: record.catid

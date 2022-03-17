@@ -1,4 +1,5 @@
  <template>
+ <div>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
 
    <v-card-text>
@@ -19,11 +20,13 @@
           <z-auto-item-type v-model="dataTable.typeid"
                            @select="typeWasSelected"
                            label="Type"
+                           @moreHelp="showChoosy = true"
           />
        </v-col>
        <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.name"
                        label="Stock Name"
+                       title="You may leave this blank"
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
        </v-col>
@@ -87,8 +90,14 @@
      </z-base-tool>
 </v-card-text>
 
+<!------------------ CHOOSY ------------------------------------------->
    </v-card>
+<v-dialog v-model="showChoosy"  width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
+     <choosy v-model="dataTable.typeid"
+             @objectSelected="showChoosy = false" />
+</v-dialog>
 
+</div>
 </template>
 
 
@@ -101,6 +110,8 @@ import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
 //import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
 import ZBaseTool from '@/components/base/ZBaseTool.vue'
+
+import Choosy from '@/views/Choosy.vue'
 
 export default {
   name: "TableFilterForm",
@@ -115,10 +126,12 @@ export default {
               , ZAutoPlace
               , ZTextarea
               , ZAutoItemType
+              , Choosy
 //            , ZAutoDeval
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
+      showChoosy:false,
       rules: { required: [value => !!value || "Required."] },
       message: ''
   }),
@@ -138,7 +151,6 @@ export default {
     }
   },
   methods:{
-
     checkForm(e) {
       console.log('Check Form : ' , e)
       if (e == 'Save' || e == 'Create') {
@@ -156,8 +168,8 @@ export default {
             return false
           }
         } else {
-          console.log(this.dataTable.serialno , parseInt(this.dataTable.price) , this.dataTable.quantity)
-          console.log(!this.dataTable.serialno , !(parseInt(this.dataTable.price) > 0) , !this.dataTable.quantity)
+          // console.log(this.dataTable.serialno , parseInt(this.dataTable.price) , this.dataTable.quantity)
+          // console.log(!this.dataTable.serialno , !(parseInt(this.dataTable.price) > 0) , !this.dataTable.quantity)
           if (!this.dataTable.serialno || !(parseInt(this.dataTable.price) > 0) || !this.dataTable.quantity) {
             this.message  = 'The serialno, price and quantity must be filled in'
             return false
@@ -167,20 +179,18 @@ export default {
       return true
     },
     typeWasSelected(e) {
-      console.log('getting a type', e)
-      if (e) {
-        let snap = e.indexOf('/')
-        if (snap) {
-          this.dataTable.name = e.slice(0,snap).toLowerCase()
-        } else {
-          this.dataTable.name = e.toLowerCase()
-        }
-      }
-      console.log(this.getZml.devalList, this.getZml.devalList.includes(this.dataTable.typeid))
+      this.dataTable.name = e.trim()
+      // if (e) {
+      //   let snap = e.indexOf('/')
+      //   if (snap) {
+      //     this.dataTable.name = e.slice(0,snap).toLowerCase()
+      //   } else {
+      //     this.dataTable.name = e.toLowerCase()
+      //   }
+      // }
       if (this.getZml.devalList.includes(this.dataTable.typeid)) {
         this.dataTable.devalid = 1
       }
-      console.log('devalid is nou ',this.dataTable.devalid,this.dataTable.typeid)
     },
     placeWasSelected(e) {
       console.log('getting a place', e)

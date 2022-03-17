@@ -12,6 +12,8 @@
                 item-text="concatsearch"
                 dense outlined rounded shaped
                 append-icon="mdi-close"
+                append-outer-icon="mdi-magnify"
+                @click:append-outer="emitChoosy"
                 @click:append="clearValue"
               >
               <template slot="selection" slot-scope="data">
@@ -54,6 +56,10 @@ export default {
       }
   },
   methods:{
+    emitChoosy(e) {
+      console.log(e)
+      this.$emit('moreHelp')
+    },
     clearValue(e) {
       console.log('on clear buttin:', e)
       // Do not change the value here - just emit blank otherwise handler.apply is not a function
@@ -89,10 +95,10 @@ export default {
     getData() {
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = `SELECT i.typeid, i.name, i.stocktype, c.name category, c.description longdesc,
-                       , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch
-                   FROM s_itemtype i, s_category c 
-                  WHERE i.catid = c.catid 
+        ts.sql = `SELECT i.typeid, i.name, i.stocktype, c.name category, c.description longdesc\
+                       , concat(i.name, ' (' , ifnull(c.name,'CAT') , ')' ) concatsearch\
+                   FROM s_itemtype i, s_category c\
+                  WHERE i.catid = c.catid\
                ORDER BY concatsearch ASC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, this.loadData)

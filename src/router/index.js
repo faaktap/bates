@@ -56,13 +56,19 @@ const routes = [
     meta: {layout: la[1], authentication: "public" }
   },
   {
-    component: () => import(/* webpackChunkName: "bates" */ '../views/bates/Outline.vue'),
+    component: () => import(/* webpackChunkName: "bates" */ '../views/Choosy.vue'),
+    path: '/choosy',
+    name: 'Choosy',
+    meta: {layout: la[1], authentication: "public" }
+  },
+  {
+    component: () => import(/* webpackChunkName: "test" */ '../views/bates/Outline.vue'),
     path: '/outline',
     name: 'Outline',
     meta: {layout: la[1], authentication: "public" }
   },
   {
-    component: () => import(/* webpackChunkName: "bates" */ '../views/ToolBars.vue'),
+    component: () => import(/* webpackChunkName: "test" */ '../views/ToolBars.vue'),
     path: '/toolbars',
     name: 'Toolbars',
     meta: {layout: la[1], authentication: "public" }

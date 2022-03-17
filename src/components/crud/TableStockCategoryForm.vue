@@ -3,25 +3,26 @@
 
    <v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
-                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]'
             color="accent"
             dark="true"
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text>    
+    </v-card-text>
 
     <v-card-text class="ma-2 pa-2 justify-center">
-      <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
+      <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
        <v-col cols="12" sm="6">
-         <z-text-field v-model="dataTable.name" 
-                       label="Category Name" 
+         <z-text-field v-model="dataTable.name"
+                       label="Category Name"
                        prependIcon="mdi-file-document"
+                       style="text-transform: uppercase;"
                        :reqrule="true" />
        </v-col>
        <v-col cols="12" sm="2">
-         <z-text-field v-model="dataTable.catid" 
-                       label="ID" 
+         <z-text-field v-model="dataTable.catid"
+                       label="ID"
                        type="number"
                        disabled />
        </v-col>
@@ -31,20 +32,20 @@
        </v-col>
 
       </v-layout>
-     </v-card-text>       
+     </v-card-text>
 
    <v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
-                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]'
             color="accent"
             dark="true"
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text>    
+    </v-card-text>
 
    </v-card>
-      
+
 </template>
 
 
@@ -57,8 +58,8 @@ export default {
   name: "TableFilterForm",
   props:{ updateMessage:{}
          ,dataTable:{}
-         ,entity:{} 
-         ,editFieldDisplay:{default: "xxx"} 
+         ,entity:{}
+         ,editFieldDisplay:{default: "xxx"}
   },
   components: { ZTextField
               , ZTextarea
@@ -75,14 +76,14 @@ export default {
       return "notSure"
     },
     updateText() {
-      if (this.updateMessage.toLowerCase() == 'create') return `Busy creating : a new entry`  
+      if (this.updateMessage.toLowerCase() == 'create') return `Busy creating : a new entry`
       if (this.updateMessage.toLowerCase() == 'edit') {
-          return `Busy editing : "${this.editFieldDisplay}"` 
+          return `Busy editing : "${this.editFieldDisplay}"`
       } else {
-          return `Busy "${this.updateMessage}" : ${this.editFieldDisplay} for ${this.entity}` 
+          return `Busy "${this.updateMessage}" : ${this.editFieldDisplay} for ${this.entity}`
       }
     }
-  },  
+  },
   methods:{
     listenToToolbar(e) {
       this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())

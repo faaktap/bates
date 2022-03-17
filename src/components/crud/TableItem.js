@@ -34,7 +34,7 @@ export const tabwSItem = {
     createNewItem: (record, pAfterwards) => {
        let ts = {}
        ts.task = 'PlainSql'
-       ts.sql = "insert into s_itemtype values(null, " +record.catid+ ",'" +record.name+ "','" + record.stocktype + "');'"
+       ts.sql = `insert into s_itemtype values(null, "${record.catid}","${record.name.trim().toUpperCase()}" , "${record.stocktype}");`
        console.log(ts.sql)
        ts.api = zmlConfig.apiPath
        zmlFetch(ts, pAfterwards, errorFetch)
@@ -48,7 +48,7 @@ export const tabwSItem = {
                   ,stocktype: record.stocktype}
         ts.data.bind = {typeid: record.typeid
             ,catid: record.catid
-            ,name : record.name
+            ,name : record.name.trim().toUpperCase()
             ,stocktype: record.stocktype}
         ts.sql = `update s_itemtype set name = :name, stocktype = :stocktype, catid = :catid \
                    where typeid = :typeid;`

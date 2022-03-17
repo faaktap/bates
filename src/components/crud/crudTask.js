@@ -57,9 +57,6 @@ export const crudTask = {
       case "place":
         if (gzp.place  && data.length > gzp.place.length) {
            gzp.place = data
-           console.log('save the data', gzp.place, gzp.place.length)
-        } else {
-          console.log('DO NOT save the data'. data.length, gzp.place.length)
         }
         return
       case "owner":

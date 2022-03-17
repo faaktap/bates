@@ -1,15 +1,15 @@
 <template>
- <v-expansion-panels rounded class="pa-0 mb-2">
-   <v-expansion-panel>
+ <v-expansion-panels  rounded class="pa-0 mb-0">
+   <v-expansion-panel >
     <v-expansion-panel-header  color="green">
-         <h1 class="heading-1 text-center">{{ heading }}</h1>
+         <h2 class="heading-1 text-center">{{ heading }}</h2>
      </v-expansion-panel-header>
      <v-expansion-panel-content class="ma-4">
          <slot>
          <p class="heading-4">{{ heading}} </p>
          <div v-html="explanation">
          </div>
-         </slot>    
+         </slot>
      </v-expansion-panel-content>
     </v-expansion-panel>
  </v-expansion-panels>

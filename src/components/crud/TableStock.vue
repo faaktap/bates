@@ -1,6 +1,6 @@
 <template>
  <v-container fluid>
-   <base-title-expand :heading="entity + ' Table'">
+   <base-title-expand :heading="entity + ' Table' + ( roomname?' Room ':'' ) + roomname">
 
        <p class="heading-4">How does this work?? </p>
        <p class="float-right">
@@ -87,6 +87,7 @@
   <v-card color="green" class="mt-2 pa-2 text-center">
      End of {{ entity }} Table
   </v-card>
+
 <!------------------ADD/UPDATE FORM------------------------------------------->
   <v-dialog v-model="showAddTable"
             fullscreen
