@@ -61,6 +61,7 @@
         :dataList="finalJsonData"
         :userHeader="userHeader"
         :doPrint="activatePrint"
+        :footer="footer"
      />
     </v-card>
    </v-col>
@@ -75,9 +76,9 @@ export default {
   name: "FrontJsonToCsv",
   components: { JsonToCsv , zmlDataTable},
   props: {
-    jsonData: {
-      type: Array, required: true },
-      csvTitle: {type:String, default:"whatever"},
+    jsonData: {type: Array, required: true },
+    csvTitle: {type: String, default:'whatever'},
+    footer: {type: String, default:''},
   },
   data: () => ({
     labels:[],

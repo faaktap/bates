@@ -1,14 +1,22 @@
 <template>
- <div v-if="dataList && dataHeader" id="printMe">
-<div class="print" style="float: left;">DKHS-BTS</div>
-<div class="print" style="float: right;">High School De Kuilen Hoërskool</div>
-   <v-row no-gutters class="mb-6" >
-    <v-col cols="12" class="heading-2 text-center">
-      <v-card class="pa-2"  color="blue" >
-          VIEWER :  {{ userHeader }}
-      </v-card>
-    </v-col>
-   </v-row>
+<div v-if="dataList && dataHeader" id="printMe">
+ <table width="100%" border="0" class="ma-2">
+  <tr class="d-print-table-row">
+   <td width="30%" style="border: 0px; border-radius: 0px; float: left">
+     DKHS-BTS<br>{{ today }}
+   </td>
+   <td width="40%" style="border: 0px;  align: center">
+      <center><strong>High School De Kuilen Hoërskool</strong><br>{{ userHeader }}</center>
+   </td>
+   <td width="30%" style="border: 0px; border-radius: 0px; float: right"><img height="60" src="img/logobates.png" class="float-right" /></td>
+  </tr>
+ </table>
+
+   <!-- <v-row no-gutters class="mb-2 d-print-block d-print-table-row" >
+    <v-col cols="12" md="4" lg="4" sm="4" class="ma-2 float-left">   DKHS-BTS </v-col>
+    <v-col cols="12" md="4" lg="4" sm="4" class="ma-2 text-center">   High School De Kuilen Hoërskool<br>{{ userHeader }}  </v-col>
+    <v-col cols="12" md="4" lg="4" sm="4" class="ma-2 float-right">  <img height="60" src="img/logobates.png" class="float-right" />  </v-col>
+   </v-row> -->
 
   <v-card class="ma-2">
    <v-data-table
@@ -21,7 +29,9 @@
     @click:row="clickOnRow"
    >
    </v-data-table>
- </v-card>
+  </v-card>
+  <div id="testMe" v-html="footer">
+  </div>
  </div>
 </template>
 
@@ -31,12 +41,12 @@ import printJS from "print-js";
 import { zDate } from '@/api/zDate.js';
 export default {
     name:"zmlDataTable",
-    props: ['dataList', 'userHeader','doPrint'],
+    props: ['dataList', 'userHeader','doPrint','footer'],
     data: () => ({
         dataHeader: [
           {text: 'User',             value: 'user_name' },
-          {text: 'Type',             value: 'user_type' }
-        ]
+          {text: 'Type',             value: 'user_type' },
+        ],
     }),
     methods:{
       clickOnRow(p1,p2) {
@@ -54,9 +64,6 @@ export default {
           })
       },
       printIt() {
-        // console.log(this.$VueHtmlToPaper);
-        // this.$htmlToPaper('printMe');
-        // alert('wait')
         const style = `
           @page { margin-top: 10px }
           @media print {
@@ -73,7 +80,7 @@ export default {
           printJS({
            printable: "printMe",
            type: "html",
-           header: this.userHeader + " ( " + zDate.format(zDate.todayNoHours(),'yyyy-MM-dd') + " )",
+           header: `<center> ${this.userHeader}  ( Date: ${this.today} )</center>`,
            headerStyle: headerStyle,
            style: style,
            scanStyles: false,
@@ -127,21 +134,23 @@ export default {
 
     },
     computed:{
-        listLength() {
-            if (this.dataList) {
-                return this.dataList.length
-            } else {
-                return 0
-            }
-        },
-        objectLength() {
-            if (this.dataList && this.dataList.length) {
-                return Object.entries(this.dataList[0])
-            } else {
-                return 0
-            }
-        }
-
+      today() {
+        return zDate.format(zDate.todayNoHours(),'yyyy-MM-dd')
+      },
+      listLength() {
+          if (this.dataList) {
+              return this.dataList.length
+          } else {
+              return 0
+          }
+      },
+      objectLength() {
+          if (this.dataList && this.dataList.length) {
+              return Object.entries(this.dataList[0])
+          } else {
+              return 0
+          }
+      }
     },
     mounted: function() {
         this.reBuildHeaders()

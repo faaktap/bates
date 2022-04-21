@@ -18,7 +18,8 @@
   <front-json-to-csv v-if="orDTTable"
                    :json-data="orDTTable"
                    :csv-title="reportHeader"
-                   @hideModal="showPrint = false">
+                   @hideModal="showPrint = false"
+                   :footer="footer">
    <v-btn>
       Download with custom title
    </v-btn>
@@ -41,9 +42,14 @@ export default {
          },
   components: {FrontJsonToCsv},
   data: () => ({
-      showPrint:false,
-      orDTTable:[],
-      labels:[],
+      showPrint: false,
+      orDTTable: [],
+      labels: [],
+      footer: `<br><br><table BORDER=5 BORDERCOLOR="#4a6053" width=100% style='text-align: right; border-spacing: 10px;'>
+               <tr><th width=20%>Person Responsible:</th><td width=30%></td><th width=20%>Checked By:</th><td width=30%></td></tr>
+               <tr><th>Signature:</th><td></td><th>Signature:</th><td></td></tr>
+                <tr><th>Date:</th><td></td><th>Date:</th><td></td></tr></table>`
+
   }),
   computed: {
   },

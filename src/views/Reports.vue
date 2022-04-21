@@ -64,7 +64,7 @@
 import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
-import ReportsTable from './ReportsTable.vue'
+import ReportsTable from '@/components/ReportsTable.vue'
 import { zmlFetch } from '@/api/zmlFetch.js'
 import { getters } from "@/api/store";
 export default {
@@ -80,15 +80,19 @@ export default {
     show: false,
     tab:null,
     items: [
-          {id:0,menu:'List for a Class' ,f:null
+          {id:0,menu:'Itemlist for Location' ,f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.placeid = "
                ,answer:'select a class', obj:{}},
-          {id:1,menu:'List for a person',f:null
+          {id:1,menu:'Itemlist for person',f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.originalownerid = "
                ,answer:'select a person', obj:{}},
-          {id:2,menu:'List for an item' ,f:null
+          {id:2,menu:'Itemlist for a itemtype' ,f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.typeid = "
-               ,answer:'select an item', obj:{}}
+               ,answer:'select an item', obj:{}},
+          {id:3,menu:'Eben List' ,f:null
+               ,sql:`SELECT count(*) FROM s_stock s`
+               ,answer:'Show All', obj:{}}
+
         ],
     reportValueToCount:[],
     sqlSelect:null,
@@ -121,6 +125,9 @@ export default {
         case 2:
           this.items[this.tab].answer = `For itemtype ${this.items[this.tab].obj.name} we found ${response[0].items} item(s)`
           break
+        case 3:
+          this.items[this.tab].answer = `Eben List :  we found ${response[0].items} item(s)`
+          break
 
       }
       console.log('tab = ', this.tab, 'count = ', response[0], this.items[this.tab].answer)
@@ -132,7 +139,7 @@ export default {
          this.sqlSelect =
     `SELECT ifnull(c.name,t.catid) category\
          , s.name\
-         , ifnull(p1.public_preferredname,'?') ownername\
+         , ifnull(p1.public_preferredname,'?') Responsible\
          , ifnull(t.name,s.typeid) itemtype\
          , s.serialno\
          , s.quantity\
@@ -145,7 +152,7 @@ export default {
      and s.placeid = ${this.items[this.tab].obj.placeid}\
      ORDER BY s.name`
      //         , ifnull(p.name,s.placeid) place\
-         this.reportHeader = this.items[this.tab].answer
+         this.reportHeader = this.items[this.tab].menu + ':' +this.items[this.tab].obj.name  // this.items[this.tab].answer
          break
         case 1:
          this.sqlSelect =
@@ -163,15 +170,14 @@ export default {
      WHERE s.price >= 0\
      and s.originalownerid = ${this.items[this.tab].obj.persid}\
      ORDER BY s.name`
-         //, ifnull(p1.public_preferredname,'?') ownername\
-         this.reportHeader = this.items[this.tab].answer
+         this.reportHeader = this.items[this.tab].menu + ' : ' +this.items[this.tab].obj.fullname //this.reportHeader = this.items[this.tab].answer
          break
         case 2:
          this.sqlSelect =
     `SELECT ifnull(c.name,t.catid) category\
          , ifnull(t.name,s.typeid) itemtype\
          , ifnull(p.name,s.placeid) place\
-         , ifnull(p1.public_preferredname,'?') ownername\
+         , ifnull(p1.public_preferredname,'?') Responsible\
          , s.serialno\
          , s.quantity\
      FROM s_stock s\
@@ -182,9 +188,25 @@ export default {
      WHERE s.price >= 0\
      and s.typeid = ${this.items[this.tab].obj.typeid}\
      ORDER BY s.name`
-         //, ifnull(p1.public_preferredname,'?') ownername\
-         //ifnull(c.name,t.catid) category , s.name\
-         this.reportHeader = this.items[this.tab].answer
+         this.reportHeader = this.items[this.tab].menu + ' : ' + this.items[this.tab].obj.name //this.reportHeader = this.items[this.tab].answer
+         break
+        case 3:
+         this.sqlSelect = `SELECT s.stockid, s.typeid, s.name, s.userid, s.originalownerid\
+        , s.devalid, s.placeid, s.name, s.datereceived\
+        , ifnull(p1.public_preferredname,'?') Responsible\
+        , ifnull(p.name,s.placeid) place\
+        , ifnull(d.rulename,s.devalid) rulename\
+        , ifnull(t.name,s.typeid) itemtype\
+        , ifnull(c.name,t.catid) category\
+        , s.serialno, s.quantity, s.price\
+    FROM s_stock s
+    LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid
+    LEFT JOIN s_devaluation d on s.devalid = d.devalid
+    LEFT JOIN s_itemtype t on  t.typeid = s.typeid
+    LEFT JOIN s_place p on s.placeid = p.placeid
+    LEFT JOIN s_category c on t.catid = c.catid
+  ORDER BY s.stockid DESC`
+         this.reportHeader = 'Eben Pretorius se Lys'
          break
       }
     },
