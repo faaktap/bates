@@ -34,7 +34,7 @@ export default {
     },
     separator: {
       type: String,
-      default: ',',
+      default: ';',
       required: false
     }
   },

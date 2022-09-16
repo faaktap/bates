@@ -27,16 +27,16 @@
                  :footer-props="{
                     'items-per-page-options': [10, 20]
                   }"
-                 @click:row="startPlaceView"
+                 @click:row.self="startPlaceView"
            >
              <template v-slot:[`item.workareaid`]="{ item }">
               <!--{{ item.workareaid }}-->
                <div class="float-right">
-                <v-btn class="mx-2" x-small  @click="retrieveForDeleting(item)">
+                <v-btn class="mx-2" x-small  @click.stop="retrieveForDeleting(item)">
                     <v-icon small color="red" class="my-1">mdi-delete</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Delete </template>
                 </v-btn>
-                <v-btn class="mx-2" x-small  @click="retrieveForEditing(item)">
+                <v-btn class="mx-2" x-small  @click.stop="retrieveForEditing(item)">
                     <v-icon small color="green" class="my-1">mdi-circle-edit-outline</v-icon>
                     <template v-if="!$vuetify.breakpoint.mobile"> Edit </template>
                 </v-btn>

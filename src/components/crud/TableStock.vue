@@ -70,13 +70,16 @@
              <template v-slot:[`item.stockid`]="{ item }">
               <!-- {{ item.stockid }} -->
                 <z-table-btn color="red"
-                             text="delete"
+                             text="d"
+                             icon="mdi-delete"
                             @click="retrieveForDeleting(item)"/>
                 <z-table-btn color="green"
-                             text="edit"
+                             text="e"
+                             icon="mdi-circle-edit-outline"
                             @click="retrieveForEditing(item)" />                <!-- mdi-circle-edit-outline -->
                 <z-table-btn color="purple"
-                             icon="mdi-check-circle-outline" text="check"
+                             text="check"
+                             icon="mdi-check-circle-outline"
                             @click="retrieveForChecking(item)" />
              </template>
            </v-data-table>

@@ -32,7 +32,9 @@ export const crudTask = {
       errorSnackbar("ERROR : " +  response)
     }
    ,recalcSwitches: (switchTable, entityTable, switchAttribute) => {
+
       if (switchTable && switchTable.length) switchTable.length = 0
+
       const typeMap = new Map();
       entityTable.forEach(e => {
         for (const [key, value] of Object.entries(e)) {
@@ -43,7 +45,7 @@ export const crudTask = {
           }
         }
       });
-      typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k}) } )
+      typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k, switch: false}) } )
       return true
    }
    ,save: (entityTableName, data) => {

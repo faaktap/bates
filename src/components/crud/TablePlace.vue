@@ -9,7 +9,7 @@
       we will redirect you to the stock capture program </p>
 
   </base-title-expand>
-
+<!-- {{ switchType }} -->
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
       <base-search @clear="search=''" v-model="search" />
@@ -50,10 +50,12 @@
               <!--{{ item.placeid }}-->
                <div class="float-right">
                  <z-table-btn color="red"
-                             text="delete"
+                             icon="mdi-delete"
+                             text="d"
                             @click="retrieveForDeleting(item)"/>
                  <z-table-btn color="green"
-                             text="edit"
+                             icon="mdi-circle-edit-outline"
+                             text="e"
                             @click="retrieveForEditing(item)" />
                 </div>
 
@@ -61,6 +63,7 @@
 
            </v-data-table>
          </v-card>
+
        </v-col>
     </v-row>
 <!------------------TABLE END------------------------------------------->
@@ -137,8 +140,8 @@ export default {
       ],
       editTable:{placeid:'',workareaid:'', ownerid:'' ,name:'', description:''},
       switchType:[],
-      defaultWorkArea:null
-
+      defaultWorkArea:null,
+      delete:false
   }),
   computed: {
       entityTableFilter() {
@@ -163,7 +166,11 @@ export default {
   },
   methods: {
     startStockTake(e,{item}) {
-      console.log(e,item)
+
+      if (this.showAddTable) return
+      if (this.delete) return
+
+      console.log(e,item, this.updateMessage)
       this.$root.$confirm('Asset Capture'
          , `Do you want to start asset capture for location ${item.name} ?`, { color: 'green' })
        .then((confirm) => {
@@ -176,6 +183,7 @@ export default {
 
     },
     retrieveForDeleting(item) {
+      this.delete = true
       this.$root.$confirm("Are you sure about deleting?", "If you press YES, gone!", { color: 'red' })
        .then((confirm) => {
          if (confirm) {
@@ -183,6 +191,7 @@ export default {
          } else {
            //alert('you pressed NO ' + item.name)
          }
+         this.delete = false
       })
     },
     addNew() {
@@ -212,6 +221,7 @@ export default {
       crudTask.save('place', this.entityTable)
       //load switches...only when empty
       crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
+      this.fixIncomingArea()
     },
 
     //--------------------------------------------------------------------------------
@@ -240,29 +250,40 @@ export default {
       //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       let filter = ''
-      if (this.defaultWorkArea) {
-        filter = `AND w.name like "${this.defaultWorkArea}%"`
-      }
+      // if (this.$route.params.area) {
+      //   filter = `AND w.name like "${this.$route.params.area}%"`
+      // }
       tableWork.getData('load'+this.$options.name, this.tableDone, filter)
+
     },
     checkSaveError(response) {
       //If we have an error, report and wait.
       if (crudTask.reportError(response)) return
       this.refresh()
     },
+    fixIncomingArea() {
+      console.log('Fix incoming Area:', this.area, this.$route.params.area, this.switchType.length)
+      if (this.area) { //this.$route.params && this.$route.params.area)
+        console.log('Current switchTypes:', this.switchType)
+        let idx = this.switchType.findIndex( e => e.type == this.area)
+        console.log('We found and idx')
+        if (idx > -1) {
+          this.switchType[idx].switch = true
+          console.log(this.switchType[idx], 'set to true!')
+        }
+      }
+    }
   },
   mounted() {
-     console.log('Start' , this.$options.name, this.area)
-     if (this.area) {
-       this.switchType.push({ type: this.area, cnt: 1 })
-       this.defaultWorkArea = this.area
-     }
+     console.log('Start' , this.$options.name, 'a=',this.area, 'et-',this.entityTable.length ,'sw=',this.switchType.length)
      this.entityTable = crudTask.load('place')
-     console.log('after load placedata', this.entityTable)
+     console.log('After Lookup Load' , this.$options.name, 'a=',this.area, 'et-',this.entityTable.length ,'sw=',this.switchType.length)
      if (this.entityTable.length == 0) {
        this.refresh()
      } else {
        crudTask.recalcSwitches(this.switchType, this.entityTable, 'workarea')
+       console.log('After reCalc Switches' , this.$options.name, 'a=',this.area, 'et-',this.entityTable.length ,'sw=',this.switchType.length)
+       this.fixIncomingArea()
      }
   }
 }
