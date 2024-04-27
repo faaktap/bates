@@ -24,6 +24,7 @@
                 :key="s.id"
                  class="mb-2">
            <v-switch v-model="s.switch"
+                     inset dense color="green"
                      hide-details
                      class="mt-1 mr-2 mb-2 ml-2"
                     :label="s.type" >

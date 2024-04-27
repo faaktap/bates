@@ -28,6 +28,7 @@
 
 <script>
 import { zmlLog } from '@/api/zmlLog.js';
+import { staleCheck } from "@/api/localStorage.js"
 import { getters } from "@/api/store";
 import { zData } from "@/api/zGetBackgroundData.js"
 import confirm from "@/api/DialogConfirm";
@@ -50,6 +51,13 @@ export default {
   },
   mounted: function () {
     console.log("Start:",this.$options.name,this.$route.fullPath)
+
+    console.log('Version and stale check')
+    if (staleCheck.checkIsDataStale()) {
+      console.log('ls deleted - expect login  - we will reload')
+    } else {
+      console.log('All is good - carry on from localStorage')
+    }
 
     zData.initialData('Load Subject Data')
     console.log('also good place to see if person is logged on, and load cookies.')

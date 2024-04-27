@@ -13,7 +13,6 @@ or
        color="purple" />
 
 style="border: 1px solid red;"
-
 -->
 <template>
 <!-- <v-container fluid class="my-2 mx-0 pa-1"> -->
@@ -21,7 +20,7 @@ style="border: 1px solid red;"
    <v-expansion-panel value="0" >
     <v-expansion-panel-header class="ma-0 pa-0" xxxstyle="border: 1px solid yellow;">
         <slot name="header" class="ma-0 pa-0">
-          <span class="ml-4 float-left">👀  {{ heading }} </span>
+         <span class="ml-4 float-left">??  {{ heading }} </span>
         </slot>
         <v-back />
      </v-expansion-panel-header>

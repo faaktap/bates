@@ -1,7 +1,10 @@
  <template>
- <div>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
-
+  <v-btn color="red" icon
+         style="position: absolute; display: block; top: 0; right: 4;left: inherit;"
+         @click="$emit('cancel',dataTable,'cancel')">
+         X
+   </v-btn>
    <v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
                              ,{name: "Cancel", icon:"mdi-location-exit"}]'
@@ -21,11 +24,12 @@
                            @select="typeWasSelected"
                            label="Type"
                            @moreHelp="showChoosy = true"
+                           :reqrule="true"
           />
        </v-col>
        <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.name"
-                       label="Stock Name"
+                       label="Stock Description"
                        title="You may leave this blank"
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
@@ -91,13 +95,12 @@
 </v-card-text>
 
 <!------------------ CHOOSY ------------------------------------------->
-   </v-card>
 <v-dialog v-model="showChoosy"  width="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
      <choosy v-model="dataTable.typeid"
              @objectSelected="showChoosy = false" />
 </v-dialog>
+</v-card>
 
-</div>
 </template>
 
 
@@ -179,15 +182,8 @@ export default {
       return true
     },
     typeWasSelected(e) {
-      this.dataTable.name = e.trim()
-      // if (e) {
-      //   let snap = e.indexOf('/')
-      //   if (snap) {
-      //     this.dataTable.name = e.slice(0,snap).toLowerCase()
-      //   } else {
-      //     this.dataTable.name = e.toLowerCase()
-      //   }
-      // }
+      //this.dataTable.name = e.trim()
+      console.log(e.trim())
       if (this.getZml.devalList.includes(this.dataTable.typeid)) {
         this.dataTable.devalid = 1
       }

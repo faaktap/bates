@@ -1,9 +1,5 @@
 <template>
 <v-container fluid>
-  <base-title-expand heading="Report">
-    <p>Various reports can be accessed here. </p>
-    <p>They can be printed or exported to excel. You can decide which columns to print/export</p>
-  </base-title-expand>
  <v-card>
     <v-toolbar
       color="cyan"
@@ -69,7 +65,6 @@ import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
 import ReportsTable from '@/components/ReportsTable.vue'
-import BaseTitleExpand from '@/components/base/BaseTitleExpand.vue'
 import { zmlFetch } from '@/api/zmlFetch.js'
 import { getters } from "@/api/store";
 export default {
@@ -78,8 +73,7 @@ export default {
     ZAutoPers,
     ZAutoPlace,
     ZAutoItemType,
-    ReportsTable,
-    BaseTitleExpand
+    ReportsTable
   },
   data: () => ({
     getZml: getters.getState({ object: "gZml" }),
@@ -97,9 +91,6 @@ export default {
                ,answer:'select an item', obj:{}},
           {id:3,menu:'Eben List' ,f:null
                ,sql:`SELECT count(*) FROM s_stock s`
-               ,answer:'Show All', obj:{}},
-          {id:4,menu:'Places' ,f:null
-               ,sql:`SELECT count(*) FROM s_places s`
                ,answer:'Show All', obj:{}}
 
         ],
@@ -135,11 +126,9 @@ export default {
           this.items[this.tab].answer = `For itemtype ${this.items[this.tab].obj.name} we found ${response[0].items} item(s)`
           break
         case 3:
-          this.items[this.tab].answer = `Stock Master List :  we found ${response[0].items} item(s)`
+          this.items[this.tab].answer = `Eben List :  we found ${response[0].items} item(s)`
           break
-        case 4:
-          this.items[this.tab].answer = `Places :  we found ${response[0].items} item(s)`
-          break
+
       }
       console.log('tab = ', this.tab, 'count = ', response[0], this.items[this.tab].answer)
     },
@@ -167,8 +156,8 @@ export default {
          break
         case 1:
          this.sqlSelect =
-    `SELECT s.name\
-         , ifnull(c.name,t.catid) category\
+    `SELECT ifnull(c.name,t.catid) category\
+         , s.name\
          , ifnull(p.name,s.placeid) place\
          , ifnull(t.name,s.typeid) itemtype\
          , s.serialno\
@@ -217,14 +206,7 @@ export default {
     LEFT JOIN s_place p on s.placeid = p.placeid
     LEFT JOIN s_category c on t.catid = c.catid
   ORDER BY s.stockid DESC`
-         this.reportHeader = 'Bate Meester se Lys'
-         break
-         case 4:
-         this.sqlSelect = `SELECT p.menemonic, p.public_preferredname, p.room, s.name placename, s.function, s.description, w.name workarea
-FROM s_place s, dkhs_personel p, s_workarea w
-where s.ownerid = p.persid and s.workareaid = w.workareaid
-ORDER BY p.room, p.surname`
-         this.reportHeader = 'Places / People'
+         this.reportHeader = 'Eben Pretorius se Lys'
          break
       }
     },

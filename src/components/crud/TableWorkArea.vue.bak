@@ -25,10 +25,10 @@
                  :items-per-page="30"
                  mobile-breakpoint="0"
                  :footer-props="{
-                    'items-per-page-options': [10, 20,30, -1]
+                    'items-per-page-options': [10, 20]
                   }"
                  @click:row.self="startPlaceView"
-           > <!--  https://v2.vuetifyjs.com/en/api/v-data-iterator/#slots items-per-page not working.. -->
+           >
              <template v-slot:[`item.workareaid`]="{ item }">
               <!--{{ item.workareaid }}-->
                <div class="float-right">
@@ -112,10 +112,9 @@ export default {
       entityTable:[],
       entityTableHeader:[
            { text: 'Name', value: 'name' }
-          ,{ text: 'Description', value: 'description'}
+          //,{ text: 'Description', value: 'description'}
           //,{ text: 'ownerid', value: 'ownerid'}
-          ,{ text: 'ownername', value: 'ownername'}
-          ,{ text: 'places', value: 'places'}
+          //,{ text: 'ownername', value: 'ownername'}
           ,{ text: 'actions', value: 'workareaid', align:'right'}
 
       ],
@@ -179,7 +178,6 @@ export default {
       }
     },
     tableDone(response) {
-      console.log('tbw:',response)
       if (crudTask.reportError(response)) return
       this.entityTable = response
       crudTask.save('workarea', response)

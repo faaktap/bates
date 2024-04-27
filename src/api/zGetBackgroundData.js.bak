@@ -1,6 +1,5 @@
 import { zmlConfig } from '@/api/constants';
-import { cookie } from "@/api/localStorage.js"
-import { getters } from "@/api/store";
+//import { getters } from "@/api/store";
 //import { zmlFetch } from '@/api/zmlFetch';
 //import { zDate } from '@/api/zDate.js'
 
@@ -32,17 +31,6 @@ export const zData = {
     },
     initialData:  (whatever) => {
         if (whatever !== undefined) console.log(whatever)
-        let info = cookie.get('login1')
-        console.log(info)
-        let loginCookieData = info.split('|')
-        if (loginCookieData.length >= 4) {
-            getters.getState({ object: "gZml" }).login.username = loginCookieData[0]
-            getters.getState({ object: "gZml" }).login.userid = loginCookieData[1]
-            getters.getState({ object: "gZml" }).login.password = loginCookieData[2]
-            getters.getState({ object: "gZml" }).login.type = loginCookieData[3]
-            getters.getState({ object: "gZml" }).login.isAuthenticated = true
-        }
-        //alert(JSON.stringify(getters.getState({ object: "gZml" }).login))
         return whatever;
     },
     calendarData: (whatever) => {

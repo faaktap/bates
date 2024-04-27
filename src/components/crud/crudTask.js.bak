@@ -45,18 +45,7 @@ export const crudTask = {
           }
         }
       });
-
-      //Move the map to an array, and assign type and value (value will be used to find switch)
-      let tmArr = []
-      typeMap.forEach((values, keys) => {
-        tmArr.push({type:keys, value:tmArr.length})
-      });
-      //Now we sort the array, to get Admin in the front. (Switches show alphabetically)
-      let typeMapArray = tmArr.sort((a,b) => a.type.localeCompare(b.type))
-      //Now we load the switchTable to be used in TablePlace.vue
-      typeMapArray.forEach((k) => {
-        switchTable.push({type:k.type, cnt:k.value, switch: false})
-      })
+      typeMap.forEach((k,value) => { switchTable.push({type:value, cnt:k, switch: false}) } )
       return true
    }
    ,save: (entityTableName, data) => {

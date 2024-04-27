@@ -57,13 +57,6 @@ let i18n = new VueI18n({
   messages: messages
 })
 
-// WIL NIE WERK NIE - main.js nie gesien nie???
-//import VBack from './components/base/VBack.vue'
-//Vue.component('VBack', VBack)
-
- Vue.component('v-back', resolve => { require(['@/components/base/VBack.vue'], resolve) })
-
-
 
 new Vue({
   i18n,

@@ -1,27 +1,31 @@
 <template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
-
+  <v-btn color="red" icon
+         style="position: absolute; display: block; top: 0; right: 0;left: inherit;"
+         @click="$emit('cancel',dataTable,'cancel')">
+         X
+   </v-btn>
    <v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
-                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]'
             color="accent"
             dark="true"
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text> 
+    </v-card-text>
 
     <v-card-text class="ma-2 pa-2 justify-center">
-      <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">       
+      <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
        <v-col cols="12" sm="6"  md="4">
-         <z-text-field v-model="dataTable.description" 
-                       label="Item(Desc)" 
+         <z-text-field v-model="dataTable.description"
+                       label="Item(Desc)"
                        prependIcon="mdi-star-face"
                        :reqrule="true" />
        </v-col>
        <v-col cols="12" sm="6" md="4">
-         <z-text-field v-model="dataTable.id" 
-                       label="ID" 
+         <z-text-field v-model="dataTable.id"
+                       label="ID"
                        type="number"
                        prependIcon="mdi-baby-face-outline"
                        :reqrule="true" />
@@ -32,17 +36,17 @@
                   :itemList="statusses"
                   itemText="text"
                   itemValue="value"
-                  label="Status" />    
+                  label="Status" />
         <z-select v-model="dataTable.description"
                  :itemList="['aaa','bbb']"
-                  label="Status" />                         
+                  label="Status" />
        </v-col>
        <v-col cols="6" md="4">
         <z-select v-model="dataTable.description"
                   :itemList="getZml.persMenemonic"
                   itemText="user_fullname"
                   itemValue="user_id"
-                  label="Personel"/>        
+                  label="Personel"/>
                   {{ dataTable.description }}
        </v-col>
        <v-col cols="12" sm="6" md="4">
@@ -52,18 +56,18 @@
        </v-col>
        <v-col cols="12" md="4">
            <z-radio v-model="dataTable.status"
-                    label="Status"  
+                    label="Status"
                    :radioList="testRadio"
                    :column="true"
            />
-       </v-col>       
+       </v-col>
        <v-col cols="12" sm="6" md="4">
          <z-auto-pers v-model="dataTable.description"
                        label="Select" />
-       </v-col>       
+       </v-col>
        <v-col cols="12" md="4">
-           <base-date v-model="dataTable.bdate" 
-                      instructions="FA" 
+           <base-date v-model="dataTable.bdate"
+                      instructions="FA"
                       dense outlined rounded shaped
                       label="Some Date" />
        </v-col>
@@ -78,20 +82,20 @@
 
 
       </v-layout>
-     </v-card-text>       
+     </v-card-text>
    <v-card-text>
 
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
-                             ,{name: "Cancel", icon:"mdi-location-exit"}]' 
+                             ,{name: "Cancel", icon:"mdi-location-exit"}]'
             color="accent"
             dark="true"
             @toolclick="listenToToolbar">
             {{ updateText }}
      </z-base-tool>
-    </v-card-text> 
+    </v-card-text>
 
    </v-card>
-      
+
 </template>
 
 
@@ -110,8 +114,8 @@ export default {
   //props:['updateMessage', 'dataTable','entity'],
   props:{ updateMessage:{}
          ,dataTable:{require:true}
-         ,entity:{} 
-         ,editFieldDisplay:{default: "xxx"} 
+         ,entity:{}
+         ,editFieldDisplay:{default: "xxx"}
   },
   components: { BaseDate
               , ZTextField
@@ -130,7 +134,7 @@ export default {
              {divider: true},
              {text: 'Open', value: 'Open'  },
              {divider: true},
-             {text: 'Close', value: 'Close' }],      
+             {text: 'Close', value: 'Close' }],
   }),
   computed: {
     buttonText() {
@@ -139,14 +143,14 @@ export default {
       return "notSure"
     },
     updateText() {
-      if (this.updateMessage.toLowerCase() == 'create') return `Busy creating : a new entry`  
+      if (this.updateMessage.toLowerCase() == 'create') return `Busy creating : a new entry`
       if (this.updateMessage.toLowerCase() == 'edit') {
-          return `Busy editing : "${this.editFieldDisplay}"` 
+          return `Busy editing : "${this.editFieldDisplay}"`
       } else {
-          return `Busy "${this.updateMessage}" : ${this.editFieldDisplay} for ${this.entity}` 
+          return `Busy "${this.updateMessage}" : ${this.editFieldDisplay} for ${this.entity}`
       }
     }
-  },  
+  },
   methods:{
     listenToToolbar(e) {
       this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())

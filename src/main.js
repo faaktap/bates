@@ -42,7 +42,6 @@ export const cs = {
 }
 
 
-
 Vue.prototype.$history = window.history;
 Vue.prototype.$cs = cs;
 
@@ -58,20 +57,30 @@ let i18n = new VueI18n({
   messages: messages
 })
 
+// WIL NIE WERK NIE - main.js nie gesien nie???
+// import VBack from './components/base/VBack.vue'
+// Vue.component('VBack', VBack)
 
-import VueHtmlToPaper from 'vue-html-to-paper';
-Vue.use(VueHtmlToPaper, {
-  name: '_blank',
-  specs: [
-    'fullscreen=yes',
-    'titlebar=yes',
-    'scrollbars=yes'
-  ],
-  styles: [
-    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
-    'https://unpkg.com/kidlat-css/css/kidlat.css'
-  ]
-})
+// Vue.component('my-component', {
+//   name: 'my-component',
+//   template: '<div>A custom component!</div>'
+// })
+
+// Vue.component('v-back', resolve => { require(['@/components/base/VBack.vue'], resolve) })
+
+// import VueHtmlToPaper from 'vue-html-to-paper';
+// Vue.use(VueHtmlToPaper, {
+//   name: '_blank',
+//   specs: [
+//     'fullscreen=yes',
+//     'titlebar=yes',
+//     'scrollbars=yes'
+//   ],
+//   styles: [
+//     'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+//     'https://unpkg.com/kidlat-css/css/kidlat.css'
+//   ]
+// })
 console.log('hello', Vue.prototype)
 new Vue({
   i18n,
@@ -79,3 +88,4 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app')
+

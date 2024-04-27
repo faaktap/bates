@@ -1,6 +1,10 @@
 <template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
-
+  <v-btn color="red" icon
+         style="position: absolute; display: block; top: 0; right: 0;left: inherit;"
+         @click="$emit('cancel',dataTable,'cancel')">
+         X&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   </v-btn>
    <v-card-text>
      <z-base-tool :toolList='[{name: buttonText, icon:"mdi-content-save"}
                              ,{name: "Cancel", icon:"mdi-location-exit"}]'

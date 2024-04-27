@@ -24,7 +24,8 @@ const routes = [
 
   {
     component: () => import(/* webpackChunkName: "bates" */ '@/components/crud/TablePlace.vue'),
-    path: '/class/:area?',
+    //path: '/class/:area?',
+    path: '/class',
     props: true,
     name: 'Classes',
     meta: {layout: la[1], authentication: "public" }

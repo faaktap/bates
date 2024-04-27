@@ -2,6 +2,8 @@
 
 module.exports = {
   publicPath: '/bates/',
+  outputDir:'dist',
+  assetsDir:'bt10e',
   "transpileDependencies": [
     "vuetify"
   ],

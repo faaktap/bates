@@ -23,16 +23,7 @@ export const tableWork = {
         console.log(key)
         let ts = {}
         ts.task = 'PlainSql'
-        ts.sql = `SELECT a.workareaid, a.ownerid, a.name, a.description, ifnull(s.public_preferredname,' ') ownername, count(*) places
-        FROM s_workarea a
-        left join dkhs_personel s on a.ownerid = s.persid
-        left join s_place p on a.workareaid = p.workareaid
-        group by  a.workareaid, a.ownerid, a.name, a.description,ifnull(s.public_preferredname,' ')
-       ORDER BY a.name`
-        // `SELECT a.*,s.public_preferredname ownername
-        // FROM s_workarea a, dkhs_personel s
-        // WHERE a.ownerid = s.persid
-        // ORDER BY a.name`
+        ts.sql = `SELECT * FROM s_workarea ORDER BY name`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },
