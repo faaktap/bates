@@ -30,7 +30,7 @@ export const tableWork = {
                  WHERE p.workareaid = w.workareaid\
                   AND p.ownerid = s.persid\
                   ${filter}\
-                 ORDER BY s.surname`
+                 ORDER BY CAST(p.name as SIGNED INTEGER) DESC`
         ts.api = zmlConfig.apiPath
         zmlFetch(ts, pCallback, errorFetch)
     },

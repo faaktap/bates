@@ -1,11 +1,12 @@
 import { infoSnackbar,errorSnackbar } from '@/api/GlobalActions';
 import { getters } from "@/api/store";
 export const crudTask = {
-    hello: (p1) => {console.log('hello from (JS) ' , p1)}
+    hello: (p1) => {crudTask.cl('hello from (JS) ' , p1)}
    ,name: "JSCrudTasks"
+   ,cl: (...args) => { console.log(crudTask.name, ...args)}
    ,reportError: (response) => {
       if (response !== undefined && response.errorcode && response.errorcode != 0) {
-        console.log(crudTask.name,'DbErr:',response)
+        crudTask.cl(crudTask.name,'DbErr:',response)
         if (response.error.indexOf('Duplicate entry') != -1 ) {
           errorSnackbar("ERROR : We use this item in this location - just update it")
         } else if (response.error.indexOf('a foreign key constraint') != -1 ) {
@@ -39,7 +40,7 @@ export const crudTask = {
       entityTable.forEach(e => {
         for (const [key, value] of Object.entries(e)) {
           if (key == switchAttribute) {
-            //console.log('we found it and its value is ', value)
+            //crudTask.cl('we found it and its value is ', value)
             //So we add it to our map
             typeMap.set(value, typeMap.size+1);
           }
@@ -60,7 +61,7 @@ export const crudTask = {
       return true
    }
    ,save: (entityTableName, data) => {
-     console.log('save crudData : ', entityTableName, data.length)
+     crudTask.cl('save crudData : ', entityTableName, data.length)
      let gzp = getters.getState({ object: "gZml" })
      switch (entityTableName) {
       case "itemtype":
@@ -79,26 +80,26 @@ export const crudTask = {
      }
    }
    ,load: (entityTableName) => {
-     console.log('load crudData : ', entityTableName)
+     crudTask.cl('load crudData : ', entityTableName)
      let gzp = getters.getState({ object: "gZml" })
     switch (entityTableName) {
      case "itemtype":
-       console.log(gzp.itemtype.length)
+       crudTask.cl(gzp.itemtype.length)
        return gzp.itemtype
      case "workarea":
-       console.log(gzp.workarea.length)
+       crudTask.cl(gzp.workarea.length)
        return gzp.workarea
      case "place":
-       console.log(gzp.place.length, gzp.place)
+       crudTask.cl(gzp.place.length, gzp.place)
        return gzp.place
      case "owner":
-       console.log(gzp.owner.length)
+       crudTask.cl(gzp.owner.length)
        return gzp.owner
      case "category":
-      console.log(gzp.category.length)
+      crudTask.cl(gzp.category.length)
        return gzp.category
     }
-    console.log('something slipped thrui!!!!')
+    crudTask.cl('something slipped thrui!!!!')
   }
 
 }

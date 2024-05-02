@@ -1,7 +1,7 @@
  <template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
   <v-btn color="red" icon
-         style="position: absolute; display: block; top: 0; right: 4;left: inherit;"
+         style="position: absolute; display: block; top: 0; right: -4;left: inherit;"
          @click="$emit('cancel',dataTable,'cancel')">
          X
    </v-btn>
@@ -16,7 +16,8 @@
     </v-card-text>
 
     <v-card-text class="mt-0 mb-0 pt-0 justify-center">
-   <v-card color="red"> {{ message }} </v-card>
+   <v-card color="red" class="ma-2 pa-2 text-center text-sm-body-1 text-md-h6"> {{ message }} </v-card>
+
    <form @submit="checkForm" id="TSF" v-on:keyup.enter="onEnter">
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
        <v-col cols="12" sm="4">
@@ -30,9 +31,10 @@
        <v-col cols="12" sm="4">
          <z-text-field v-model="dataTable.name"
                        label="Stock Description"
-                       title="You may leave this blank"
+                       title="You MUST fill in the field please!"
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
+                       updatemessage {{ updateMessage }}
        </v-col>
        <!-- <v-col cols="12" sm="4">
          <z-auto-deval v-model="dataTable.devalid"
@@ -156,9 +158,14 @@ export default {
   methods:{
     checkForm(e) {
       console.log('Check Form : ' , e)
-      if (e == 'Save' || e == 'Create') {
+      this.message  = 'no default message - but some problem'
+      if (this.updateMessage.toLowerCase() == 'create' || this.updateMessage.toLowerCase() == 'edit') { //(e == 'Save' || e == 'Create') {
         if (!this.dataTable.typeid) {
            this.message  = 'At least select a type!'
+           return false
+        }
+        if (!this.dataTable.name) {
+           this.message  = 'Please type something in the Stock Description field'
            return false
         }
         if (parseInt(this.dataTable.quantity) == 0) {
@@ -206,8 +213,19 @@ export default {
       this.listenToToolbar ('Save')
     },
     listenToToolbar(e) {
-      if (this.checkForm(e))
+      console.log('checking form...', e)
+
+      if(e == 'Cancel') {
         this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
+        return
+      }
+
+      if (this.checkForm(e)) {
+        this.$emit(e.toLowerCase(), this.dataTable,e.toLowerCase())
+      } else {
+        console.log('something still missing')
+      }
+      return
     }
   },
   mounted() {

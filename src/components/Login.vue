@@ -287,12 +287,12 @@ export default {
             this.getZml.login.userid = response.userid ? response.userid : 0;
             this.getZml.login.logins = response.logins;
             this.getZml.login.lastdate = response.lastdate;
-            if (this.getZml.login.grade.indexOf('A') == -1) {
-              this.getZml.login.lang = 'E'
-            } else {
+            if (this.getZml.login.grade && this.getZml.login.grade.indexOf('E') == -1) {
               this.getZml.login.lang = 'A'
+            } else {
+              this.getZml.login.lang = 'E'
             }
-            console.log('welcome',response.username, this.getZml.login.lang, this.getZml.login.grade,'idx=',this.getZml.login.grade.indexOf('A'))
+            console.log('welcome',response.username)
             // this.dropAnEmail()
             if (response.added == 1  || response.password == 'password') {
               infoSnackbar('Welcome ' + this.getZml.login.fullname + ', please update your details');

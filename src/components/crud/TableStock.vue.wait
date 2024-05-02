@@ -17,20 +17,20 @@
                      Check
                 </v-btn>
        </p>
-       <p>A new teacher in a class can delete all the items and start again, or take ownership of current items. </p>
        <p> Look at the buttons on the righthand side. Each stock item can be processed with one of these
          buttons.
          <ul>
-           <li> Delete will be used 4 testing, since a stock item cannot be deleted
-               <p>The deleted item will still be visible in reports.</p></li>
-           <li> Edit will allow you to edit an item, but rather use <strong>Check</strong> button, since this will save a "movement" transaction </li>
+           <li> Delete will be used n testing, since a stock item cannot be deleted </li>
+           <li> Edit will be used also in testing, and admin mode, since we cannot control what you do </li>
            <li> Check will be used yearly, the form will popup, you can make changes, and then save.
-               <p>This will create a journal entry that you have seen the form, and are happy</p></li>
+             This will create a journal entry that you have seen the form, and are happy</li>
          </ul>
        </p>
        <p>Each stock item will have these buttons. To create a new stock item, click on the "Acquire Stock".
          Once our stock is loaded, this will be handled by a single person I guess.
        </p>
+       <p>Edit can be a general purpose button for "movement" . ie. From one class to another, or from one
+         person to another...</p>
 
    </base-title-expand>
    <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
@@ -72,7 +72,6 @@
                  :footer-props="{
                     'items-per-page-options': [20, 40,  250]
                   }"
-                  @dblclick:row="dblClick"
            >
              <template v-slot:[`item.stockid`]="{ item }">
               <!-- {{ item.stockid }} -->
@@ -100,7 +99,7 @@
 
 <!------------------ADD/UPDATE FORM------------------------------------------->
   <v-dialog v-model="showAddTable"
-            :fullscreen="$vuetify.breakpoint.mdAndDown"
+            fullscreen
             content-class="elevation-2"
             style="overflow:hidden"
             width="auto">
@@ -125,7 +124,7 @@
    </front-json-to-csv>
   </v-dialog> -->
 <!------------------------------------------------------------->
-<!-- {{  entityTable }} -->
+{{  entityTable }}
  </v-container>
 </template>
 
@@ -170,8 +169,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
 */
       entityTableHeader:[
            { text: 'Name', value: 'name'}
-          //,{ text: 'Place', value: 'place'}
-          ,{ text: 'Type', value: 'itemtype'}
+          ,{ text: 'Place', value: 'place'}
           ,{ text: 'Category', value: 'category'}
           //,{ text: 'Date', value: 'datereceived'}
           ,{ text: 'Quantity', value: 'quantity'}
@@ -194,14 +192,23 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
                   ,serialno:''
                   ,datereceived:''
                   ,price:0},
+      switchType:[],
       defaultPlace:null,
       defaultOwner:null,
 
   }),
   computed: {
       entityTableFilter() {
+        //If the table is empty - return blank
         if (!this.entityTable.length) return [];
-        return this.entityTable
+        //If we have any switches on, add them to onlyThese
+        let onlyThese = this.switchType.filter(ele => ele.switch == true)
+        //If we have no switch active, activate at least one
+        if (!onlyThese.length ) {
+            this.switchType.forEach(element => { element.switch == true})
+            onlyThese = this.switchType
+        }
+        return this.entityTable.filter(ele => onlyThese.some(e => e.type == ele.category) )
       }
   },
   methods: {
@@ -249,12 +256,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
                   }
         this.showAddTable = true
     },
-    dblClick(a,data) {
-      console.log('dblclick',a,data)
-      this.retrieveForChecking(data.item)
-    },
     retrieveForChecking(item) {
-
       let index = tableWork.getIndex(item.stockid,this.entityTable)
       if (index !== -1) {
         this.updateMessage = 'Edit'
@@ -286,6 +288,10 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
         this.entityTable = []
       } else {
          this.entityTable = response
+         //load switches...only when empty
+         console.log('load swotched')
+         crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
+         console.log('done swotched')
       }
       // this.translate(this.entityTable)
     },
@@ -349,6 +355,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
      if (this.roomname) {
        this.alwaysFilter = ` AND p.name = "${this.roomname}" `
        tableWork.loadPlaceID(this.roomname,this.loadPlaceId)
+       crudTask.recalcSwitches(this.switchType, this.entityTable, 'category')
      } else {
        this.refresh()
      }

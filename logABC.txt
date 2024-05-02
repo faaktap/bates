@@ -1,0 +1,3 @@
+We can redirect output of npm to a file with npm run serve 
+We can redirect output of npm to a file with npm run serve 
+We can redirect output of npm to a file wuth npm run serve 
