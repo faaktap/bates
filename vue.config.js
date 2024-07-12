@@ -3,7 +3,7 @@
 module.exports = {
   publicPath: '/bates/',
   outputDir:'dist',
-  assetsDir:'bt10f',
+  assetsDir:'bt11b',
   "transpileDependencies": [
     "vuetify"
   ],

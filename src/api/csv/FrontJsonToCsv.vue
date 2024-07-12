@@ -141,6 +141,9 @@ export default {
         handler() {
           this.build()
         }
+      },
+      csvTitle() {
+         this.userHeader = this.csvTitle
       }
   },
   mounted() {

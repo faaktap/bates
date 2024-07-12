@@ -72,7 +72,7 @@ export default {
           h1 { color: #1c3a1b }\
           heading { color: #1c3a1b }\
           p.bodyText {font-size:10pt}\
-          th, td {border-radius:6px; padding: 10px;margin: 10px; border: 1px solid #67656d;}\
+          th, td {border-radius:6px; padding: 4px;margin: 4px; border: 1px solid #67656d;}\
           aside {display: none;}\
           main {display: block;}\
          }`

@@ -69,7 +69,7 @@ export default {
       let ts = {}
       ts.task = 'PlainSql'
       ts.sql = "SELECT p.placeid, p.name, w.name workarea, p.description,p.ownerid "
-           + "     , concat(p.name, ' - ',w.name) concatsearch"
+           + "     , concat(p.name, ' Area: ',w.name) concatsearch"
            + "  FROM s_place p, s_workarea w "
            + " WHERE p.workareaid = w.workareaid "
            + "ORDER BY p.name"

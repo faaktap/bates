@@ -149,11 +149,12 @@ export default {
         case 0:
          this.sqlSelect =
     `SELECT ifnull(c.name,t.catid) category\
-         , s.name\
+         , s.name description\
          , ifnull(p1.public_preferredname,'?') Responsible\
          , ifnull(t.name,s.typeid) itemtype\
          , s.serialno\
          , s.quantity\
+         , date(s.datereceived) DateChecked\
      FROM s_stock s\
      LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\
      LEFT JOIN s_itemtype t on  t.typeid = s.typeid\
@@ -163,14 +164,14 @@ export default {
      and s.placeid = ${this.items[this.tab].obj.placeid}\
      ORDER BY s.name`
      //         , ifnull(p.name,s.placeid) place\
-         this.reportHeader = this.items[this.tab].menu + ':' +this.items[this.tab].obj.name  // this.items[this.tab].answer
+         this.reportHeader = this.items[this.tab].menu + ' : ' +this.items[this.tab].obj.name  // this.items[this.tab].answer
          break
         case 1:
          this.sqlSelect =
-    `SELECT s.name\
+    `SELECT ifnull(t.name,s.typeid) itemtype\
+         , s.name description\
          , ifnull(c.name,t.catid) category\
          , ifnull(p.name,s.placeid) place\
-         , ifnull(t.name,s.typeid) itemtype\
          , s.serialno\
          , s.quantity\
      FROM s_stock s\
@@ -188,6 +189,7 @@ export default {
     `SELECT ifnull(c.name,t.catid) category\
          , ifnull(t.name,s.typeid) itemtype\
          , ifnull(p.name,s.placeid) place\
+         , s.name description\
          , ifnull(p1.public_preferredname,'?') Responsible\
          , s.serialno\
          , s.quantity\
@@ -202,8 +204,8 @@ export default {
          this.reportHeader = this.items[this.tab].menu + ' : ' + this.items[this.tab].obj.name //this.reportHeader = this.items[this.tab].answer
          break
         case 3:
-         this.sqlSelect = `SELECT s.stockid, s.typeid, s.name, s.userid, s.originalownerid\
-        , s.devalid, s.placeid, s.name, s.datereceived\
+         this.sqlSelect = `SELECT s.stockid, s.typeid, s.name description, s.userid, s.originalownerid\
+        , s.devalid, s.placeid, date(s.datereceived) DateChecked\
         , ifnull(p1.public_preferredname,'?') Responsible\
         , ifnull(p.name,s.placeid) place\
         , ifnull(d.rulename,s.devalid) rulename\

@@ -1,8 +1,7 @@
 <template>
  <v-container fluid>
-   <!-- rh - {{ reportHeader }} -->
      <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
-     <v-btn class="ma-2" @click="showPrint = true"> Export </v-btn>
+     <v-btn class="ma-2" @click="showPrint = true"> Export/Print </v-btn>
      </v-card>
       <v-data-table v-if="orDTTable.length"
             :headers="labels"
@@ -14,6 +13,8 @@
       >
       </v-data-table>
 
+
+      <!-- :csv-title="reportHeader" -->
 <v-dialog v-model="showPrint" xwidth="auto" :fullscreen="$vuetify.breakpoint.smAndDown">
   <front-json-to-csv v-if="orDTTable"
                    :json-data="orDTTable"
@@ -80,6 +81,7 @@ export default {
     },
     buildHeaders() {
       console.log('start build headers')
+      this.labels = []
       Object.keys(this.orDTTable[0]).forEach(ele => {
         console.log(ele)
         this.labels.push( {text:ele, value:ele} )
@@ -92,6 +94,9 @@ export default {
       if (this.sqlSelect) this.getData()
   },
   watch:{
+      reportHeader(newone) {
+        console.log('ReportHeader:', newone)
+      },
       sqlSelect() {
         console.log(this.$options.name,'watchers', this.sqlSelect)
           if (this.sqlSelect) this.getData()
