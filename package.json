@@ -1,6 +1,6 @@
 {
-  "name": "zmlrekenaars",
-  "version": "0.1.0",
+  "name": "zmlBayes",
+  "version": "0.1.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",

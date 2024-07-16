@@ -1,6 +1,6 @@
 <template>
  <v-container fluid>
-   <base-title-expand :heading="entity + ' Table' + ( roomname?' Room ':'' ) + roomname">
+   <base-title-expand :heading="entity + ' Table' + ( roomname ? ' Room ':' All' ) + roomname">
 
        <p class="heading-4">How does this work?? </p>
        <p class="float-right">
@@ -35,7 +35,14 @@
    </base-title-expand>
    <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
-      <base-search @clear="search=''" v-model="search" />
+
+      <base-search v-if="roomname" @clear="search=''" v-model="search" />
+      <template v-else>
+        <h2>AllStock</h2>
+         <!-- So, if we can see all stock, let us filter here -->
+         <v-text-field v-model="searchString" max-width="120" width="100" />
+         <span>|| to search multiple</span>
+      </template>
       <v-btn class="ma-2" @click="addNew"> Acquire Stock</v-btn>
       <v-btn class="ma-2" @click="refresh"> Refresh </v-btn>
       <!-- <v-btn class="ma-2" @click="showTablePrint = true"> Export </v-btn> -->
@@ -76,17 +83,12 @@
            >
              <template v-slot:[`item.stockid`]="{ item }">
               <!-- {{ item.stockid }} -->
-                <z-table-btn color="red"
-                             text="d"
-                             icon="mdi-delete"
-                            @click="retrieveForDeleting(item)"/>
-                <z-table-btn color="green"
-                             text="e"
-                             icon="mdi-circle-edit-outline"
-                            @click="retrieveForEditing(item)" />                <!-- mdi-circle-edit-outline -->
+                <v-icon small color="red" @click="retrieveForDeleting(item)">mdi-delete</v-icon>
+                <v-icon small color="green" @click="retrieveForEditing(item)" title="edit" >mdi-circle-edit-outline</v-icon>
                 <z-table-btn color="purple"
-                             text="check"
+                             text="c"
                              icon="mdi-check-circle-outline"
+                             title="check stock item"
                             @click="retrieveForChecking(item)" />
              </template>
            </v-data-table>
@@ -131,6 +133,7 @@
 
 <script>
 import { getters } from "@/api/store"
+import { util } from "@/api/util.js"
 import { tableWork } from "@/components/crud/TableStock.js"
 import { crudTask } from "@/components/crud/crudTask.js"
 import TableStockForm from "@/components/crud/TableStockForm"
@@ -158,6 +161,7 @@ export default {
       showAddTable: false,
       //showTablePrint:false,
       search:'',
+      searchString:'',  //used for multiple searches
       updateMessage:'Create',
       entityTable:[],
 
@@ -168,7 +172,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
      , p1.public_preferredname originalownername, p2.public_preferredname user
      , p.name place, d.rulename
 */
-      entityTableHeader:[
+      tableHeader:[
            { text: 'Name', value: 'name'}
           //,{ text: 'Place', value: 'place'}
           ,{ text: 'Type', value: 'itemtype'}
@@ -199,9 +203,30 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
 
   }),
   computed: {
+
       entityTableFilter() {
         if (!this.entityTable.length) return [];
+        if (this.searchString) return util.findMultipleSearch(this.entityTable,this.searchString)
         return this.entityTable
+      },
+      entityTableHeader() {
+        if (!this.roomname) {
+          return [   { text: 'Name', value: 'name'}
+                    ,{ text: 'Place', value: 'place'}
+                    ,{ text: 'Type', value: 'itemtype'}
+                    ,{ text: 'Category', value: 'category'}
+                    ,{ text: 'Date', value: 'datereceived'}
+                    ,{ text: 'Quantity', value: 'quantity'}
+                    ,{ text: 'Owner', value: 'ownername'}
+                    ,{ text: 'Qwnerid', value: 'originalownerid'}
+                    ,{ text: 'User', value: 'user'}
+                    ,{ text: 'Serial', value: 'serialno'}
+                    ,{ text: 'Price', value: 'price'}
+                    ,{ text: 'deval', value: 'devalid'}
+                    ,{ text: 'stockid', value: 'stockid'}
+          ]
+        }
+        return this.tableHeader
       }
   },
   methods: {
@@ -217,7 +242,7 @@ SELECT s.stockid, s.userid, s.originalownerid, s.devalid, s.placeid, s.name, s.d
           ,{ text: 'Date', value: 'datereceived'}]
         let title =   `<center><strong> Quick Print for Room  ${this.entityTable[0].place} </strong></center><br><small> Please goto the "Reports Function" for a neat printout to be signed</small>`
         let printTable = []
-        this.entityTable.forEach( e => {
+        this.entityTableFilter.forEach( e => {
           if (e.category.indexOf('/') > 0) e.category = e.category.substring(0, e.category.indexOf('/'));
           if (e.itemtype.indexOf('/') > 0) e.itemtype = e.itemtype.substring(0, e.itemtype.indexOf('/'));
           printTable.push(e)

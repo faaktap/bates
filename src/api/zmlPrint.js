@@ -10,7 +10,7 @@ export default printJS;
 function zmlHeader() {
 //https://thenextweb.com/news/how-to-manipulate-date-and-time-in-javascript
     let dateNow = new Date()
-    return `<small style="text-align: right;float: right;">De Kuilen HS<br>${zmlConfig.reportBlurb} on ${dateNow.toDateString()}</small>`
+    return `<small style="text-align: right;float: right;">De Kuilen HS<br>${zmlConfig.reportBlurb||'printed'} on ${dateNow.toDateString()}</small>`
     /*
     return `\
      <span style="{text-align: right; font-weight: lighter; font-size: 40%; color: DarkSlateGray">\
@@ -113,8 +113,8 @@ export function printJSON(table, header, title) {
         properties: properties,
         repeatTableHeader: true,
         gridHeaderStyle: "color: lightblue;  border: 1px solid #3971A5;font-weight: bold",
-        //gridStyle: 'border: 1px solid lightgray; margin-bottom: -1px;',
-        gridStyle: 'border-style: none solid dotted dashed; border-width: 1px ;border-color: lightblue; margin-bottom: 1px; padding-top: 2px',
+        gridStyle: 'border: 1px solid lightgray; margin-bottom: -1px;',
+        //gridStyle: 'border-style: none solid dotted dashed; border-width: 1px ;border-color: lightblue; margin-bottom: 1px; padding-top: 2px',
         header: zmlHeader() + ' ' + title || '..no title',
         style: ".ltrd { direction: ltr; text-align: center; } * { font-size: 101%; }" ,
         showModal: false,

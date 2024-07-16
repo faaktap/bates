@@ -19,11 +19,13 @@
    <v-card color="red" class="ma-2 pa-2 text-center text-sm-body-1 text-md-h6"> {{ message }} </v-card>
 
    <form @submit="checkForm" id="TSF" v-on:keyup.enter="onEnter">
+    {{  dataTable  }}
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
        <v-col cols="12" sm="12" md="4">
           <z-auto-item-type v-model="dataTable.typeid"
                            @select="typeWasSelected"
                            label="Type"
+                           title="Click on magnify glass to peruse all types."
                            @moreHelp="showChoosy = true"
                            :reqrule="true"
           />
@@ -42,13 +44,6 @@
                        :reqrule="true" />
 
        </v-col> -->
-       <v-col v-if="dataTable.devalid != 3" cols="12" md="4">
-         <z-text-field v-model="dataTable.serialno"
-                       label="Serial"
-                       prependIcon="mdi-serial-port"
-                       :reqrule="false" />
-
-       </v-col>
        <v-col cols="12" md="4">
          <z-auto-place v-model="dataTable.placeid"
                       @select="ownerWasSelected"
@@ -68,17 +63,29 @@
                        label="Owner"
          />
        </v-col>
+       <v-col v-if="dataTable.devalid != 3" cols="12" md="4">
+         <z-text-field v-model="dataTable.serialno"
+                       label="Serial"
+                       prependIcon="mdi-serial-port"
+                       :reqrule="false" />
+
+       </v-col>
+       <v-col v-if="dataTable.devalid != 3" cols="12" md="4">
+         <z-text-field v-model="dataTable.price"
+                       label="Price"
+                       prependIcon="mdi-dollar"
+                       :reqrule="false" />
+
+       </v-col>
+
        <v-col cols="12" md="4">
-         <z-textarea v-show="!dataTable.devalid == 3"
-                     v-model="dataTable.description"
+         <z-textarea v-model="dataTable.description"
                      label="Description" />
        </v-col>
        <v-col cols="12" md="4">
-         <z-text-field v-model="dataTable.devalid"
-                       label="Devaluate?"
-                       prependIcon="mdi-balloon"
-                       type="number"
-                       />
+          <z-auto-deval v-model="dataTable.devalid"
+          label="Devaluation"
+          :reqrule="true" />
        </v-col>
 
 
@@ -113,7 +120,7 @@ import ZTextarea from '@/components/fields/ZTextarea.vue'
 import ZAutoPers from '@/components/fields/ZAutoPers.vue'
 import ZAutoPlace from '@/components/fields/ZAutoPlace.vue'
 import ZAutoItemType from '@/components/fields/ZAutoItemType.vue'
-//import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
+import ZAutoDeval from '@/components/fields/ZAutoDeval.vue'
 import ZBaseTool from '@/components/base/ZBaseTool.vue'
 
 import Choosy from '@/views/Choosy.vue'
@@ -132,7 +139,7 @@ export default {
               , ZTextarea
               , ZAutoItemType
               , Choosy
-//            , ZAutoDeval
+              , ZAutoDeval
   },
   data: () => ({
       getZml: getters.getState({ object: "gZml" }),
@@ -158,8 +165,8 @@ export default {
   methods:{
     checkForm(e) {
       console.log('Check Form : ' , e)
-      this.message  = 'no default message - but some problem'
-      if (this.updateMessage.toLowerCase() == 'create' || this.updateMessage.toLowerCase() == 'edit') { //(e == 'Save' || e == 'Create') {
+      this.message  = 'All good!'
+      if (this.updateMessage.toLowerCase() == 'create' || this.updateMessage.toLowerCase() == 'edit') {
         if (!this.dataTable.typeid) {
            this.message  = 'At least select a type!'
            return false
@@ -169,21 +176,16 @@ export default {
            return false
         }
         if (parseInt(this.dataTable.quantity) == 0) {
-           this.message  = 'The quantity must be filled in'
+           this.message  = 'The quantity must be filled in' + parseInt(this.dataTable.quantity)
            return false
         }
-        if (this.dataTable.devalid == 3) {
-          if (parseInt(this.dataTable.price) > 0) {
-            this.message  = 'The price must be filled in'
+        if (this.dataTable.devalid != 3 && parseInt(this.dataTable.price) == 0) {
+            this.message  = 'The price must be filled in,' + parseInt(this.dataTable.price) + ',' +this.dataTable.price
             return false
-          }
-        } else {
-          // console.log(this.dataTable.serialno , parseInt(this.dataTable.price) , this.dataTable.quantity)
-          // console.log(!this.dataTable.serialno , !(parseInt(this.dataTable.price) > 0) , !this.dataTable.quantity)
-          if (!this.dataTable.serialno || !(parseInt(this.dataTable.price) > 0) || !this.dataTable.quantity) {
-            this.message  = 'The serialno, price and quantity must be filled in'
+        }
+        if (this.dataTable.devalid != 3 && !this.dataTable.serialno) {
+            this.message  = 'The serialno must be filled in'
             return false
-          }
         }
       }
       return true
@@ -192,7 +194,7 @@ export default {
       //this.dataTable.name = e.trim()
       console.log(e.trim())
       if (this.getZml.devalList.includes(this.dataTable.typeid)) {
-        this.dataTable.devalid = 1
+        this.dataTable.devalid = 3
       }
     },
     placeWasSelected(e) {

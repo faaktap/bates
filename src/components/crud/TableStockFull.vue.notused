@@ -1,6 +1,6 @@
 <template>
  <v-container fluid>
-   <base-title-expand :heading="entity + ' View Table'">
+   <base-title-expand :heading="entity + ' View Table(a) '">
 
        <p class="heading-4">How does this work?? </p>
        <p class="float-right">

@@ -1,13 +1,16 @@
 <template>
 
  <v-container fluid>
-  <base-title-expand :heading="entity + ' View Table'">
+  <base-title-expand :heading="entity + ' View Table!'">
 
     <p>Refined item types - main category could be furniture, here we would have tables, desks and chairs</p>
     <p>To add stock from here, press the add stock button on the specific item
       (This is just to make it easier to add items)
     </p>
+
   </base-title-expand>
+
+
 
 <!------------------SEARCH, ADD, REFRESH, EXPORT------------------------------------------->
    <v-card cols="12" class="row wrap text-center d-flex justify-space-between ma-0 mb-2">
@@ -141,7 +144,7 @@ export default {
       entityTableHeader:[
            { text: 'Category', value: 'category'}
           ,{ text: 'Name', value: 'name' }
-          //,{ text: 'StockType', value: 'stocktype'}
+          ,{ text: 'StockType', value: 'stocktype'}
           ,{ text: 'actions', value: 'typeid' , align: 'right'}
 
       ],

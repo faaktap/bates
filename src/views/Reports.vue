@@ -168,7 +168,7 @@ export default {
          break
         case 1:
          this.sqlSelect =
-    `SELECT ifnull(t.name,s.typeid) itemtype\
+    `SELECT ifnull(      LEFT(t.name,INSTR(t.name,"/")-1)          ,s.typeid) itemtype\    //ifnull(t.name,s.typeid) itemtype\
          , s.name description\
          , ifnull(c.name,t.catid) category\
          , ifnull(p.name,s.placeid) place\
@@ -187,7 +187,7 @@ export default {
         case 2:
          this.sqlSelect =
     `SELECT ifnull(c.name,t.catid) category\
-         , ifnull(t.name,s.typeid) itemtype\
+    , ifnull(      LEFT(t.name,INSTR(t.name,"/")-1)          ,s.typeid) itemtype\
          , ifnull(p.name,s.placeid) place\
          , s.name description\
          , ifnull(p1.public_preferredname,'?') Responsible\

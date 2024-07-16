@@ -88,7 +88,7 @@ export default {
       }
 
       this.lastOneSelected = e
-      this.passItemText(e)
+      //this.passItemText(e)
     },
     getData() {
         let ts = {}
