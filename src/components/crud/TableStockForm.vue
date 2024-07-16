@@ -1,4 +1,4 @@
- <template>
+<template>
  <v-card elevation="6" class="pt-2 ma-4" style="overflow:hidden">
   <v-btn color="red" icon
          style="position: absolute; display: block; top: 0; right: -4;left: inherit;"
@@ -20,7 +20,7 @@
 
    <form @submit="checkForm" id="TSF" v-on:keyup.enter="onEnter">
       <v-layout row wrap align-content-start justify-space-between class="ma-2 pa-2">
-       <v-col cols="12" sm="4">
+       <v-col cols="12" sm="12" md="4">
           <z-auto-item-type v-model="dataTable.typeid"
                            @select="typeWasSelected"
                            label="Type"
@@ -28,13 +28,13 @@
                            :reqrule="true"
           />
        </v-col>
-       <v-col cols="12" sm="4">
+       <v-col cols="12" sm="12" md="4">
          <z-text-field v-model="dataTable.name"
                        label="Stock Description"
                        title="You MUST fill in the field please!"
                        prependIcon="mdi-file-document"
                        :reqrule="true" />
-                       updatemessage {{ updateMessage }}
+                       <!-- updatemessage {{ updateMessage }} -->
        </v-col>
        <!-- <v-col cols="12" sm="4">
          <z-auto-deval v-model="dataTable.devalid"
@@ -42,41 +42,41 @@
                        :reqrule="true" />
 
        </v-col> -->
-       <v-col v-if="dataTable.devalid != 3" cols="12" sm="4">
+       <v-col v-if="dataTable.devalid != 3" cols="12" md="4">
          <z-text-field v-model="dataTable.serialno"
                        label="Serial"
                        prependIcon="mdi-serial-port"
                        :reqrule="false" />
 
        </v-col>
-       <v-col cols="12" sm="4">
+       <v-col cols="12" md="4">
          <z-auto-place v-model="dataTable.placeid"
                       @select="ownerWasSelected"
                        label="Place/Class" />
        </v-col>
 
-       <v-col cols="12" sm="4">
+       <v-col cols="12" md="4">
          <z-text-field v-model="dataTable.quantity"
                        label="Quantity"
                        prependIcon="mdi-format-list-numbered"
                        type="number"
                        />
        </v-col>
-       <v-col cols="12" sm="4" md="4">
+       <v-col cols="12" sm="12" md="4">
          <z-auto-pers v-model="dataTable.originalownerid"
                       @select="placeWasSelected"
                        label="Owner"
          />
        </v-col>
-       <v-col cols="12" sm="4">
+       <v-col cols="12" md="4">
          <z-textarea v-show="!dataTable.devalid == 3"
                      v-model="dataTable.description"
                      label="Description" />
        </v-col>
-       <v-col v-show="dataTable.devalid != 3" cols="12" sm="4">
-         <z-text-field v-model="dataTable.price"
-                       label="Price"
-                       prependIcon="mdi-currency-sign"
+       <v-col cols="12" md="4">
+         <z-text-field v-model="dataTable.devalid"
+                       label="Devaluate?"
+                       prependIcon="mdi-balloon"
                        type="number"
                        />
        </v-col>

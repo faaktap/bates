@@ -116,6 +116,7 @@ export default {
       entityTable:[],
       entityTableHeader:[
            { text: 'Name', value: 'name' }
+          ,{ text: 'Deval', value: 'devalid' }
           //,{ text: 'Description', value: 'description'}
           ,{ text: 'actions', value: 'catid', align:'right'}
 

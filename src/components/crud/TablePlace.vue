@@ -20,16 +20,20 @@
 <!------------------SWITCH------------------------------------------->
     <v-card v-if="switchType && switchType.length"
              class="row wrap text-center d-flex justify-space-between ml-0 mt-1 mb-2 pl-1 pr-1">
-         <v-card v-for="s in switchType"
-                :key="s.id"
-                 class="mb-2">
+
+             <span v-for="s in switchType" :key="s.id">
+              <v-checkbox small dense v-model="s.switch"  :label="s.type" hide-details> </v-checkbox>
+             </span>
+
+          <!-- <v-card class="mb-2 mx-0 mt-0" v-for="s in switchType" :key="s.id">
            <v-switch v-model="s.switch"
                      inset dense color="green"
+                     small
                      hide-details
                      class="mt-1 mr-2 mb-2 ml-2"
                     :label="s.type" >
            </v-switch>
-         </v-card>
+         </v-card> -->
     </v-card>
 
 <!-------------------TABLE------------------------------------------>
@@ -289,3 +293,8 @@ export default {
   }
 }
 </script>
+
+<style>
+.hidden { display: none; }
+.trigger:hover + .hidden { display: inline; }
+</style>

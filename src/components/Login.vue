@@ -47,7 +47,7 @@
          <v-spacer />
          <h2 class="justify-center"> Kuilies Bates Login </h2>
          <v-spacer />
-         <v-img src="img/CleanDKHS.png" max-width="80" class="float-left" contain elevation="6"/>
+         <v-img src="https://kuiliesonline.co.za/img/CleanDKHS.png" max-width="80" class="float-left" contain elevation="6"/>
 
        </v-card-title>
        <v-card-text>

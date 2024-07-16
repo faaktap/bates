@@ -32,7 +32,7 @@
 
         <v-btn icon xclass="mt-2 pa-0" x-small
              @click.stop="drawer = !drawer">
-        <v-img src="img/CleanDKHS.png" max-width="40" class="float-right" contain />
+        <v-img src="https://kuiliesonline.co.za/img/CleanDKHS.png" max-width="40" class="float-right" contain />
         </v-btn>
         </v-layout>
      </v-card-title>
@@ -63,7 +63,7 @@
       color="secondary"
     >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer" >
-        <v-img src="img/CleanDKHS.png" max-width="40" contain />
+        <v-img src="https:/kuiliesonline.co.za/img/CleanDKHS.png" max-width="40" contain />
       </v-app-bar-nav-icon>
 
       <v-toolbar-title >

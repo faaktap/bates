@@ -2,7 +2,7 @@
 <!--                  :rules="reqrule ? rules.required : []"  -->
         <v-autocomplete
                @input="updateValue"
-               @blur.stop="passItemId"
+               @blur="passItemText"
                 :value="value"
                 :label="label"
                :items="searchItemType"
@@ -71,16 +71,18 @@ export default {
         this.$emit('objectSelected',this.itemTypeTable[index])
       }
     },
-    passItemId() {
+    passItemText() {
       if (this.lastOneSelected) {
           let index = this.itemTypeTable.findIndex(ele => ele.typeid == this.lastOneSelected)
           if (index > -1) {
-            this.$emit('select',this.itemTypeTable[index].id)
+            this.$emit('select',this.itemTypeTable[index].name)
           }
       }
     },
     updateValue(e) {
+      console.log('updateValue emit = ', e)
       this.$emit('input', e)
+
       let index = this.itemTypeTable.findIndex(ele => ele.typeid == e)
       if (index > -1) {
         console.log(this.$options.name, 'send object')

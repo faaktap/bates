@@ -81,6 +81,7 @@ export default {
     },
     updateValue(e) {
       this.$emit('input', e)
+
       let index = this.itemTypeTable.findIndex(ele => ele.typeid == e)
       if (index > -1) {
         console.log(this.$options.name, 'send object')

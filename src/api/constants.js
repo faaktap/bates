@@ -1,5 +1,5 @@
-const PROJECT_ID = "zmlBates1.1b"
-const MEASUREMENT_ID = "Z-BAT1g"
+const PROJECT_ID = "zmlBates1.1d"
+const MEASUREMENT_ID = "Z-BAT1h"
 const DEFAULT_LAYOUT = "AppLayoutDefault"
 const MAX_UPLOAD_SIZE = 90 * 1024 * 1024
 
