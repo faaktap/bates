@@ -66,13 +66,13 @@ export default {
       },
       printIt() {
         const style = `
-          @page { margin-top: 10px }
+          @page { margin-top: 5px }
           @media print {
           .print  {display:block}\
           body {overflow: auto;height: auto;font:Garamond;}\
           h1 { color: #1c3a1b }\
           heading { color: #1c3a1b }\
-          p.bodyText {font-size:10pt}\
+          p.bodyText {font-size:8pt}\
           th, td {border-radius:2px; padding: 2px;margin: 2px; border: 1px solid cream;}\
           aside {display: none;}\
           main {display: block;}\

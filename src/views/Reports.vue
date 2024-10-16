@@ -29,12 +29,16 @@
     <v-tabs-items v-model="tab">
       <v-tab-item v-for="item in items" :key="item.id" :href="item.id">
         <v-card flat>
+          <v-card-title>
+            {{ item.answer }}
+          </v-card-title>
           <v-card-actions>
-            <template v-if="tab == 0">
+            <v-layout v-if="tab == 0" class="mx-2 px-2 row wrap">
                <z-auto-place v-model="reportValueToCount[item.id]"
                 label="Place"
                 @objectSelected="objectSelected" />
-            </template>
+                <span class="mx-2 px-2">If Serialnumber is empty, description will replace it.</span>
+            </v-layout>
             <template v-else-if="tab == 1">
               <z-auto-pers v-model="reportValueToCount[item.id]"
                   label="Owner"
@@ -46,9 +50,7 @@
                   @objectSelected="objectSelected" />
             </template>
           </v-card-actions>
-          <v-card-title>
-            {{ item.answer }}
-          </v-card-title>
+          
           <v-card-actions>
             <v-btn small @click="build"> showReport </v-btn>
           </v-card-actions>
@@ -95,7 +97,7 @@ export default {
           {id:2,menu:'Itemlist for a itemtype' ,f:null
                ,sql:"SELECT count(*) items from s_stock s WHERE s.typeid = "
                ,answer:'select an item', obj:{}},
-          {id:3,menu:'Eben List' ,f:null
+          {id:3,menu:'Tanya Stock List' ,f:null
                ,sql:`SELECT count(*) FROM s_stock s`
                ,answer:'Show All', obj:{}},
           {id:4,menu:'Places' ,f:null
@@ -148,12 +150,12 @@ export default {
       switch (this.tab) {
         case 0:
          this.sqlSelect =
-    `SELECT ifnull(c.name,t.catid) category\
-         , s.name description\
-         , ifnull(p1.public_preferredname,'?') Responsible\
-         , ifnull(t.name,s.typeid) itemtype\
-         , s.serialno\
-         , s.quantity\
+    `SELECT ifnull(p1.public_preferredname,'?') "Responsible Person"\
+         , ifnull(if( instr(c.name,'/') , substr(c.name,1,instr(c.name,'/')-1) , c.name),t.catid) Category\
+         , s.name "Stock Name"\
+         , ifnull(  if( instr(t.name,'/') , substr(t.name,1,instr(t.name,'/')-1) , t.name)  ,s.typeid) ItemType
+         , if (length(s.serialno) < 2, s.description, s.serialno) "Serial/Desc"\
+         , s.quantity Cnt\
          , date(s.datereceived) DateChecked\
      FROM s_stock s\
      LEFT JOIN dkhs_personel p1 on p1.persid = s.originalownerid\

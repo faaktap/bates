@@ -9,7 +9,7 @@ import { getters } from "@/api/store";
 export const zData = {
     someGlobals :  'hallo',
     l: (...args) => {
-       console.log(...args)
+       console.log('zInit',...args)
     },
     sendEmail(emailInfo) {
         let email = emailInfo
@@ -31,10 +31,11 @@ export const zData = {
         fetch(zmlConfig.emailPath, apiConfig);
     },
     initialData:  (whatever) => {
-        if (whatever !== undefined) console.log(whatever)
+        if (whatever !== undefined) l(whatever)
         let info = cookie.get('login1')
-        console.log(info)
+        l('cookie info',info)
         let loginCookieData = info.split('|')
+        //l(loginCookieData)
         if (loginCookieData.length >= 4) {
             getters.getState({ object: "gZml" }).login.username = loginCookieData[0]
             getters.getState({ object: "gZml" }).login.userid = loginCookieData[1]
